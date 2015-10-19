@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="Wheels4Food">
+    <head>
+        <title>Wheels4Food</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <link rel='stylesheet' href='webjars/bootstrap/3.3.2/css/bootstrap.min.css'>
+        <link rel='stylesheet' href='webjars/font-awesome/4.3.0/css/font-awesome.min.css'>
+        <link rel='stylesheet' href='resources/css/site.css'>
+
+        <script src="webjars/angularjs/1.3.6/angular.min.js"></script>
+        <script src="webjars/angular-ui-router/0.2.14/angular-ui-router.min.js"></script>
+        <script src="webjars/angular-local-storage/0.2.1/angular-local-storage.min.js"></script>
+        <script src="webjars/angular-ui-bootstrap/0.13.0/ui-bootstrap.min.js"></script>
+
+        <script src="resources/js/Bootstrap.js"></script> 
+        <script src="resources/js/zPrincipal.js"></script> 
+        <script src="resources/js/LoginCtrl.js"></script> 
+        <script src="resources/js/LayoutCtrl.js"></script> 
+        <script src="resources/js/RegisterCtrl.js"></script> 
+        <script src="resources/js/zHome.js"></script> 
+        <script src="resources/js/HomeCtrl.js"></script> 
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,100' rel='stylesheet' type='text/css'>
+
+        <base href="/index.html">
+    </head>
+    <body ng-controller="MainCtrl">
+        <div ng-include="'Wheels4Food/layout.html'" ng-controller="LayoutCtrl" ng-show="isLoggedIn"></div>
+
+        <div ui-view></div>
+    </body>     
+</html>

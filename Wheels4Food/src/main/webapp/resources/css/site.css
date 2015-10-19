@@ -1,0 +1,40 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.login-form {
+    margin: 100px auto;
+    max-width: 400px;
+}
+
+.login-panel {
+    background: #283a44;
+    padding: 30px 26px;
+    color: #fff;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+.login-panel .form-control,
+.login-panel button {
+    font-size: 18px;
+    margin: 16px 0;
+}
+
+.form-links {
+    text-align: center;
+    margin-top: 2em;
+    margin-bottom: 20px;
+}
+
+.login-error {
+    background: #ffe5ea;
+    color: #d41243;
+    border-color: #d41243;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px 5px;
+    border-radius: 5px;
+    text-align: center;    
+}

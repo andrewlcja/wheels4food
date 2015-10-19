@@ -1,0 +1,7 @@
+model\UserLoginResponse.class
+model\UserLoginRequest.class
+controller\UserController.class
+dao\UserDAO.class
+utility\HashUtility.class
+service\UserService.class
+model\User.class
