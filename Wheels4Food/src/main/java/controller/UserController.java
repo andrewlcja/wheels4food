@@ -6,6 +6,8 @@
 package controller;
 
 import java.util.List;
+import model.ChangePasswordRequest;
+import model.ChangePasswordResponse;
 import model.DeleteUserResponse;
 import model.UpdateUserResponse;
 import model.User;
@@ -57,5 +59,10 @@ public class UserController {
     @RequestMapping(value = "/UpdateUserRequest", method = RequestMethod.PUT)
     public @ResponseBody UpdateUserResponse userLoginRequest(@RequestBody User user) {
         return userService.updateUserRequest(user);
+    }
+    
+    @RequestMapping(value = "/ChangePasswordRequest", method = RequestMethod.PUT)
+    public @ResponseBody ChangePasswordResponse changePasswordRequest(@RequestBody ChangePasswordRequest request ) {
+        return userService.changePasswordRequest(request);
     }
 }

@@ -3,11 +3,17 @@ model\UserLoginRequest.class
 service\PendingRegistrationService.class
 dao\PendingRegistrationDAO.class
 controller\UserController.class
+model\DeleteUserResponse.class
 service\UserService.class
 model\CreatePendingRegistrationResponse.class
 model\PendingRegistration.class
 controller\PendingRegistrationController.class
+model\ApprovePendingRegistrationResponse.class
+model\UpdateUserResponse.class
+model\DeletePendingRegistrationResponse.class
 dao\UserDAO.class
 model\CreatePendingRegistrationRequest.class
 utility\HashUtility.class
+model\ChangePasswordRequest.class
+model\ChangePasswordResponse.class
 model\User.class

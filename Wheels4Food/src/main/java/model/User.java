@@ -123,4 +123,48 @@ public class User implements Serializable {
     public String getRole() {
         return role;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public void setPocName(String pocName) {
+        this.pocName = pocName;
+    }
+
+    public void setPocNumber(String pocNumber) {
+        this.pocNumber = pocNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

@@ -8,6 +8,8 @@ package service;
 import dao.UserDAO;
 import java.util.ArrayList;
 import java.util.List;
+import model.ChangePasswordRequest;
+import model.ChangePasswordResponse;
 import model.DeleteUserResponse;
 import model.UpdateUserResponse;
 import model.User;
@@ -31,11 +33,11 @@ public class UserService {
 
     public UserLoginResponse userLoginRequest(UserLoginRequest request) {
         User user = null;
-        
+
         //retrieve fields
         String username = request.getUsername().trim();
         String password = request.getPassword().trim();
-        
+
         //validations
         //check for blank username
         if (username.equals("") || password.equals("")) {
@@ -48,7 +50,7 @@ public class UserService {
             if (user == null) {
                 return new UserLoginResponse(false, "Invalid username / password");
             }
-                        
+
             if (!HashUtility.verify(password, user.getHashedPassword(), user.getSalt())) {
                 return new UserLoginResponse(false, "Invalid username / password");
             }
@@ -58,7 +60,7 @@ public class UserService {
             return new UserLoginResponse(false, e.getMessage());
         }
     }
-    
+
     public DeleteUserResponse deleteUserRequest(String idString) {
         ArrayList<String> errorList = new ArrayList<String>();
 
@@ -82,7 +84,7 @@ public class UserService {
             return new DeleteUserResponse(false, errorList);
         }
     }
-    
+
     public UpdateUserResponse updateUserRequest(User user) {
         String username = user.getUsername().trim();
         String organizationName = user.getOrganizationName().trim();
@@ -136,10 +138,10 @@ public class UserService {
         if (!errorList.isEmpty()) {
             return new UpdateUserResponse(false, errorList);
         }
-        
+
         try {
             User oldUser = userDAO.getUser(username);
-            
+
 //            if (user.getUsername().equals(oldUser.getUsername())) {
 //                errorList.add("Username already exist");
 //            }
@@ -147,7 +149,7 @@ public class UserService {
             errorList.add(e.getMessage());
             return new UpdateUserResponse(false, errorList);
         }
-        
+
         if (!email.contains("@")) {
             errorList.add("Invalid email");
         }
@@ -155,13 +157,75 @@ public class UserService {
         if (!errorList.isEmpty()) {
             return new UpdateUserResponse(false, errorList);
         }
-        
+
         try {
             userDAO.updateUser(user);
-            return new UpdateUserResponse(true, errorList); 
+            return new UpdateUserResponse(true, errorList);
         } catch (Exception e) {
             errorList.add(e.getMessage());
-            return new UpdateUserResponse(false, errorList); 
+            return new UpdateUserResponse(false, errorList);
+        }
+    }
+
+    public ChangePasswordResponse changePasswordRequest(ChangePasswordRequest request) {
+        String username = request.getUsername().trim();
+        String oldPassword = request.getOldPassword().trim();
+        String newPassword = request.getNewPassword().trim();
+        String confirmNewPassword = request.getConfirmNewPassword().trim();
+        
+        ArrayList<String> errorList = new ArrayList<String>();
+
+        //check if the fields entered are empty
+        if (username.equals("")) {
+            errorList.add("Username cannot be blank");
+        }
+
+        if (oldPassword.equals("")) {
+            errorList.add("Old Password cannot be blank");
+        }
+
+        if (newPassword.equals("")) {
+            errorList.add("New Password cannot be blank");
+        }
+
+        if (confirmNewPassword.equals("")) {
+            errorList.add("Confirmation Password cannot be blank");
+        }
+
+        if (!errorList.isEmpty()) {
+            return new ChangePasswordResponse(false, errorList);
+        }
+
+        try {
+            User user = userDAO.getUser(username);
+
+            //check if the password entered is the same as current one
+            if (!HashUtility.verify(oldPassword, user.getHashedPassword(), user.getSalt())) {
+                errorList.add("The password you entered does not match.");
+                return new ChangePasswordResponse(false, errorList);
+            }
+
+            //check if the old passwords and current password are the same
+            if (HashUtility.verify(newPassword, user.getHashedPassword(), user.getSalt())) {
+                errorList.add("The password you entered cannot be the same as your current password.");
+                return new ChangePasswordResponse(false, errorList);
+            }
+
+            //check if the new password and the confirmed new password are the same.
+            if (!newPassword.equals(confirmNewPassword)) {
+                errorList.add("The new password and the confirmed password does not match.");
+                return new ChangePasswordResponse(false, errorList);
+            }
+
+            String[] result = HashUtility.getHashAndSalt(confirmNewPassword);
+            user.setHashedPassword(result[0]);
+            user.setSalt(result[1]);
+
+            userDAO.updateUser(user);
+            return new ChangePasswordResponse(true, errorList);
+        } catch (Exception e) {
+            errorList.add(e.getMessage());
+            return new ChangePasswordResponse(false, errorList);
         }
     }
 }
