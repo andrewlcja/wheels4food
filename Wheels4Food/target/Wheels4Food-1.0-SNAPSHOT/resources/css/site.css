@@ -11,9 +11,9 @@ body {
     background: #283a44;
     padding: 30px 26px;
     color: #fff;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
 }
 
 .login-panel .form-control,
@@ -37,4 +37,39 @@ body {
     padding: 5px 5px;
     border-radius: 5px;
     text-align: center;    
+}
+
+.register-form {
+    margin: 29px auto;
+    max-width: 900px;
+}
+
+.register-panel {
+    background: #283a44;
+    padding: 15px 10px;
+    min-height: 550px;
+    height: 100%;
+    color: #fff;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
+.register-panel .form-control,
+.register-panel button {
+    font-size: 18px;
+    margin: 0px 0;
+}
+
+.register-form-input {
+    padding-top: 14px;
+}
+
+.registration-form-links {
+    text-align: center;
+    margin-top: 1em;
+}
+
+.register-form-input-height {
+    height: 36px;
 }

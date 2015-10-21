@@ -24,6 +24,7 @@
         <property name="annotatedClasses">
             <list>
                 <value>model.User</value>
+                <value>model.PendingRegistration</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -43,5 +44,7 @@
               class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 
     <bean id="userDAO" class="dao.UserDAO"></bean>
-    <bean id="userService" class="service.UserService"></bean>        
+    <bean id="userService" class="service.UserService"></bean>
+    <bean id="pendingRegistrationDAO" class="dao.PendingRegistrationDAO"></bean>
+    <bean id="pendingRegistrationService" class="service.PendingRegistrationService"></bean>         
 </beans>

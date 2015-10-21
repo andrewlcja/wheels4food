@@ -1,7 +1,13 @@
 model\UserLoginResponse.class
 model\UserLoginRequest.class
+service\PendingRegistrationService.class
+dao\PendingRegistrationDAO.class
 controller\UserController.class
-dao\UserDAO.class
-utility\HashUtility.class
 service\UserService.class
+model\CreatePendingRegistrationResponse.class
+model\PendingRegistration.class
+controller\PendingRegistrationController.class
+dao\UserDAO.class
+model\CreatePendingRegistrationRequest.class
+utility\HashUtility.class
 model\User.class

@@ -59,6 +59,23 @@ public class User implements Serializable {
     @Column(name = "role")
     private String role;
 
+    public User() {
+    }
+
+    public User(String username, String hashedPassword, String salt, String organizationName, String email, String address, String postalCode, String pocName, String pocNumber, String licenseNumber, String role) {
+        this.username = username;
+        this.hashedPassword = hashedPassword;
+        this.salt = salt;
+        this.organizationName = organizationName;
+        this.email = email;
+        this.address = address;
+        this.postalCode = postalCode;
+        this.pocName = pocName;
+        this.pocNumber = pocNumber;
+        this.licenseNumber = licenseNumber;
+        this.role = role;
+    }
+
     public int getId() {
         return id;
     }

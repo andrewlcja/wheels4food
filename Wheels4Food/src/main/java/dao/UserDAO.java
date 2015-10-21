@@ -25,7 +25,7 @@ public class UserDAO {
     Session session = null;
     Transaction tx = null;
 
-    public List<User> getUserList() throws Exception {
+    public List<User> retrieveAll() throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<User> userList = session.createCriteria(User.class).list();
@@ -43,5 +43,22 @@ public class UserDAO {
         tx.commit();
         session.close();
         return user;
+    }
+    
+    public void deleteUser(int id) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        User user = (User) session.load(User.class, id);
+        session.delete(user);
+        tx.commit();
+        session.close();
+    }
+    
+    public void updateUser(User user) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        session.update(user);
+        tx.commit();
+        session.close();
     }
 }
