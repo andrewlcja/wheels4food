@@ -79,7 +79,6 @@
             <artifactId>bootstrap</artifactId>
             <version>3.3.2</version>
         </dependency>
-
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>angularjs</artifactId>
@@ -109,6 +108,11 @@
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
             <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>ngDialog</artifactId>
+            <version>0.3.12</version>
         </dependency>
     </dependencies>
 
