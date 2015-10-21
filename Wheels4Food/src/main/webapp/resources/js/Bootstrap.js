@@ -4,6 +4,7 @@
             .module('Wheels4Food', [
                 'ui.router',
                 'ui.bootstrap',
+                'ngDialog',
                 'LocalStorageModule',
                 'Wheels4Food.Principal',
                 'Wheels4Food.Home'

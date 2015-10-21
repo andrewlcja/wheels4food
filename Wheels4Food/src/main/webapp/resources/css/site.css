@@ -73,3 +73,27 @@ body {
 .register-form-input-height {
     height: 36px;
 }
+
+.ngdialog.dialog-registration-prompt .ngdialog-content{
+    width : 480px;
+    height: 130px;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+.ngdialog.dialog-registration-success .ngdialog-content{
+    width : 480px;
+    height: 170px;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+.ngdialog.dialog-registration-error .ngdialog-content{
+    width : 480px;
+    height: auto;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
