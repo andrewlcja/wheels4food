@@ -32,13 +32,11 @@ public class MarketplaceService {
         String itemName = request.getItemName().trim();
         String quantity = request.getQuantity().trim();
         String expiryDate = request.getExpiryDate().trim();
-        String datePosted = request.getDatePosted().trim();
-        String requester = request.getRequester().trim();
         String category = request.getCategory().trim();
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        java.util.Date date= new java.util.Date();
+        java.util.Date date = new java.util.Date();
 
         //validations
         if (username.equals("")) {
@@ -72,8 +70,8 @@ public class MarketplaceService {
 
         try {
             //create a new supply entry and return to marketplaceDAO to create in the table
-            datePosted = date.toString();
-            marketplaceDAO.createSupply(new Supply(username, organizationName, itemName, quantity, expiryDate, datePosted, requester, category));
+            String supplyDatePosted = date.toString();
+            marketplaceDAO.createSupply(new Supply(username, organizationName, itemName, quantity, expiryDate, supplyDatePosted, category));
             return new CreateMarketplaceSupplyResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());

@@ -19,8 +19,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @Entity
 @Table(name = "supply")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Supply {
-
+public class Demand {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -41,23 +40,28 @@ public class Supply {
     @Column(name = "expiryDate")
     private String expiryDate;
 
-    @Column(name = "supplyDatePosted")
-    private String supplyDatePosted;
+    @Column(name = "demandDatePosted")
+    private String demandDatePosted;
 
     @Column(name = "category")
     private String category;
 
-    public Supply() {
+    public Demand() {
     }
 
-    public Supply(String username, String organizationName, String itemName, String quantity, String expiryDate, String supplyDatePosted, String category) {
+    public Demand(int id, String username, String organizationName, String itemName, String quantity, String expiryDate, String demandDatePosted, String category) {
+        this.id = id;
         this.username = username;
         this.organizationName = organizationName;
         this.itemName = itemName;
         this.quantity = quantity;
         this.expiryDate = expiryDate;
-        this.supplyDatePosted = supplyDatePosted;
+        this.demandDatePosted = demandDatePosted;
         this.category = category;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getUsername() {
@@ -80,12 +84,13 @@ public class Supply {
         return expiryDate;
     }
 
-    public String getSupplyDatePosted() {
-        return supplyDatePosted;
+    public String getDemandDatePosted() {
+        return demandDatePosted;
     }
 
     public String getCategory() {
         return category;
     }
-
+    
+    
 }

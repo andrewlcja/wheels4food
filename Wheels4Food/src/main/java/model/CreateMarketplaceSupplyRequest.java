@@ -15,21 +15,19 @@ public class CreateMarketplaceSupplyRequest {
     private String itemName;
     private String quantity;
     private String expiryDate;
-    private String datePosted;
-    private String requester;
+    private String supplyDatePosted;
     private String category;    
 
     public CreateMarketplaceSupplyRequest() {
     }
 
-    public CreateMarketplaceSupplyRequest(String username, String organizationName, String itemName, String quantity, String expiryDate, String datePosted, String requester, String category) {
+    public CreateMarketplaceSupplyRequest(String username, String organizationName, String itemName, String quantity, String expiryDate, String supplyDatePosted, String category) {
         this.username = username;
         this.organizationName = organizationName;
         this.itemName = itemName;
         this.quantity = quantity;
         this.expiryDate = expiryDate;
-        this.datePosted = datePosted;
-        this.requester = requester;
+        this.supplyDatePosted = supplyDatePosted;
         this.category = category;
     }
 
@@ -53,14 +51,10 @@ public class CreateMarketplaceSupplyRequest {
         return expiryDate;
     }
 
-    public String getDatePosted() {
-        return datePosted;
+    public String getsupplyDatePosted() {
+        return supplyDatePosted;
     }
-
-    public String getRequester() {
-        return requester;
-    }
-
+    
     public String getCategory() {
         return category;
     }
