@@ -9,14 +9,14 @@ import java.util.ArrayList;
 
 /**
  *
- * @author andrew.lim.2013
+ * @author Wayne
  */
-public class CreatePendingRegistrationResponse {
+public class CreateMarketplaceSupplyResponse {
 
     private boolean isCreated;
     private ArrayList<String> errorList;
 
-    public CreatePendingRegistrationResponse(boolean isCreated, ArrayList<String> errorList) {
+    public CreateMarketplaceSupplyResponse(boolean isCreated, ArrayList<String> errorList) {
         this.isCreated = isCreated;
         this.errorList = errorList;
     }
