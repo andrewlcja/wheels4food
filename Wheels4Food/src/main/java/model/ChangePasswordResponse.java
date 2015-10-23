@@ -20,10 +20,10 @@ public class ChangePasswordResponse {
         this.errorList = errorList;
     }
 
-    public boolean isIsUpdated() {
+    public boolean isIsChanged() {
         return isChanged;
     }
-
+    
     public ArrayList<String> getErrorList() {
         return errorList;
     }

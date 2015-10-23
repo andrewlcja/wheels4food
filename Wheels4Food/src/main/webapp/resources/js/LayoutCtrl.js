@@ -2,8 +2,8 @@
     'use strict';
     angular
             .module('Wheels4Food.Principal')
-            .controller('LayoutCtrl', ['$scope', '$state', '$http', 'api', 'localStorageService', '$location',
-                function ($scope, $state, $http, api, localStorageService, $location) {
+            .controller('LayoutCtrl', ['$scope', '$state', '$http', 'api', 'localStorageService', '$location', 'ngDialog',
+                function ($scope, $state, $http, api, localStorageService, $location, ngDialog) {
                     var authenticate = function () {
                         var authData = localStorageService.get('authorizationData');
 
@@ -13,17 +13,25 @@
                                 $location.path('/Login');
                             }
                         } else {
-                            $scope.$parent.isLoggedIn = true;
-                            $scope.username = authData.username;
-                            $scope.role = authData.role;
+                            if (!$state.is('Login')) {
+                                $scope.$parent.isLoggedIn = true;
+                                $scope.username = authData.username;
+                                $scope.role = authData.role;
+                            }
                         }
                     }
 
                     $scope.logout = function () {
-                        localStorageService.remove('authorizationData');
-                        $scope.$parent.isLoggedIn = false;
-                        $location.path('/Login');
-                    }
+                        ngDialog.openConfirm({
+                            template: '/Wheels4Food/resources/ngTemplates/logoutPrompt.html',
+                            className: 'ngdialog-theme-default dialog-logout-prompt',
+                            scope: $scope
+                        }).then(function (response) {
+                            localStorageService.remove('authorizationData');
+                            $scope.$parent.isLoggedIn = false;
+                            $location.path('/Login');
+                        });
+                    };
 
                     //everytime user refreshes page
                     //authenticate();

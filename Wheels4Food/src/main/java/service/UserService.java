@@ -31,6 +31,10 @@ public class UserService {
         return userDAO.retrieveAll();
     }
 
+    public User getUserByUsernameRequest(String username) throws Exception {
+        return userDAO.getUser(username);
+    }
+
     public UserLoginResponse userLoginRequest(UserLoginRequest request) {
         User user = null;
 
@@ -120,11 +124,11 @@ public class UserService {
         }
 
         if (pocName.equals("")) {
-            errorList.add("POC Name cannot be blank");
+            errorList.add("Point of Contact Name cannot be blank");
         }
 
         if (pocNumber.equals("")) {
-            errorList.add("POC Number cannot be blank");
+            errorList.add("Point of Contact Number cannot be blank");
         }
 
         if (licenseNumber.equals("")) {
@@ -140,25 +144,26 @@ public class UserService {
         }
 
         try {
-            User oldUser = userDAO.getUser(username);
+            User oldUser = userDAO.getUserById(user.getId());
 
-//            if (user.getUsername().equals(oldUser.getUsername())) {
-//                errorList.add("Username already exist");
-//            }
-        } catch (Exception e) {
-            errorList.add(e.getMessage());
-            return new UpdateUserResponse(false, errorList);
-        }
+            if (!user.getUsername().equals(oldUser.getUsername())) {
+                if (userDAO.getUser(username) != null) {
+                    errorList.add("Username already exists");
+                }
+            }
 
-        if (!email.contains("@")) {
-            errorList.add("Invalid email");
-        }
+            if (!email.contains("@")) {
+                errorList.add("Invalid email");
+            } else if (!email.equals(oldUser.getEmail())) {
+                if (userDAO.getUserByEmail(email) != null) {
+                    errorList.add("Email already exists");
+                }
+            }
 
-        if (!errorList.isEmpty()) {
-            return new UpdateUserResponse(false, errorList);
-        }
+            if (!errorList.isEmpty()) {
+                return new UpdateUserResponse(false, errorList);
+            }
 
-        try {
             userDAO.updateUser(user);
             return new UpdateUserResponse(true, errorList);
         } catch (Exception e) {
@@ -172,7 +177,7 @@ public class UserService {
         String oldPassword = request.getOldPassword().trim();
         String newPassword = request.getNewPassword().trim();
         String confirmNewPassword = request.getConfirmNewPassword().trim();
-        
+
         ArrayList<String> errorList = new ArrayList<String>();
 
         //check if the fields entered are empty
@@ -181,7 +186,7 @@ public class UserService {
         }
 
         if (oldPassword.equals("")) {
-            errorList.add("Old Password cannot be blank");
+            errorList.add("Current Password cannot be blank");
         }
 
         if (newPassword.equals("")) {
@@ -201,19 +206,20 @@ public class UserService {
 
             //check if the password entered is the same as current one
             if (!HashUtility.verify(oldPassword, user.getHashedPassword(), user.getSalt())) {
-                errorList.add("The password you entered does not match.");
-                return new ChangePasswordResponse(false, errorList);
+                errorList.add("Current Password entered is incorrect");
             }
 
             //check if the old passwords and current password are the same
             if (HashUtility.verify(newPassword, user.getHashedPassword(), user.getSalt())) {
-                errorList.add("The password you entered cannot be the same as your current password.");
-                return new ChangePasswordResponse(false, errorList);
+                errorList.add("New Password entered cannot be the same as your Current Password");
             }
 
             //check if the new password and the confirmed new password are the same.
             if (!newPassword.equals(confirmNewPassword)) {
-                errorList.add("The new password and the confirmed password does not match.");
+                errorList.add("New Password and Confirmation Password do not match");
+            }
+
+            if (!errorList.isEmpty()) {
                 return new ChangePasswordResponse(false, errorList);
             }
 

@@ -45,6 +45,28 @@ public class UserDAO {
         return user;
     }
     
+    public User getUserById(int id) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        User user = (User) session.createCriteria(User.class)
+                .add(Restrictions.eq("id", id))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return user;
+    }
+    
+    public User getUserByEmail(String email) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        User user = (User) session.createCriteria(User.class)
+                .add(Restrictions.eq("email", email))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return user;
+    }
+    
     public void deleteUser(int id) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();

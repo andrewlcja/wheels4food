@@ -7,7 +7,7 @@
                     $scope.$parent.isLoggedIn = false;
                     $scope.signInText = 'Sign In';
                     $scope.isLogging = false;
-                    
+
                     $scope.username = '';
                     $scope.password = '';
 
@@ -35,15 +35,15 @@
                                         role: response.data.user.role
                                     });
 
-                                    $scope.$parent.isLoggedIn = true;
                                     $state.go('Home');
+                                    $scope.$parent.isLoggedIn = true;
                                 } else {
                                     $scope.signInText = 'Sign In';
-                                    
-                                    $scope.error = response.data.error
-                                    $scope.loginFailed = true;                                   
+
+                                    $scope.error = response.data.error;
+                                    $scope.loginFailed = true;
                                 }
-                            }, 1000);
+                            }, 800);
                         }, function (error) {
                             console.log(error);
                         });

@@ -2,12 +2,21 @@
     'use strict';
     angular
             .module('Wheels4Food', [
+                //resources
                 'ui.router',
                 'ui.bootstrap',
-                'ngDialog',
+                'ngDialog',                
+                'ngAnimate',
                 'LocalStorageModule',
+                'angularUtils.directives.dirPagination',
+                'cgBusy',
+                
+                //modules
                 'Wheels4Food.Principal',
-                'Wheels4Food.Home'
+                'Wheels4Food.Home',
+                'Wheels4Food.PendingRegistrations',
+                'Wheels4Food.UserManagement',
+                'Wheels4Food.User'
             ])
 
             .config(['$stateProvider', '$urlRouterProvider', '$locationProvider',

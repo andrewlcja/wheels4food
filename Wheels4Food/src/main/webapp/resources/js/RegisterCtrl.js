@@ -38,7 +38,7 @@
                                         className: 'ngdialog-theme-default dialog-registration-success',
                                         scope: $scope
                                     }).then(function () {
-                                        $state.go('Home');
+                                        $state.go('Login');
                                     });
                                 } else {
                                     $scope.errorList = response.data.errorList;
