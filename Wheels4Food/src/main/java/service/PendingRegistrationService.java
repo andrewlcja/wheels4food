@@ -9,12 +9,23 @@ import dao.PendingRegistrationDAO;
 import dao.UserDAO;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import model.ApprovePendingRegistrationResponse;
 import model.CreatePendingRegistrationRequest;
 import model.CreatePendingRegistrationResponse;
 import model.DeletePendingRegistrationResponse;
 import model.PendingRegistration;
 import model.User;
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.SimpleEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import utility.HashUtility;
 
@@ -75,11 +86,11 @@ public class PendingRegistrationService {
         }
 
         if (pocName.equals("")) {
-            errorList.add("POC Name cannot be blank");
+            errorList.add("Point of Contact Name cannot be blank");
         }
 
         if (pocNumber.equals("")) {
-            errorList.add("POC Number cannot be blank");
+            errorList.add("Point of Contact Number cannot be blank");
         }
 
         if (licenseNumber.equals("")) {
@@ -96,31 +107,28 @@ public class PendingRegistrationService {
 
         try {
             if (userDAO.getUser(username) != null || pendingRegistrationDAO.getPendingRegistrationByUsername(username) != null) {
-                errorList.add("Username already exist");
+                errorList.add("Username already exists");
             }
-        } catch (Exception e) {
-            errorList.add(e.getMessage());
-            return new CreatePendingRegistrationResponse(false, errorList);
-        }
 
-        if (!password.equals(confirmPassword)) {
-            errorList.add("Password and Confirmation Password must be the same");
-        }
+            if (!password.equals(confirmPassword)) {
+                errorList.add("Password and Confirmation Password must be the same");
+            }
 
-        if (!email.contains("@")) {
-            errorList.add("Invalid email");
-        }
+            if (!email.contains("@")) {
+                errorList.add("Invalid email");
+            } else if (userDAO.getUserByEmail(email) != null) {
+                errorList.add("Email already exists");
+            }
 
-        if (!errorList.isEmpty()) {
-            return new CreatePendingRegistrationResponse(false, errorList);
-        }
+            if (!errorList.isEmpty()) {
+                return new CreatePendingRegistrationResponse(false, errorList);
+            }
 
-        //generate hash password and salt
-        String[] credentials = HashUtility.getHashAndSalt(password);
-        String hashedPassword = credentials[0];
-        String salt = credentials[1];
+            //generate hash password and salt
+            String[] credentials = HashUtility.getHashAndSalt(password);
+            String hashedPassword = credentials[0];
+            String salt = credentials[1];
 
-        try {
             pendingRegistrationDAO.createPendingRegistration(new PendingRegistration(username, hashedPassword, salt, organizationName, email, address, postalCode, pocName, pocNumber, licenseNumber, role));
             return new CreatePendingRegistrationResponse(true, null);
         } catch (Exception e) {
@@ -196,7 +204,18 @@ public class PendingRegistrationService {
 
                 pendingRegistrationDAO.approvePendingRegistration(user);
                 pendingRegistrationDAO.deletePendingRegistration(id);
-                
+
+//                Email registrationEmail = new SimpleEmail();
+//                registrationEmail.setHostName("smtp.googlemail.com");
+//                registrationEmail.setSmtpPort(465);
+//                registrationEmail.setAuthenticator(new DefaultAuthenticator("wheels4food@gmail.com", "wheels4food2015"));
+//                registrationEmail.setSSLOnConnect(true);
+//                registrationEmail.setFrom("wheels4food@gmail.com");
+//                registrationEmail.setSubject("Wheels4Food - Registration Complete");
+//                registrationEmail.setMsg("Welcome to Wheels4Food!");
+//                registrationEmail.addTo(email);
+//                registrationEmail.send();
+
                 return new ApprovePendingRegistrationResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());

@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="page-header">
+        <h1 style="color: #003366;">My Profile</h1>
+    </div>
+    <div cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div ng-show="showUser">
+            <div class="row">
+                <div class="col-sm-offset-10 col-sm-2">
+                    <button class="btn btn-primary" ui-sref="Profile.Edit"><i class="fa fa-lg fa-edit"></i> Edit Profile</button>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div style="padding-top: 10px;">
+                    <h4><b>Username</b></h4>
+                    <div>{{user.username}}</div>
+                </div>
+                <div style="padding-top: 10px;">
+                    <h4><b>Organization Name</b></h4>
+                    <div>{{user.organizationName}}</div>
+                </div>
+                <div style="padding-top: 10px;">
+                    <h4><b>Email</b></h4>
+                    <div>{{user.email}}</div>
+                </div>
+                <div style="padding-top: 10px;">
+                    <h4><b>Address</b></h4>
+                    <div>{{user.address}}</div>
+                </div>
+            </div>
+            <div class="col-sm-5">                
+                <div style="padding-top: 10px;">
+                    <h4><b>Postal Code</b></h4>
+                    <div>{{user.postalCode}}</div>
+                </div>
+                <div style="padding-top: 10px;">
+                    <h4><b>Point of Contact Name</b></h4>
+                    <div>{{user.pocName}}</div>
+                </div>
+                <div style="padding-top: 10px;">
+                    <h4><b>Point of Contact Number</b></h4>
+                    <div>{{user.pocNumber}}</div>
+                </div>
+                <div style="padding-top: 10px;">
+                    <h4><b>License Number</b></h4>
+                    <div>{{user.licenseNumber}}</div>
+                </div>
+            </div>            
+        </div>        
+    </div>
+</div>

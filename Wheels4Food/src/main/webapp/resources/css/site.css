@@ -97,3 +97,48 @@ body {
     padding-left: 30px;
     padding-right: 20px;
 }
+
+.ngdialog.dialog-logout-prompt .ngdialog-content{
+    width : 480px;
+    height: 130px;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+.ngdialog.dialog-generic .ngdialog-content{
+    width : 480px;
+    height: auto;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+.index-table {
+    margin-top: 1.3em;
+}
+
+.action-item {
+    margin:0 0.35em;
+    cursor: pointer;
+}
+
+.dialog-padding {
+    padding-left: 25px;
+}
+
+.edit-profile-form-input .changepassword-form-input {
+    padding-top: 14px;
+}
+
+.changepassword-form-input {
+    padding-top: 14px;
+}
+
+.loader.ng-animate { 
+    -webkit-animation: none 0s; 
+}
+
+.ngdialog-message {
+    font-family: 'Roboto', sans-serif;
+}

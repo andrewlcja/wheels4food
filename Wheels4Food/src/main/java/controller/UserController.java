@@ -45,6 +45,20 @@ public class UserController {
 
         return userList;
     }
+    
+    @RequestMapping(value = "/GetUserByUsernameRequest/{username}", method = RequestMethod.GET)
+    public @ResponseBody User getUserByUsernameRequest(@PathVariable("username") String username) {
+
+        User user = null;
+        try {
+            user = userService.getUserByUsernameRequest(username);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
 
     @RequestMapping(value = "/UserLoginRequest", method = RequestMethod.POST)
     public @ResponseBody UserLoginResponse userLoginRequest(@RequestBody UserLoginRequest request) {
