@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import service.MarketplaceService;
 
 /**
@@ -31,12 +32,12 @@ public class MarketplaceController {
         return marketplaceService.CreateMarketplaceSupplyRequest(request);
     }
     
-    @RequestMapping(value = "/GetSupplyListRequest", method = RequestMethod.GET)
-    public @ResponseBody List<Supply> getSupplyListRequest() {
+    @RequestMapping(value = "/GetSupplyListRequest/{username}", method = RequestMethod.GET)
+    public @ResponseBody List<Supply> getSupplyListRequest(@PathVariable("username") String username) {
 
         List<Supply> supplyList = null;
         try {
-            supplyList = marketplaceService.getSupplyListRequest();
+            supplyList = marketplaceService.getSupplyListRequestByUsername(username);
 
         } catch (Exception e) {
             e.printStackTrace();

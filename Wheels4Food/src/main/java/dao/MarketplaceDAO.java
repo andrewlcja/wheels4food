@@ -6,10 +6,13 @@
 package dao;
 
 import java.util.List;
+import javax.persistence.Query;
 import model.Supply;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -39,5 +42,15 @@ public class MarketplaceDAO {
         session.close();
         return supplyList;
     }
+  
+  public List<Supply> getSupplyListByUsername(String username){
+       session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Supply> supplyList = session.createCriteria(Supply.class)
+                .add(Restrictions.eq("username", username)).list();
+        tx.commit();
+        session.close();
+        return supplyList;
+  }
 
 }
