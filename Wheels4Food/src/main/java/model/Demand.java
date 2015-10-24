@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -17,7 +19,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  * @author Wayne
  */
 @Entity
-@Table(name = "supply")
+@Table(name = "demand")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Demand {
     @Id
@@ -25,72 +27,47 @@ public class Demand {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "username")
-    private String username;
-
-    @Column(name = "organizationName")
-    private String organizationName;
-
-    @Column(name = "itemName")
-    private String itemName;
-
-    @Column(name = "quantity")
-    private String quantity;
-
-    @Column(name = "expiryDate")
-    private String expiryDate;
-
-    @Column(name = "demandDatePosted")
-    private String demandDatePosted;
-
-    @Column(name = "category")
-    private String category;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "userID")
+    private User user;
+    
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "supplyID")
+    private Supply supply;
+    
+    @Column(name = "quantityDemanded")
+    private int quantityDemanded;
+    
+    @Column(name = "status")
+    private String status;
 
     public Demand() {
     }
 
-    public Demand(int id, String username, String organizationName, String itemName, String quantity, String expiryDate, String demandDatePosted, String category) {
-        this.id = id;
-        this.username = username;
-        this.organizationName = organizationName;
-        this.itemName = itemName;
-        this.quantity = quantity;
-        this.expiryDate = expiryDate;
-        this.demandDatePosted = demandDatePosted;
-        this.category = category;
+    public Demand(User user, Supply supply, int quantityDemanded, String status) {
+        this.user = user;
+        this.supply = supply;
+        this.quantityDemanded = quantityDemanded;
+        this.status = status;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public User getUser() {
+        return user;
     }
 
-    public String getOrganizationName() {
-        return organizationName;
+    public Supply getSupply() {
+        return supply;
     }
 
-    public String getItemName() {
-        return itemName;
+    public int getQuantityDemanded() {
+        return quantityDemanded;
     }
 
-    public String getQuantity() {
-        return quantity;
+    public String getStatus() {
+        return status;
     }
-
-    public String getExpiryDate() {
-        return expiryDate;
-    }
-
-    public String getDemandDatePosted() {
-        return demandDatePosted;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-    
-    
 }

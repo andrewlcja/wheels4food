@@ -9,23 +9,22 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Wayne
+ * @author andrew.lim.2013
  */
-public class CreateMarketplaceSupplyResponse {
-
-    private boolean isCreated;
+public class UpdateSupplyResponse {
+    private boolean isUpdated;
     private ArrayList<String> errorList;
 
-    public CreateMarketplaceSupplyResponse(boolean isCreated, ArrayList<String> errorList) {
-        this.isCreated = isCreated;
+    public UpdateSupplyResponse(boolean isUpdated, ArrayList<String> errorList) {
+        this.isUpdated = isUpdated;
         this.errorList = errorList;
     }
 
-    public boolean isIsCreated() {
-        return isCreated;
+    public boolean isIsUpdated() {
+        return isUpdated;
     }
 
     public ArrayList<String> getErrorList() {
         return errorList;
-    }
+    } 
 }
