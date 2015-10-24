@@ -5,10 +5,14 @@
  */
 package model;
 
+import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -19,73 +23,66 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @Entity
 @Table(name = "supply")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Supply {
+public class Supply implements Serializable {
 
     @Id
     @GeneratedValue
     @Column(name = "id")
     private int id;
 
-    @Column(name = "username")
-    private String username;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "userID")
+    private User user;
 
-    @Column(name = "organizationName")
-    private String organizationName;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "itemID")
+    private Item item;
 
-    @Column(name = "itemName")
-    private String itemName;
-
-    @Column(name = "quantity")
-    private String quantity;
+    @Column(name = "quantitySupplied")
+    private int quantitySupplied;
 
     @Column(name = "expiryDate")
     private String expiryDate;
 
-    @Column(name = "supplyDatePosted")
-    private String supplyDatePosted;
-
-    @Column(name = "category")
-    private String category;
+    @Column(name = "datePosted")
+    private String datePosted;
 
     public Supply() {
     }
 
-    public Supply(String username, String organizationName, String itemName, String quantity, String expiryDate, String supplyDatePosted, String category) {
-        this.username = username;
-        this.organizationName = organizationName;
-        this.itemName = itemName;
-        this.quantity = quantity;
+    public Supply(User user, Item item, int quantitySupplied, String expiryDate, String datePosted) {
+        this.user = user;
+        this.item = item;
+        this.quantitySupplied = quantitySupplied;
         this.expiryDate = expiryDate;
-        this.supplyDatePosted = supplyDatePosted;
-        this.category = category;
+        this.datePosted = datePosted;
     }
 
-    public String getUsername() {
-        return username;
+    public int getId() {
+        return id;
     }
 
-    public String getOrganizationName() {
-        return organizationName;
+    public User getUser() {
+        return user;
     }
 
-    public String getItemName() {
-        return itemName;
+    public Item getItem() {
+        return item;
     }
 
-    public String getQuantity() {
-        return quantity;
+    public int getQuantitySupplied() {
+        return quantitySupplied;
     }
 
     public String getExpiryDate() {
         return expiryDate;
     }
 
-    public String getSupplyDatePosted() {
-        return supplyDatePosted;
+    public String getDatePosted() {
+        return datePosted;
     }
 
-    public String getCategory() {
-        return category;
+    public void setQuantitySupplied(int quantitySupplied) {
+        this.quantitySupplied = quantitySupplied;
     }
-
 }
