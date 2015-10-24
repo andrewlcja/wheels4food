@@ -78,4 +78,9 @@ public class MarketplaceService {
             return new CreateMarketplaceSupplyResponse(false, errorList);
         }
     }
+    
+    public List<Supply> getSupplyListRequestByUsername(String username) throws Exception {
+         return marketplaceDAO.getSupplyListByUsername(username);
+         
+    }
 }
