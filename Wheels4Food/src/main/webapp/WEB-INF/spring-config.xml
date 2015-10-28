@@ -27,7 +27,6 @@
                 <value>model.PendingRegistration</value>
                 <value>model.Supply</value>
                 <value>model.Demand</value>
-                <value>model.Item</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -54,6 +53,4 @@
     <bean id="supplyService" class="service.SupplyService"></bean>
     <bean id="demandDAO" class="dao.DemandDAO"></bean>
     <bean id="demandService" class="service.DemandService"></bean>  
-    <bean id="itemDAO" class="dao.ItemDAO"></bean>
-    <bean id="itemService" class="service.ItemService"></bean>
 </beans>

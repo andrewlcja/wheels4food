@@ -34,12 +34,23 @@ public class Supply implements Serializable {
     @JoinColumn(name = "userID")
     private User user;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "itemID")
-    private Item item;
+    @Column(name = "itemName")
+    private String itemName;
+    
+    @Column(name = "category")
+    private String category;
 
     @Column(name = "quantitySupplied")
     private int quantitySupplied;
+    
+    @Column(name = "quantityRemaining")
+    private int quantityRemaining;
+    
+    @Column(name = "minimum")
+    private int minimum;
+    
+    @Column(name = "maximum")
+    private int maximum;
 
     @Column(name = "expiryDate")
     private String expiryDate;
@@ -50,10 +61,14 @@ public class Supply implements Serializable {
     public Supply() {
     }
 
-    public Supply(User user, Item item, int quantitySupplied, String expiryDate, String datePosted) {
+    public Supply(User user, String itemName, String category, int quantitySupplied, int quantityRemaining, int minimum, int maximum, String expiryDate, String datePosted) {
         this.user = user;
-        this.item = item;
+        this.itemName = itemName;
+        this.category = category;
         this.quantitySupplied = quantitySupplied;
+        this.quantityRemaining = quantityRemaining;
+        this.minimum = minimum;
+        this.maximum = maximum;
         this.expiryDate = expiryDate;
         this.datePosted = datePosted;
     }
@@ -66,12 +81,28 @@ public class Supply implements Serializable {
         return user;
     }
 
-    public Item getItem() {
-        return item;
+    public String getItemName() {
+        return itemName;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public int getQuantitySupplied() {
         return quantitySupplied;
+    }
+
+    public int getQuantityRemaining() {
+        return quantityRemaining;
+    }
+
+    public int getMinimum() {
+        return minimum;
+    }
+
+    public int getMaximum() {
+        return maximum;
     }
 
     public String getExpiryDate() {
@@ -82,7 +113,11 @@ public class Supply implements Serializable {
         return datePosted;
     }
 
-    public void setQuantitySupplied(int quantitySupplied) {
-        this.quantitySupplied = quantitySupplied;
+    public void setQuantityRemaining(int quantityRemaining) {
+        this.quantityRemaining = quantityRemaining;
+    }
+
+    public void setMaximum(int maximum) {
+        this.maximum = maximum;
     }
 }
