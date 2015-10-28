@@ -5,10 +5,15 @@
  */
 package controller;
 
+import java.util.List;
+import model.ApproveDemandResponse;
 import model.CreateDemandRequest;
 import model.CreateDemandResponse;
+import model.DeleteDemandResponse;
+import model.Demand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +32,46 @@ public class DemandController {
 
     @RequestMapping(value = "/CreateDemandRequest", method = RequestMethod.POST)
     public @ResponseBody
-    CreateDemandResponse createSupplyRequest(@RequestBody CreateDemandRequest request) {
+    CreateDemandResponse createDemandRequest(@RequestBody CreateDemandRequest request) {
         return demandService.createDemandRequest(request);
+    }
+    
+    @RequestMapping(value = "/DeleteDemandRequest/{id}", method = RequestMethod.DELETE)
+    public @ResponseBody
+    DeleteDemandResponse deleteDemandRequest(@PathVariable("id") String id) {
+        return demandService.deleteDemandRequest(id);
+    }
+    
+    @RequestMapping(value = "/GetDemandListByUserIdRequest/{userID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Demand> getDemandListByUserIdRequest(@PathVariable("userID") int userID) {
+        List<Demand> demandList = null;
+
+        try {
+            demandList = demandService.getDemandListByUserIdRequest(userID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandList;
+    }
+    
+    @RequestMapping(value = "/GetPendingDemandListBySupplierIdRequest/{supplierID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Demand> getPendingDemandListBySupplyIdRequest(@PathVariable("supplierID") int supplierID) {
+        List<Demand> demandList = null;
+
+        try {
+            demandList = demandService.getPendingDemandListBySupplierIdRequest(supplierID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandList;
+    }
+    
+    @RequestMapping(value = "/ApproveDemandRequest/{id}", method = RequestMethod.PUT)
+    public @ResponseBody ApproveDemandResponse approveDemandRequest(@PathVariable("id") String id) {
+        return demandService.approveDemandRequest(id);
     }
 }

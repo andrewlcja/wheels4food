@@ -32,6 +32,14 @@ public class DemandDAO {
         session.close();
     }
     
+    public void updateDemand(Demand demand) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        session.update(demand);
+        tx.commit();
+        session.close();
+    }
+    
     public void deleteDemand(int id) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -58,5 +66,28 @@ public class DemandDAO {
         tx.commit();
         session.close();
         return demandList;
+    }
+    
+    public List<Demand> getPendingDemandListBySupplierId(int supplierID) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Demand> demandList = session.createCriteria(Demand.class)
+                .createAlias("supply.user", "supplier")
+                .add(Restrictions.eq("supplier.id", supplierID))
+                .add(Restrictions.eq("status", "Pending")).list();
+        tx.commit();
+        session.close();
+        return demandList;
+    }
+    
+    public Demand getDemandById(int id) {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        Demand demand = (Demand) session.createCriteria(Demand.class)
+                .add(Restrictions.eq("id", id))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return demand;
     }
 }
