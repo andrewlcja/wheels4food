@@ -51,6 +51,9 @@ public class Supply implements Serializable {
     
     @Column(name = "maximum")
     private int maximum;
+    
+    @Column(name = "initialMaximum")
+    private int initialMaximum;
 
     @Column(name = "expiryDate")
     private String expiryDate;
@@ -61,7 +64,7 @@ public class Supply implements Serializable {
     public Supply() {
     }
 
-    public Supply(User user, String itemName, String category, int quantitySupplied, int quantityRemaining, int minimum, int maximum, String expiryDate, String datePosted) {
+    public Supply(User user, String itemName, String category, int quantitySupplied, int quantityRemaining, int minimum, int maximum, int initialMaximum, String expiryDate, String datePosted) {
         this.user = user;
         this.itemName = itemName;
         this.category = category;
@@ -69,6 +72,7 @@ public class Supply implements Serializable {
         this.quantityRemaining = quantityRemaining;
         this.minimum = minimum;
         this.maximum = maximum;
+        this.initialMaximum = initialMaximum;
         this.expiryDate = expiryDate;
         this.datePosted = datePosted;
     }
@@ -105,6 +109,10 @@ public class Supply implements Serializable {
         return maximum;
     }
 
+    public int getInitialMaximum() {
+        return initialMaximum;
+    }
+
     public String getExpiryDate() {
         return expiryDate;
     }
@@ -113,11 +121,19 @@ public class Supply implements Serializable {
         return datePosted;
     }
 
+    public void setQuantitySupplied(int quantitySupplied) {
+        this.quantitySupplied = quantitySupplied;
+    }
+
     public void setQuantityRemaining(int quantityRemaining) {
         this.quantityRemaining = quantityRemaining;
     }
 
     public void setMaximum(int maximum) {
         this.maximum = maximum;
+    }
+
+    public void setInitialMaximum(int initialMaximum) {
+        this.initialMaximum = initialMaximum;
     }
 }

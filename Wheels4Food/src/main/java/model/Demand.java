@@ -40,15 +40,19 @@ public class Demand {
     
     @Column(name = "status")
     private String status;
+    
+    @Column(name = "comments")
+    private String comments;
 
     public Demand() {
     }
 
-    public Demand(User user, Supply supply, int quantityDemanded, String status) {
+    public Demand(User user, Supply supply, int quantityDemanded, String status, String comments) {
         this.user = user;
         this.supply = supply;
         this.quantityDemanded = quantityDemanded;
         this.status = status;
+        this.comments = comments;
     }
 
     public int getId() {
@@ -69,6 +73,14 @@ public class Demand {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public void setStatus(String status) {

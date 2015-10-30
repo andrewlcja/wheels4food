@@ -1,5 +1,6 @@
 body {
     font-family: 'Roboto', sans-serif;
+    overflow-y: scroll;
 }
 
 .login-form {
@@ -141,4 +142,50 @@ body {
 
 .ngdialog-message {
     font-family: 'Roboto', sans-serif;
+}
+
+.create-form-input-height {
+    height: 36px;
+}
+
+.error-message {
+    color: #b94a48;
+    transition: all linear 0.3s;
+}
+.error-message.ng-inactive {
+    opacity: 0;
+}
+.error-message.ng-hide {
+    opacity: 0;
+}
+
+.error-input .form-control {
+    border-color: #b94a48;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.error-input .form-control:focus {
+    border-color: #953b39;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+}
+
+.error-input .input-group-addon {
+    color: #b94a48;
+    border-color: #b94a48;
+    background-color: #f2dede;
+}
+
+.error-input .form-control-feedback {
+    color: #b94a48;
+}
+
+.extraPadding {
+    padding-top: 120px;
+}
+
+.cursor-disabled {
+    cursor: not-allowed;
+    pointer-events: all !important;
 }

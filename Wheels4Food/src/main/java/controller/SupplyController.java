@@ -76,4 +76,17 @@ public class SupplyController {
         return supplyList;
     }
 
+    @RequestMapping(value = "/GetSupplyByIdRequest/{id}", method = RequestMethod.GET)
+    public @ResponseBody Supply getSupplyByIdRequest(@PathVariable("id") int id) {
+        Supply supply = null;
+        
+        try {
+            supply = supplyService.getSupplyByIdRequest(id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return supply;
+    }
 }

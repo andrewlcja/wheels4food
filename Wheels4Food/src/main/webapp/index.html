@@ -13,6 +13,7 @@
 
         <script src="/Wheels4Food/webjars/angularjs/1.3.13/angular.min.js"></script>
         <script src="/Wheels4Food/webjars/angularjs/1.3.13/angular-animate.min.js"></script>
+        <script src="/Wheels4Food/webjars/angularjs/1.3.13/angular-messages.min.js"></script>
         <script src="/Wheels4Food/webjars/angular-ui-router/0.2.14/angular-ui-router.min.js"></script>
         <script src="/Wheels4Food/webjars/angular-local-storage/0.2.1/angular-local-storage.min.js"></script>
         <script src="/Wheels4Food/webjars/angular-ui-bootstrap/0.13.1/ui-bootstrap-tpls.min.js"></script>
@@ -35,10 +36,21 @@
         <script src="/Wheels4Food/resources/js/ViewProfileCtrl.js"></script> 
         <script src="/Wheels4Food/resources/js/EditProfileCtrl.js"></script> 
         <script src="/Wheels4Food/resources/js/ChangePasswordCtrl.js"></script> 
+        <script src="/Wheels4Food/resources/js/zInventory.js"></script>
+        <script src="/Wheels4Food/resources/js/InventoryCtrl.js"></script>
+        <script src="/Wheels4Food/resources/js/InventorySupplyCtrl.js"></script> 
+        <script src="/Wheels4Food/resources/js/InventoryDemandCtrl.js"></script>
+        <script src="/Wheels4Food/resources/js/InventoryCreateSupplyCtrl.js"></script>
+        <script src="/Wheels4Food/resources/js/InventoryEditSupplyCtrl.js"></script>
+        <script src="/Wheels4Food/resources/js/zMarketplace.js"></script>
+        <script src="/Wheels4Food/resources/js/MarketplaceAllCtrl.js"></script>
+        <script src="/Wheels4Food/resources/js/MarketplaceRequestSupplyCtrl.js"></script>
+        <script src="/Wheels4Food/resources/js/zPendingApprovals.js"></script>
+        <script src="/Wheels4Food/resources/js/PendingApprovalsCtrl.js"></script>
         
         <link href='https://fonts.googleapis.com/css?family=Roboto:400,100' rel='stylesheet' type='text/css'>
 
-        <base href="/index.html">
+        <base href="/">
     </head>
     <body ng-controller="MainCtrl">
         <div ng-include="'Wheels4Food/layout.html'" ng-controller="LayoutCtrl" ng-show="isLoggedIn"></div>

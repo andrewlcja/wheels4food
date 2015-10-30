@@ -5,6 +5,7 @@
  */
 package service;
 
+import dao.DemandDAO;
 import dao.SupplyDAO;
 import dao.UserDAO;
 import java.text.ParseException;
@@ -13,6 +14,7 @@ import java.util.*;
 import model.CreateSupplyRequest;
 import model.CreateSupplyResponse;
 import model.DeleteSupplyResponse;
+import model.Demand;
 import model.Supply;
 import model.UpdateSupplyResponse;
 import model.User;
@@ -29,6 +31,9 @@ public class SupplyService {
 
     @Autowired
     SupplyDAO supplyDAO;
+
+    @Autowired
+    DemandDAO demandDAO;
 
     public CreateSupplyResponse createSupplyRequest(CreateSupplyRequest request) {
         int userID = request.getUserID();
@@ -126,7 +131,7 @@ public class SupplyService {
         if (maximum > quantitySupplied) {
             errorList.add("Maximum Quantity cannot be more than the Quantity Supplied");
         }
-        
+
         if (maximum != quantitySupplied && (maximum + minimum) > quantitySupplied) {
             errorList.add("Maximum Quantity must be either lesser than equals to " + (quantitySupplied - minimum) + " or equals to " + quantitySupplied);
         }
@@ -160,7 +165,7 @@ public class SupplyService {
                 return new CreateSupplyResponse(false, errorList);
             }
 
-            supplyDAO.createSupply(new Supply(user, itemName, category, quantitySupplied, quantitySupplied, minimum, maximum, expiryDate, datePosted));
+            supplyDAO.createSupply(new Supply(user, itemName, category, quantitySupplied, quantitySupplied, minimum, maximum, maximum, expiryDate, datePosted));
             return new CreateSupplyResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -221,7 +226,7 @@ public class SupplyService {
         if (maximum > quantitySupplied) {
             errorList.add("Maximum Quantity cannot be more than the Quantity Supplied");
         }
-        
+
         if (maximum != quantitySupplied && (maximum + minimum) > quantitySupplied) {
             errorList.add("Maximum Quantity must be either lesser than equals to " + (quantitySupplied - minimum) + " or equals to " + quantitySupplied);
         }
@@ -251,7 +256,7 @@ public class SupplyService {
             if (quantitySupplied < quantityRemaining) {
                 supply.setQuantityRemaining(quantitySupplied);
             }
-            
+
             supplyDAO.updateSupply(supply);
             return new UpdateSupplyResponse(true, errorList);
         } catch (Exception e) {
@@ -272,6 +277,13 @@ public class SupplyService {
             int id = Integer.parseInt(idString);
 
             try {
+                //check if there are any demand for this supply
+                List<Demand> demandList = demandDAO.getDemandListBySupplyId(id);
+                if (!demandList.isEmpty()) {
+                    errorList.add("There is existing demand for this item");
+                    return new DeleteSupplyResponse(false, errorList);
+                }
+
                 supplyDAO.deleteSupply(id);
                 return new DeleteSupplyResponse(true, null);
             } catch (Exception e) {
@@ -290,5 +302,9 @@ public class SupplyService {
 
     public List<Supply> getSupplyListByUserIdRequest(int userID) throws Exception {
         return supplyDAO.getSupplyListByUserId(userID);
+    }
+    
+    public Supply getSupplyByIdRequest(int id) throws Exception {
+        return supplyDAO.getSupplyById(id);
     }
 }
