@@ -13,9 +13,9 @@
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://greentransformationlab.com:3306/wheels4food" />
+        <property name="url" value="jdbc:mysql://localhost:3306/wheels4food" />
         <property name="username" value="root" />
-        <property name="password" value="gtl052013" />
+        <property name="password" value="" />
     </bean>
 
     <bean id="sessionFactory"
