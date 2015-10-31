@@ -6,11 +6,13 @@
 package controller;
 
 import java.util.List;
+import model.ApproveDemandRequest;
 import model.ApproveDemandResponse;
 import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.RejectDemandResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,7 +73,12 @@ public class DemandController {
     }
     
     @RequestMapping(value = "/ApproveDemandRequest/{id}", method = RequestMethod.PUT)
-    public @ResponseBody ApproveDemandResponse approveDemandRequest(@PathVariable("id") String id) {
-        return demandService.approveDemandRequest(id);
+    public @ResponseBody ApproveDemandResponse approveDemandRequest(@PathVariable("id") String id, @RequestBody ApproveDemandRequest request) {
+        return demandService.approveDemandRequest(id, request);
+    }
+    
+    @RequestMapping(value = "/RejectDemandRequest/{id}", method = RequestMethod.PUT)
+    public @ResponseBody RejectDemandResponse rejectDemandRequest(@PathVariable("id") String id) {
+        return demandService.rejectDemandRequest(id);
     }
 }

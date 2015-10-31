@@ -7,6 +7,7 @@
                 'ui.bootstrap',
                 'ngDialog',                
                 'ngAnimate',
+                'ngMessages',
                 'LocalStorageModule',
                 'angularUtils.directives.dirPagination',
                 'cgBusy',
@@ -16,7 +17,10 @@
                 'Wheels4Food.Home',
                 'Wheels4Food.PendingRegistrations',
                 'Wheels4Food.UserManagement',
-                'Wheels4Food.User'
+                'Wheels4Food.User',
+                'Wheels4Food.Inventory',
+                'Wheels4Food.Marketplace',
+                'Wheels4Food.PendingApprovals'
             ])
 
             .config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
@@ -60,6 +64,8 @@
                     var hostname = window.location.hostname;
                     if (hostname === "localhost") {
                         apiProvider.setAPIEndpoints('http://localhost:8084/Wheels4Food');
+                    } else {
+                        apiProvider.setAPIEndpoints('http://apps.greentransformationlab.com/Wheels4Food');
                     }
                 }
             ]);

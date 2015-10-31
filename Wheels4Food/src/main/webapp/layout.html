@@ -14,11 +14,11 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" collapse="navCollapsed">
             <ul class="nav navbar-nav">
-                <li><a href="#">Marketplace</a></li>
-                <li><a href="#">Wishlist</a></li>
-                <li><a href="#">Pending Approvals</a></li>
-                <li ng-if="role == 'Admin'"><a ui-sref="PendingRegistrations">Pending Registrations</a></li>
-                <li ng-if="role == 'Admin'"><a ui-sref="UserManagement">User Management</a></li>
+                <li ng-class="{active: currentState.indexOf('Marketplace') !== -1}"><a ui-sref="Marketplace.All">Marketplace</a></li>
+                <li ng-class="{active: currentState.indexOf('Inventory') !== -1}"><a ui-sref="Inventory.Supply">My Inventory</a></li>
+                <li ng-if="role !== 'Admin'" ui-sref-active="active"><a ui-sref="PendingApprovals">Pending Approvals</a></li>
+                <li ng-if="role === 'Admin'" ui-sref-active="active"><a ui-sref="PendingRegistrations">Pending Registrations</a></li>
+                <li ng-if="role === 'Admin'" ui-sref-active="active"><a ui-sref="UserManagement">User Management</a></li>
             </ul>
             
             <ul class="nav navbar-nav navbar-right">

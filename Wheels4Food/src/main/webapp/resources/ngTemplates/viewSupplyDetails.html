@@ -1,0 +1,40 @@
+<div class="ngdialog-message">
+    <h3><b>Supply Details</b></h3>
+    <table>
+        <tr>
+            <th>Item Name</th>
+            <td class="dialog-padding">{{currentSupply.itemName}}</td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td class="dialog-padding">{{currentSupply.category}}</td>
+        </tr>
+        <tr>
+            <th>Quantity Supplied</th>
+            <td class="dialog-padding">{{currentSupply.quantitySupplied}}</td>
+        </tr>
+        <tr>
+            <th>Quantity Remaining</th>
+            <td class="dialog-padding">{{currentSupply.quantityRemaining}}</td>
+        </tr>
+        <tr>
+            <th>Minimum Request Quantity</th>
+            <td class="dialog-padding">{{currentSupply.minimum}}</td>
+        </tr>
+        <tr>
+            <th>Maximum Request Quantity</th>
+            <td class="dialog-padding">{{currentSupply.maximum}}</td>
+        </tr>
+        <tr>
+            <th>Expiry Date</th>
+            <td class="dialog-padding">{{currentSupply.expiryDate}}</td>
+        </tr>
+        <tr>
+            <th>Date Posted</th>
+            <td class="dialog-padding">{{currentSupply.datePosted}}</td>
+        </tr>
+    </table>
+    <div class="ngdialog-buttons" style="padding-top: 20px;">
+        <button type="button" class="ngdialog-button ngdialog-button-default" ng-click="closeThisDialog()">Close</button>
+    </div>
+</div>

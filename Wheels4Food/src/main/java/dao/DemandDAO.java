@@ -68,6 +68,16 @@ public class DemandDAO {
         return demandList;
     }
     
+    public List<Demand> getDemandListBySupplyId(int supplyID) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Demand> demandList = session.createCriteria(Demand.class)
+                .add(Restrictions.eq("supply.id", supplyID)).list();
+        tx.commit();
+        session.close();
+        return demandList;
+    }
+    
     public List<Demand> getPendingDemandListBySupplierId(int supplierID) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();

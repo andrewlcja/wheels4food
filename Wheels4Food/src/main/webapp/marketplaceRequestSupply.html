@@ -1,0 +1,54 @@
+<div class="container">
+    <div ng-class="{extraPadding: !showSupply}" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div ng-show="showSupply">
+            <div class="row">
+                <form name="supplyForm" novalidate>
+                    <div class="col-sm-4">
+                        <div class="col-sm-9" style="padding-top: 25px;"> 
+                            <h4><b>Item Name</b></h4>
+                            <p>{{supply.itemName}}</p>               
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Category</b></h4>
+                            <p>{{supply.category}}</p> 
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Organization Name</b></h4>
+                            <p>{{supply.user.organizationName}}</p> 
+                        </div>                        
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Quantity Remaining</b></h4>
+                            <p>{{supply.quantityRemaining}}</p>                     
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 25px;"> 
+                            <h4><b>Minimum Request Quantity</b></h4>                            
+                            <p>{{supply.minimum}}</p>                              
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Maximum Request Quantity</b></h4>                             
+                            <p>{{supply.maximum}}</p>                              
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="col-md-9" style="padding-top: 20px;">
+                            <h4><b>Expiry Date</b></h4>
+                            <p>{{supply.expiryDate}}</p> 
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Quantity Requested</b></h4>
+                            <input ng-model="quantityRequested" class="form-control" type="text"/>                    
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row" style="padding-top: 30px;">
+                <div class="col-sm-offset-10 col-sm-2">
+                    <button ng-click="request()" class="btn btn-primary">Request</button>
+                    <button ui-sref="Marketplace.All" class="btn btn-default">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>

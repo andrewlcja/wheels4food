@@ -1,0 +1,47 @@
+<div class="container">
+    <div ng-class="{extraPadding: !showSupply}" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div ng-show="showSupply">
+            <div class="row">
+                <form name="supplyForm" novalidate>
+                    <div class="col-sm-5">
+                        <div class="col-sm-9" style="padding-top: 25px;"> 
+                            <h4><b>Item Name</b></h4>
+                            <input ng-model="supply.itemName" class="form-control" name="itemName" type="text"/>                    
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Category</b></h4>
+                            <select ng-model="supply.category" class="form-control create-form-input-height">
+                                <option value="Food">Food</option>
+                                <option value="Drinks">Drinks</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Quantity Supplied</b></h4>
+                            <input ng-model="supply.quantitySupplied" class="form-control" type="text"/>                    
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="col-sm-9" style="padding-top: 25px;"> 
+                            <h4><b>Minimum Request Quantity</b></h4>
+                            <input ng-model="supply.minimum" class="form-control" type="text"/>                    
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Maximum Request Quantity</b></h4>
+                            <input ng-model="supply.maximum" class="form-control" type="text"/>                    
+                        </div>
+                        <div class="col-md-9" style="padding-top: 20px;">
+                            <h4><b>Expiry Date</b></h4>
+                            <input type="date" class="form-control" ng-model="expiryDate"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row" style="padding-top: 30px;">
+                <div class="col-sm-offset-10 col-sm-2">
+                    <button ng-click="update()" class="btn btn-primary">Update</button>
+                    <button ui-sref="Inventory.Supply" class="btn btn-default">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>

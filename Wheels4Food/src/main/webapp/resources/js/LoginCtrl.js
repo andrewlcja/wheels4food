@@ -31,6 +31,7 @@
 
                                 if (response.data.isAuthenicated) {
                                     localStorageService.set('authorizationData', {
+                                        userID: response.data.user.id,
                                         username: response.data.user.username,
                                         role: response.data.user.role
                                     });

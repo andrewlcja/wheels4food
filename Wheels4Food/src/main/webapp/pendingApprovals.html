@@ -1,6 +1,6 @@
 <div class="container">
     <div class="page-header">
-        <h1 style="color: #003366;">User Management</h1>
+        <h1 style="color: #003366;">Pending Approvals</h1>
     </div>
     <div class="row">
         <div class="col-sm-3 pull-left">
@@ -11,28 +11,31 @@
         </div>    
     </div>
     <div class="index-table" search-filter="searchFilter">
-        <table style="table-layout: fixed;" class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <thead>
                 <tr class="info">
-                    <th class="text-center">Username</th>
-                    <th class="text-center">Organization Name</th>
-                    <th class="text-center">Role</th>
+                    <th class="text-center" width="30%">Item Name</th>
+                    <th class="text-center" width="10%">Category</th>
+                    <th class="text-center" width="15%">Organization Name</th>
+                    <th class="text-center" width="13%">Quantity Remaining</th>
+                    <th class="text-center" width="13%">Quantity Requested</th>
+                    <th class="text-center" width="10%">Expiry Date</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr dir-paginate="user in userList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
+                <tr dir-paginate="pendingApproval in pendingApprovalList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
                     <td ng-repeat="column in tableColumns" style="text-align:center">
-                        <div style="margin-top: 0.33em;">{{getObj(user, column)}}</div>
+                        <div style="margin-top: 0.33em;">{{getObj(pendingApproval, column)}}</div>
                     </td>
                     <td class="text-center">
                         <div style="margin-top:0.33em;">
-                            <span class="action-item fa fa-eye fa-lg" ng-click="view(user)" tooltip-placement="top" tooltip="View"></span>
-                            <span ng-hide="user.username == loggedInUsername" class="action-item fa fa-trash fa-lg" ng-click="delete(user, $index)" tooltip-placement="top" tooltip="Delete"></span>
+                            <span class="action-item fa fa-check fa-lg" ng-click="approve(pendingApproval, $index)" tooltip-placement="top" tooltip="Approve"></span>
+                            <span class="action-item fa fa-times fa-lg" ng-click="delete($index)" tooltip-placement="top" tooltip="Reject"></span>
                         </div>
                     </td>
                 </tr>
-                <tr ng-if="!(userList | filter:proccessedSearchFilter).length">
+                <tr ng-if="!(pendingApprovalList | filter:proccessedSearchFilter).length">
                     <td colspan="{{tableColumns.length + 1}}" class="text-center">
                         <h5>No results found</h5>
                     </td>

@@ -10,11 +10,13 @@ import dao.SupplyDAO;
 import dao.UserDAO;
 import java.util.ArrayList;
 import java.util.List;
+import model.ApproveDemandRequest;
 import model.ApproveDemandResponse;
 import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.RejectDemandResponse;
 import model.Supply;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +122,7 @@ public class DemandService {
 
                 supplyDAO.updateSupply(supply);
 
-                demandDAO.createDemand(new Demand(user, supply, quantityDemanded, "Pending"));
+                demandDAO.createDemand(new Demand(user, supply, quantityDemanded, "Pending", ""));
                 return new CreateDemandResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());
@@ -152,6 +154,18 @@ public class DemandService {
                     //add back the quantity demanded
                     int newQuantityRemaining = supply.getQuantityRemaining() + demand.getQuantityDemanded();
                     supply.setQuantityRemaining(newQuantityRemaining);
+                    
+                    //check initial maximum limit
+                    int initialMaximum = supply.getInitialMaximum();
+                    int minimum = supply.getMinimum();
+                    
+                    if (initialMaximum + minimum <= newQuantityRemaining) {
+                        supply.setMaximum(initialMaximum);
+                    } else {
+                        supply.setMaximum(newQuantityRemaining - minimum);
+                    }
+                    
+                    
                     supplyDAO.updateSupply(supply);
                 }
 
@@ -167,8 +181,10 @@ public class DemandService {
         }
     }
 
-    public ApproveDemandResponse approveDemandRequest(String idString) {
+    public ApproveDemandResponse approveDemandRequest(String idString, ApproveDemandRequest request) {
         ArrayList<String> errorList = new ArrayList<String>();
+        
+        String comments = request.getComments();
 
         if (idString.equals("")) {
             errorList.add("Id cannot be blank");
@@ -179,9 +195,33 @@ public class DemandService {
             int id = Integer.parseInt(idString);
             
             Demand demand = demandDAO.getDemandById(id);
+            String status = demand.getStatus();
+            
+            if (!status.equals("Pending")) {
+                errorList.add("Status of request must be pending");
+                return new ApproveDemandResponse(false, errorList);
+            }
+            
             demand.setStatus("Approved");
             
+            Supply supply = demand.getSupply();
+            int quantitySupplied = supply.getQuantitySupplied();
+            int quantityDemanded = demand.getQuantityDemanded();
+            
+            if (quantityDemanded <= quantitySupplied) {
+                supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
+            } else {
+                if (comments.equals("")) {
+                    errorList.add("Comments cannot be blank");
+                    return new ApproveDemandResponse(false, errorList);
+                }
+                
+                demand.setComments(comments);
+                supply.setQuantitySupplied(0);
+            }
+            
             try {
+                supplyDAO.updateSupply(supply);
                 demandDAO.updateDemand(demand);
                 return new ApproveDemandResponse(true, null);
             } catch (Exception e) {
@@ -191,6 +231,47 @@ public class DemandService {
         } catch (NumberFormatException e) {
             errorList.add("Id must be an integer");
             return new ApproveDemandResponse(false, errorList);
+        }
+    }
+    
+    public RejectDemandResponse rejectDemandRequest(String idString) {
+        ArrayList<String> errorList = new ArrayList<String>();
+
+        if (idString.equals("")) {
+            errorList.add("Id cannot be blank");
+            return new RejectDemandResponse(false, errorList);
+        }
+
+        try {
+            int id = Integer.parseInt(idString);
+            
+            Demand demand = demandDAO.getDemandById(id);
+            String status = demand.getStatus();
+            
+            if (!status.equals("Pending")) {
+                errorList.add("Status of request must be pending");
+                return new RejectDemandResponse(false, errorList);
+            }
+            
+            demand.setStatus("Rejected");
+            
+            Supply supply = demand.getSupply();
+            int quantityRemaining = supply.getQuantityRemaining();
+            int quantityDemanded = demand.getQuantityDemanded();
+            
+            supply.setQuantityRemaining(quantityRemaining + quantityDemanded);
+            
+            try {
+                supplyDAO.updateSupply(supply);
+                demandDAO.updateDemand(demand);
+                return new RejectDemandResponse(true, null);
+            } catch (Exception e) {
+                errorList.add(e.getMessage());
+                return new RejectDemandResponse(false, errorList); 
+            }
+        } catch (NumberFormatException e) {
+            errorList.add("Id must be an integer");
+            return new RejectDemandResponse(false, errorList);
         }
     }
 
