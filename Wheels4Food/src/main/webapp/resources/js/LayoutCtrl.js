@@ -33,10 +33,9 @@
                         });
                     };
 
-                    //everytime user refreshes page
-                    //authenticate();
-
-                    $scope.$on('$stateChangeSuccess', function () {
+                    $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+                        $scope.currentState = toState.name;
+                        
                         if (!$state.is('Register')) {
                             authenticate();
                         }

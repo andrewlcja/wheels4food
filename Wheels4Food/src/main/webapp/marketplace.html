@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="page-header">
+        <h1 style="color: #003366;">Marketplace</h1>
+    </div>
+
+    <div>
+        <ul class="nav nav-tabs">
+            <li ng-class="{active: currentState.indexOf('Supply') !== -1}"><a ui-sref="Marketplace.All">All</a></li>
+            <li ui-sref-active="active"><a ui-sref="Marketplace.Food">Food</a></li>
+            <li ui-sref-active="active"><a ui-sref="Marketplace.Drinks">Drinks</a></li>
+        </ul>
+        <div ui-view></div>
+    </div>
+</div>

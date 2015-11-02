@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author Wayne
  */
-public class MarketplaceDAO {
+public class SupplyDAO {
 
     @Autowired
     SessionFactory sessionFactory;
@@ -34,7 +34,25 @@ public class MarketplaceDAO {
         tx.commit();
         session.close();
     }
-  public List<Supply> retrieveAll() {
+
+    public void deleteSupply(int id) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        Supply supply = (Supply) session.load(Supply.class, id);
+        session.delete(supply);
+        tx.commit();
+        session.close();
+    }
+
+    public void updateSupply(Supply supply) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        session.update(supply);
+        tx.commit();
+        session.close();
+    }
+
+    public List<Supply> retrieveAll() throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Supply> supplyList = session.createCriteria(Supply.class).list();
@@ -42,15 +60,25 @@ public class MarketplaceDAO {
         session.close();
         return supplyList;
     }
-  
-  public List<Supply> getSupplyListByUsername(String username){
-       session = sessionFactory.openSession();
+
+    public List<Supply> getSupplyListByUserId(int userID) throws Exception {
+        session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Supply> supplyList = session.createCriteria(Supply.class)
-                .add(Restrictions.eq("username", username)).list();
+                .add(Restrictions.eq("user.id", userID)).list();
         tx.commit();
         session.close();
         return supplyList;
-  }
+    }
 
+    public Supply getSupplyById(int id) {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        Supply supply = (Supply) session.createCriteria(Supply.class)
+                .add(Restrictions.eq("id", id))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return supply;
+    }
 }

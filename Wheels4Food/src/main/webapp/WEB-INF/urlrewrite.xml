@@ -30,12 +30,52 @@
         <from>/UserManagement</from>
         <to>index.html</to>
     </rule>
+    <rule match-type="wildcard">
+        <from>/Profile</from>
+        <to>index.html</to>
+    </rule>
     <rule match-type="regex">
         <from>/Profile/([a-z]+)$</from>
         <to>/index.html</to>
     </rule>
     <rule match-type="wildcard">
         <from>/ChangePassword</from>
+        <to>index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/Inventory</from>
+        <to>index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/Inventory</from>
+        <to>index.html</to>
+    </rule>
+    <rule match-type="regex">
+        <from>/Inventory/([a-z]+)$</from>
+        <to>/index.html</to>
+    </rule>
+    <rule match-type="regex">
+        <from>/Inventory/Supply/([a-z]+)$</from>
+        <to>/index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/Inventory/Supply/Edit/*</from>
+        <to>/index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/Marketplace</from>
+        <to>index.html</to>
+    </rule>
+    <rule match-type="regex">
+        <from>/Marketplace/([a-z]+)$</from>
+        <to>/index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/Marketplace/Request/*</from>
+        <to>/index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/PendingApprovals</from>
         <to>index.html</to>
     </rule>
 
