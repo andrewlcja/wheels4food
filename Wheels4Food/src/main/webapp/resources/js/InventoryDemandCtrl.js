@@ -62,6 +62,7 @@
                                     'Content-Type': 'application/json',
                                 }
                             }).then(function (response) {
+                                console.log(response.data);
                                 if (response.data.isDeleted) {
                                     $scope.demandList.splice(($scope.currentPage - 1) * 10 + index, 1);
                                 }
@@ -70,7 +71,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['supply.itemName', 'supply.category', 'quantityDemanded', 'supply.expiryDate', 'status'];
+                    $scope.tableColumns = ['supply.itemName', 'supply.category', 'quantityDemanded', 'supply.expiryDate'];
 
                     var indexPromise = $http({
                         url: api.endpoint + 'GetDemandListByUserIdRequest/' + userID,

@@ -1,0 +1,64 @@
+<div class="row" style="padding-top: 20px;">
+    <div class="col-sm-3 pull-left">
+        <div class="input-group">
+            <input type="text" ng-model="searchFilter" class="form-control" placeholder="Search..."/>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+        </div>
+    </div>    
+</div>
+<div class="index-table" search-filter="searchFilter">
+    <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <thead>
+            <tr class="info">
+                <th class="text-center" width="30%" style="cursor: pointer" ng-click="sort('itemName')">
+                    Item Name
+                    <span ng-show="sortType == 'itemName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'itemName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center" width="10%" style="cursor: pointer" ng-click="sort('category')">
+                    Category
+                    <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('organizationName')">
+                    Organization Name
+                    <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('quantityRemaining')">
+                    Quantity Remaining
+                    <span ng-show="sortType == 'quantityRemaining' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'quantityRemaining' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('expiryDate')">
+                    Expiry Date
+                    <span ng-show="sortType == 'expiryDate' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'expiryDate' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage">
+                <td ng-repeat="column in tableColumns" style="text-align:center">
+                    <div style="margin-top: 0.65em;">{{getObj(supply, column)}}</div>
+                </td>
+                <td class="text-center">
+                    <div>
+                        <button ng-disabled="supply.user.id === userID" ng-click="request(supply.id)" ng-class="{'btn btn-default cursor-disabled': supply.user.id === userID, 'btn btn-success': supply.user.id !== userID}">Request</button>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-if="!(supplyList | filter:proccessedSearchFilter).length">
+                <td colspan="{{tableColumns.length + 1}}" class="text-center">
+                    <h5>No results found</h5>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <div style="text-align:center">
+        <dir-pagination-controls template-url="Wheels4Food/webjars/angular-utils-pagination/0.7.0/dirPagination.tpl.html"></dir-pagination-controls>
+    </div>
+</div>

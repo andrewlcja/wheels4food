@@ -75,6 +75,20 @@ public class SupplyController {
 
         return supplyList;
     }
+    
+    @RequestMapping(value = "/GetSupplyListByCategoryRequest/{category}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Supply> getSupplyListByCategoryRequest(@PathVariable("category") String category) {
+        List<Supply> supplyList = null;
+
+        try {
+            supplyList = supplyService.getSupplyListByCategoryRequest(category);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return supplyList;
+    }
 
     @RequestMapping(value = "/GetSupplyByIdRequest/{id}", method = RequestMethod.GET)
     public @ResponseBody Supply getSupplyByIdRequest(@PathVariable("id") int id) {

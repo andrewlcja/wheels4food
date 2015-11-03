@@ -1,5 +1,5 @@
-<div>
-    <nav class="navbar navbar-default" role="navigation">
+<div style="padding-bottom: 70px;">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
@@ -21,9 +21,9 @@
                 <li ng-if="role === 'Admin'" ui-sref-active="active"><a ui-sref="UserManagement">User Management</a></li>
             </ul>
             
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right" style="padding-right: 15px;">
                 <li dropdown>
-                    <a href="#" dropdown-toggle><i class="fa fa-lg fa-user" style="padding-right: 5px;"></i> {{username}} <b class="caret"></b></a>
+                    <a href="#" dropdown-toggle><i class="fa fa-lg fa-user" style="padding-right: 5px;"></i> {{username}} <b style="padding-left: 5px;" class="fa fa-lg fa-caret-down"></b></a>
                     <ul class="dropdown-menu">
                         <li><a ui-sref="Profile.View">My Profile</a></li>
                         <li><a ui-sref="ChangePassword">Change Password</a></li>

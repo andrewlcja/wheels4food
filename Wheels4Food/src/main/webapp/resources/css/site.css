@@ -1,6 +1,6 @@
 body {
     font-family: 'Roboto', sans-serif;
-    overflow-y: scroll;
+    overflow-y: scroll !important;
 }
 
 .login-form {
@@ -115,6 +115,21 @@ body {
     padding-right: 20px;
 }
 
+.ngdialog.dialog-approve-request .ngdialog-content{
+    width : 600px;
+    height: auto;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+.ngdialog.ngdialog-theme-default {
+    position: absolute; 
+    height: 100%; 
+    width: 100%;
+    display: table;
+}
+
 .index-table {
     margin-top: 1.3em;
 }
@@ -150,7 +165,7 @@ body {
 
 .error-message {
     color: #b94a48;
-    transition: all linear 0.3s;
+    //transition: all linear 0.3s;
 }
 .error-message.ng-inactive {
     opacity: 0;
@@ -188,4 +203,14 @@ body {
 .cursor-disabled {
     cursor: not-allowed;
     pointer-events: all !important;
+}
+
+.fa-caret-up:focus {
+    transform: rotate(180deg);
+    transition: 0.9s;
+    pointer-events: none;
+}
+
+.rejected {
+    background-color: #f5cfd9 !important;
 }

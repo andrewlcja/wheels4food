@@ -1,0 +1,34 @@
+<div class="ngdialog-message">
+    <h3><b>The following request can only be fufilled partially</b></h3>
+    <table>
+        <tr>
+            <th>Item Name</th>
+            <td class="dialog-padding">{{currentPendingApproval.supply.itemName}}</td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td class="dialog-padding">{{currentPendingApproval.supply.category}}</td>
+        </tr>
+        <tr>
+            <th>Quantity Remaining</th>
+            <td class="dialog-padding">{{currentPendingApproval.supply.quantitySupplied}}</td>
+        </tr>
+        <tr>
+            <th>Quantity Demanded</th>
+            <td class="dialog-padding">{{currentPendingApproval.quantityDemanded}}</td>
+        </tr>
+    </table>
+    <div style="padding-top: 10px;">Please enter a reason for this partial fufillment below:</div>
+    <form name="approveForm" novalidate>
+        <div ng-class="{'error-input': approveForm.reason.$touched && approveForm.reason.$invalid}">
+            <textarea class="form-control" style="height: 100px; resize: none;" name="reason" ng-model="reason" required></textarea>
+            <div class="error-message" ng-messages="approveForm.reason.$error" ng-show="approveForm.reason.$touched">
+                <p ng-message="required">Reason is required.</p>
+            </div>
+        </div>
+        <div class="col-sm-offset-8" style="padding-top: 20px; padding-left: 39px;">
+            <button type="button" class="btn btn-default" ng-click="closeThisDialog()">CANCEL</button>
+            <button type="button" class="btn btn-primary" ng-click="confirm(reason)" ng-disabled="approveForm.$invalid">NEXT</button>
+        </div>
+    </form>
+</div>

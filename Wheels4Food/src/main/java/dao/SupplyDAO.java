@@ -70,6 +70,16 @@ public class SupplyDAO {
         session.close();
         return supplyList;
     }
+    
+    public List<Supply> getSupplyListByCategory(String category) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Supply> supplyList = session.createCriteria(Supply.class)
+                .add(Restrictions.eq("category", category)).list();
+        tx.commit();
+        session.close();
+        return supplyList;
+    }
 
     public Supply getSupplyById(int id) {
         session = sessionFactory.openSession();
