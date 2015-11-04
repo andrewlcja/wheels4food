@@ -14,12 +14,12 @@
         <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <thead>
                 <tr class="info">
-                    <th class="text-center" width="30%">Item Name</th>
+                    <th class="text-center" width="28%">Item Name</th>
                     <th class="text-center" width="10%">Category</th>
                     <th class="text-center" width="15%">Organization Name</th>
                     <th class="text-center" width="13%">Quantity Remaining</th>
                     <th class="text-center" width="13%">Quantity Requested</th>
-                    <th class="text-center" width="10%">Expiry Date</th>
+                    <th class="text-center" width="12%">Date Requested</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -31,7 +31,7 @@
                     <td class="text-center">
                         <div style="margin-top:0.33em;">
                             <span class="action-item fa fa-check fa-lg" ng-click="approve(pendingApproval, $index)" tooltip-placement="top" tooltip="Approve"></span>
-                            <span class="action-item fa fa-times fa-lg" ng-click="delete($index)" tooltip-placement="top" tooltip="Reject"></span>
+                            <span class="action-item fa fa-times fa-lg" ng-click="reject(pendingApproval, $index)" tooltip-placement="top" tooltip="Reject"></span>
                         </div>
                     </td>
                 </tr>

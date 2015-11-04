@@ -19,9 +19,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
+            <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage" ng-class="{rejected: demand.status === 'Rejected'}">
                 <td ng-repeat="column in tableColumns" style="text-align:center">
                     <div style="margin-top: 0.33em;">{{getObj(demand, column)}}</div>
+                </td>
+                <td>
+                    <div class="text-center" style="margin-top: 0.33em;"><i class="fa fa-info-circle" ng-show="demand.status === 'Rejected'" tooltip-placement="top" tooltip="{{demand.comments}}"></i> {{demand.status}}</div>
                 </td>
                 <td class="text-center">
                     <div style="margin-top:0.33em;">
@@ -31,7 +34,7 @@
                 </td>
             </tr>
             <tr ng-if="!(demandList | filter:proccessedSearchFilter).length">
-                <td colspan="{{tableColumns.length + 1}}" class="text-center">
+                <td colspan="{{tableColumns.length + 2}}" class="text-center">
                     <h5>No results found</h5>
                 </td>
             </tr>

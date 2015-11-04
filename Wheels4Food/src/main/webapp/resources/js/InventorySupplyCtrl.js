@@ -51,6 +51,14 @@
                             }).then(function (response) {
                                 if (response.data.isDeleted) {
                                     $scope.supplyList.splice(($scope.currentPage - 1) * 10 + index, 1);
+                                } else {
+                                    $scope.errorList = response.data.errorList;
+
+                                    ngDialog.openConfirm({
+                                        template: '/Wheels4Food/resources/ngTemplates/deleteSupplyError.html',
+                                        className: 'ngdialog-theme-default dialog-generic',
+                                        scope: $scope
+                                    });
                                 }
                             });
                         });
@@ -66,8 +74,11 @@
                             }
                             obj = obj[columnPath[y]];
                         }
-
-                        return obj;
+                        if (column === 'quantitySupplied') {
+                            console.log(obj);
+                        }
+                        
+                        return component[column];
                     };
 
                     //set up user table columns

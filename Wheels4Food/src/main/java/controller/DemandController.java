@@ -12,6 +12,7 @@ import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.RejectDemandRequest;
 import model.RejectDemandResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -78,7 +79,7 @@ public class DemandController {
     }
     
     @RequestMapping(value = "/RejectDemandRequest/{id}", method = RequestMethod.PUT)
-    public @ResponseBody RejectDemandResponse rejectDemandRequest(@PathVariable("id") String id) {
-        return demandService.rejectDemandRequest(id);
+    public @ResponseBody RejectDemandResponse rejectDemandRequest(@PathVariable("id") String id, @RequestBody RejectDemandRequest request) {
+        return demandService.rejectDemandRequest(id, request);
     }
 }

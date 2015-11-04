@@ -5,9 +5,12 @@
 
     <div>
         <ul class="nav nav-tabs">
-            <li ng-class="{active: currentState.indexOf('Supply') !== -1}"><a ui-sref="Marketplace.All">All</a></li>
+            <li ng-class="{active: currentState.indexOf('All') !== -1}"><a ui-sref="Marketplace.All">All</a></li>
             <li ui-sref-active="active"><a ui-sref="Marketplace.Food">Food</a></li>
             <li ui-sref-active="active"><a ui-sref="Marketplace.Drinks">Drinks</a></li>
+            <li ui-sref-active="active"><a ui-sref="Marketplace.Condiments">Condiments</a></li>
+            <li ui-sref-active="active"><a ui-sref="Marketplace.Toiletries">Toiletries</a></li>
+            <li ui-sref-active="active"><a ui-sref="Marketplace.Miscellaneous">Miscellaneous</a></li>
         </ul>
         <div ui-view></div>
     </div>

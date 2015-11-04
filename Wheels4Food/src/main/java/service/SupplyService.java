@@ -304,6 +304,10 @@ public class SupplyService {
         return supplyDAO.getSupplyListByUserId(userID);
     }
     
+    public List<Supply> getSupplyListByCategoryRequest(String category) throws Exception {
+        return supplyDAO.getSupplyListByCategory(category);
+    }
+    
     public Supply getSupplyByIdRequest(int id) throws Exception {
         return supplyDAO.getSupplyById(id);
     }
