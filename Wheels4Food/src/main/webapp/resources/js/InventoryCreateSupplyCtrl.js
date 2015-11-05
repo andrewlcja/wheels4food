@@ -24,6 +24,10 @@
                     });
 
                     $scope.create = function () {
+                        if ($scope.expiryDateNA) {
+                            $scope.supply.expiryDate = 'NA';
+                        }
+                        
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/createSupplyPrompt.html',
                             className: 'ngdialog-theme-default dialog-generic',

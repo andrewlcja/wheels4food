@@ -7,6 +7,29 @@
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
 
+                    //default sort
+                    $scope.sortType = 'itemName';
+
+                    $scope.sort = function (sortType) {
+                        $scope.sortType = sortType;
+                        $scope.sortReverse = !$scope.sortReverse;
+                    };
+
+                    $scope.sortBy = function (supply) {
+                        if ($scope.sortType === 'organizationName') {
+                            return supply['user']['organizationName'];
+                        } else if ($scope.sortType === 'expiryDate') {
+                            if (supply.expiryDate === 'NA') {
+                                return new Date('1000', '01', '01')
+                            }
+                            
+                            var parts = supply.expiryDate.split('/');
+                            var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
+                            return date;
+                        }
+                        return supply[$scope.sortType];
+                    };
+
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
@@ -19,7 +42,7 @@
 
                         return proccessed;
                     };
-                    
+
                     $scope.view = function (supply) {
                         $scope.currentSupply = supply;
 
@@ -30,13 +53,18 @@
                         });
                     };
 
+                    $scope.viewRequests = function (id) {
+                        $state.go('Inventory.ViewRequests', {Id: id});
+                    };
+
                     $scope.edit = function (id) {
                         $state.go('Inventory.EditSupply', {Id: id});
                     };
 
-                    $scope.delete = function (supply, index) {
+                    $scope.delete = function (supply) {
                         $scope.currentSupply = supply;
-
+                        var index = $scope.supplyList.indexOf(supply);
+                        
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/deleteSupplyPrompt.html',
                             className: 'ngdialog-theme-default dialog-generic',
@@ -50,7 +78,7 @@
                                 }
                             }).then(function (response) {
                                 if (response.data.isDeleted) {
-                                    $scope.supplyList.splice(($scope.currentPage - 1) * 10 + index, 1);
+                                    $scope.supplyList.splice(index, 1);
                                 } else {
                                     $scope.errorList = response.data.errorList;
 
@@ -65,19 +93,7 @@
                     };
 
                     //retrieve details
-                    $scope.getObj = function (component, column) {
-                        var columnPath = column.split(".");
-                        var obj = component;
-                        for (var y = 0; y < columnPath.length; y++) {
-                            if (!obj[columnPath[y]]) {
-                                return '';
-                            }
-                            obj = obj[columnPath[y]];
-                        }
-                        if (column === 'quantitySupplied') {
-                            console.log(obj);
-                        }
-                        
+                    $scope.getObj = function (component, column) {                        
                         return component[column];
                     };
 

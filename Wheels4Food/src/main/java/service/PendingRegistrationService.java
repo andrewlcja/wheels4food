@@ -48,7 +48,7 @@ public class PendingRegistrationService {
         String organizationName = request.getOrganizationName().trim();
         String email = request.getEmail().trim();
         String address = request.getAddress().trim();
-        String postalCode = request.getPostalCode().trim();
+        String postalCodeStr = request.getPostalCode().trim();
         String pocName = request.getPocName().trim();
         String pocNumber = request.getPocNumber().trim();
         String licenseNumber = request.getLicenseNumber().trim();
@@ -81,7 +81,7 @@ public class PendingRegistrationService {
             errorList.add("Address cannot be blank");
         }
 
-        if (postalCode.equals("")) {
+        if (postalCodeStr.equals("")) {
             errorList.add("Postal Code cannot be blank");
         }
 
@@ -106,7 +106,9 @@ public class PendingRegistrationService {
         }
 
         try {
-            if (userDAO.getUser(username) != null || pendingRegistrationDAO.getPendingRegistrationByUsername(username) != null) {
+            if (username.contains(" ")) {
+                errorList.add("Username cannot contain empty spaces");
+            } else if (userDAO.getUser(username) != null || pendingRegistrationDAO.getPendingRegistrationByUsername(username) != null) {
                 errorList.add("Username already exists");
             }
 
@@ -114,10 +116,21 @@ public class PendingRegistrationService {
                 errorList.add("Password and Confirmation Password must be the same");
             }
 
-            if (!email.contains("@")) {
+            if (!email.contains("@") || email.length() == 1) {
                 errorList.add("Invalid email");
             } else if (userDAO.getUserByEmail(email) != null) {
                 errorList.add("Email already exists");
+            }
+
+            int postalCode;
+            try {
+                postalCode = Integer.parseInt(postalCodeStr);
+
+                if (postalCodeStr.length() != 6) {
+                    errorList.add("Postal Code must be a 6-digit integer");
+                }
+            } catch (NumberFormatException e) {
+                errorList.add("Postal Code must be a 6-digit integer");
             }
 
             if (!errorList.isEmpty()) {
@@ -129,7 +142,7 @@ public class PendingRegistrationService {
             String hashedPassword = credentials[0];
             String salt = credentials[1];
 
-            pendingRegistrationDAO.createPendingRegistration(new PendingRegistration(username, hashedPassword, salt, organizationName, email, address, postalCode, pocName, pocNumber, licenseNumber, role));
+            pendingRegistrationDAO.createPendingRegistration(new PendingRegistration(username, hashedPassword, salt, organizationName, email, address, postalCodeStr, pocName, pocNumber, licenseNumber, role));
             return new CreatePendingRegistrationResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -215,7 +228,6 @@ public class PendingRegistrationService {
 //                registrationEmail.setMsg("Welcome to Wheels4Food!");
 //                registrationEmail.addTo(email);
 //                registrationEmail.send();
-
                 return new ApprovePendingRegistrationResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());

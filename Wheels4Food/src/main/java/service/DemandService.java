@@ -172,7 +172,7 @@ public class DemandService {
                     int initialMaximum = supply.getInitialMaximum();
                     int minimum = supply.getMinimum();
 
-                    if (initialMaximum + minimum <= newQuantityRemaining) {
+                    if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
                         supply.setMaximum(initialMaximum);
                     } else {
                         supply.setMaximum(newQuantityRemaining - minimum);
@@ -266,20 +266,29 @@ public class DemandService {
 
             Demand demand = demandDAO.getDemandById(id);
             String status = demand.getStatus();
+            Supply supply = demand.getSupply();
 
             if (!status.equals("Pending")) {
                 errorList.add("Status of request must be pending");
                 return new RejectDemandResponse(false, errorList);
             }
 
+            //add back the quantity demanded
+            int newQuantityRemaining = supply.getQuantityRemaining() + demand.getQuantityDemanded();
+            supply.setQuantityRemaining(newQuantityRemaining);
+
+            //check initial maximum limit
+            int initialMaximum = supply.getInitialMaximum();
+            int minimum = supply.getMinimum();
+
+            if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
+                supply.setMaximum(initialMaximum);
+            } else {
+                supply.setMaximum(newQuantityRemaining - minimum);
+            }
+
             demand.setComments(comments);
             demand.setStatus("Rejected");
-
-            Supply supply = demand.getSupply();
-            int quantityRemaining = supply.getQuantityRemaining();
-            int quantityDemanded = demand.getQuantityDemanded();
-
-            supply.setQuantityRemaining(quantityRemaining + quantityDemanded);
 
             try {
                 supplyDAO.updateSupply(supply);
@@ -297,6 +306,10 @@ public class DemandService {
 
     public List<Demand> getDemandListByUserIdRequest(int userID) throws Exception {
         return demandDAO.getDemandListByUserId(userID);
+    }
+
+    public List<Demand> getDemandListBySupplyIdRequest(int supplyID) throws Exception {
+        return demandDAO.getDemandListBySupplyId(supplyID);
     }
 
     public List<Demand> getPendingDemandListBySupplierIdRequest(int supplierID) throws Exception {

@@ -39,7 +39,10 @@
                 </div>
                 <div class="col-md-9" style="padding-top: 20px;">
                     <h4><b>Expiry Date</b></h4>
-                    <input type="date" class="form-control" ng-model="expiryDate"/>
+                    <input type="date" class="form-control" ng-model="expiryDate" ng-disabled="expiryDateNA"/>
+                </div>
+                <div class="col-md-9" style="padding-top: 10px;">
+                    <input type="checkbox" ng-model="expiryDateNA"/> <i>*Tick if item does not have an expiry date</i>
                 </div>
             </div>
         </form>

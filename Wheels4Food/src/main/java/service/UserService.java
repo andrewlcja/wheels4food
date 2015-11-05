@@ -152,7 +152,7 @@ public class UserService {
                 }
             }
 
-            if (!email.contains("@")) {
+            if (!email.contains("@") || email.length() == 1) {
                 errorList.add("Invalid email");
             } else if (!email.equals(oldUser.getEmail())) {
                 if (userDAO.getUserByEmail(email) != null) {

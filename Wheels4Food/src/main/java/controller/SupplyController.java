@@ -50,7 +50,7 @@ public class SupplyController {
 
     @RequestMapping(value = "/GetSupplyListRequest", method = RequestMethod.GET)
     public @ResponseBody
-    List<Supply> getSupplyListByUserIdRequest() {
+    List<Supply> getSupplyListRequest() {
         List<Supply> supplyList = null;
 
         try {

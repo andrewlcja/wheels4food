@@ -1,13 +1,13 @@
 <div class="ngdialog-message">
     <h3><b>Request Approval</b></h3>
-    <div>Select your preferred weekdays for pickup of items:</div>
+    <div>Select your preferred weekdays for the pickup of items:</div>
     <div><i>*working hours from 9am to 5pm</i></div>
-    <div>
-        <input type="checkbox" ng-model="schedule.monday" ng-click="selectDay(schedule.monday)"/> Monday<br/>
-        <input type="checkbox" ng-model="schedule.tuesday" ng-click="selectDay(schedule.tuesday)"/> Tuesday<br/>
-        <input type="checkbox" ng-model="schedule.wednesday" ng-click="selectDay(schedule.wednesday)"/> Wednesday<br/>
-        <input type="checkbox" ng-model="schedule.thursday" ng-click="selectDay(schedule.thursday)"/> Thursday<br/>
-        <input type="checkbox" ng-model="schedule.friday" ng-click="selectDay(schedule.friday)"/> Friday<br/>        
+    <div style="padding-top:10px;">
+        <input type="checkbox" ng-model="schedule.monday" ng-click="selectDay(schedule.monday)"/> Mondays<br/>
+        <input type="checkbox" ng-model="schedule.tuesday" ng-click="selectDay(schedule.tuesday)"/> Tuesdays<br/>
+        <input type="checkbox" ng-model="schedule.wednesday" ng-click="selectDay(schedule.wednesday)"/> Wednesdays<br/>
+        <input type="checkbox" ng-model="schedule.thursday" ng-click="selectDay(schedule.thursday)"/> Thursdays<br/>
+        <input type="checkbox" ng-model="schedule.friday" ng-click="selectDay(schedule.friday)"/> Fridays<br/>        
     </div>
     <div class="error-message" ng-show="dayCount < 3">At least 3 days should be selected.</div>
     <div class="col-sm-offset-7" style="padding-top: 20px;">

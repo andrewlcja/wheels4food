@@ -12,6 +12,7 @@ import model.Job;
 import model.UpdateJobResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,5 +53,18 @@ public class JobController {
         }
 
         return jobList;
+    }
+    
+    @RequestMapping(value = "/GetJobByDemandIdRequest/{demandID}", method = RequestMethod.GET)
+    public @ResponseBody Job getJobByDemandIdRequest(@PathVariable("demandID") int demandID) {
+        Job job = null;
+        
+        try {
+            job = jobService.getJobByDemandIdRequest(demandID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return job;
     }
 }

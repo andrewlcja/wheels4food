@@ -10,6 +10,7 @@ import model.Job;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -47,5 +48,16 @@ public class JobDAO {
         tx.commit();
         session.close();
         return jobList;
+    }
+    
+    public Job getJobByDemandId(int demandID) {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        Job job = (Job) session.createCriteria(Job.class)
+                .add(Restrictions.eq("demand.id", demandID))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return job;
     }
 }

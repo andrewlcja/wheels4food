@@ -174,4 +174,8 @@ public class JobService {
     public List<Job> getJobListRequest() throws Exception {
         return jobDAO.retrieveAll();
     }
+    
+    public Job getJobByDemandIdRequest(int demandID) throws Exception {
+        return jobDAO.getJobByDemandId(demandID);
+    }
 }
