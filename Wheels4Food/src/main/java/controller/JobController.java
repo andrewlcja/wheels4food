@@ -67,4 +67,17 @@ public class JobController {
         
         return job;
     }
+    
+    @RequestMapping(value = "/GetJobByIdRequest/{jobID}", method = RequestMethod.GET)
+    public @ResponseBody Job getJobByIdRequest(@PathVariable("jobID") int jobID) {
+        Job job = null;
+        
+        try {
+            job = jobService.getJobByDemandIdRequest(jobID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return job;
+    }
 }

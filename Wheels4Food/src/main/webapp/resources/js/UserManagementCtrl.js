@@ -5,6 +5,11 @@
             .controller('UserManagementCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService',
                 function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
                     var authData = localStorageService.get('authorizationData');
+                    
+                    if (authData.role !== 'Admin') {
+                        $state.go('Home');
+                    }
+                    
                     $scope.loggedInUsername = authData.username;
                     
                     //setup searchFilter options

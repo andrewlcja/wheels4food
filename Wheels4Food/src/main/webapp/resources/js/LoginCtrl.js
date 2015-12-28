@@ -36,7 +36,7 @@
                                         role: response.data.user.role
                                     });
 
-                                    $state.go('Marketplace.All');
+                                    $state.go('Home');
                                     $scope.$parent.isLoggedIn = true;
                                 } else {
                                     $scope.signInText = 'Sign In';

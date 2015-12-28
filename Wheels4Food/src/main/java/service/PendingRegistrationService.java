@@ -218,16 +218,18 @@ public class PendingRegistrationService {
                 pendingRegistrationDAO.approvePendingRegistration(user);
                 pendingRegistrationDAO.deletePendingRegistration(id);
 
-//                Email registrationEmail = new SimpleEmail();
-//                registrationEmail.setHostName("smtp.googlemail.com");
-//                registrationEmail.setSmtpPort(465);
-//                registrationEmail.setAuthenticator(new DefaultAuthenticator("wheels4food@gmail.com", "wheels4food2015"));
-//                registrationEmail.setSSLOnConnect(true);
-//                registrationEmail.setFrom("wheels4food@gmail.com");
-//                registrationEmail.setSubject("Wheels4Food - Registration Complete");
-//                registrationEmail.setMsg("Welcome to Wheels4Food!");
-//                registrationEmail.addTo(email);
-//                registrationEmail.send();
+                Email registrationEmail = new SimpleEmail();
+                registrationEmail.setHostName("smtp.googlemail.com");
+                registrationEmail.setSmtpPort(587);
+                registrationEmail.setAuthenticator(new DefaultAuthenticator("wheels4food@gmail.com", "wheels4food2015"));
+                registrationEmail.setSSLOnConnect(false);
+                registrationEmail.setStartTLSEnabled(true);
+                registrationEmail.setFrom("wheels4food@gmail.com");
+                registrationEmail.setSubject("Wheels4Food - Registration Complete");
+                registrationEmail.setMsg("Welcome to Wheels4Food!");
+                registrationEmail.addTo(email);
+                registrationEmail.send();
+                
                 return new ApprovePendingRegistrationResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());

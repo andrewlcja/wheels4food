@@ -60,4 +60,15 @@ public class JobDAO {
         session.close();
         return job;
     }
+    
+    public Job getJobById(int id) {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        Job job = (Job) session.createCriteria(Job.class)
+                .add(Restrictions.eq("id", id))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return job;
+    }
 }

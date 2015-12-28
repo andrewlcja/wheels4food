@@ -82,6 +82,10 @@
         <from>/PendingApprovals</from>
         <to>index.html</to>
     </rule>
+    <rule match-type="wildcard">
+        <from>/Jobs</from>
+        <to>index.html</to>
+    </rule>
 
     <outbound-rule>
         <note>
