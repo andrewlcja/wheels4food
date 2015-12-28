@@ -1,0 +1,44 @@
+<div class="ngdialog-message">
+    <h3><b>Job Details</b></h3>
+    <table>
+        <tr>
+            <th>Supplying Organization</th>
+            <td class="dialog-padding">{{currentJob.demand.supply.user.organizationName}}</td>
+        </tr>
+        <tr>
+            <th>Quantity Demanded</th>
+            <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
+        </tr>
+        <tr valign="top">
+            <th>Schedule</th>
+            <td class="dialog-padding">
+                <div ng-show="currentJob.monday">
+                    Mondays
+                </div>
+                <div ng-show="currentJob.tuesday">
+                    Tuesdays
+                </div>
+                <div ng-show="currentJob.wednesday">
+                    Wednesdays
+                </div>
+                <div ng-show="currentJob.thursday">
+                    Thursdays
+                </div>
+                <div ng-show="currentJob.friday">
+                    Fridays
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Job Expiry Date</th>
+            <td class="dialog-padding">{{currentJob.expiryDate}}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td class="dialog-padding">Active</td>
+        </tr>
+    </table>
+    <div class="ngdialog-buttons" style="padding-top: 20px;">
+        <button type="button" class="ngdialog-button ngdialog-button-default" ng-click="closeThisDialog()">Close</button>
+    </div>
+</div>

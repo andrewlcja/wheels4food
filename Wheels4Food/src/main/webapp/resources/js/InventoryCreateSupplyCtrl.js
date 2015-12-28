@@ -23,7 +23,26 @@
                         }
                     });
 
+                    $scope.toggleExpiryValidity = function () {
+                        if ($scope.expiryDateNA) {
+                            $scope.supplyForm.expiryDate.$setValidity('customDate', true);
+                            $scope.supplyForm.expiryDate.$setValidity('customDate2', true);
+                        } else {
+                            if (!$scope.expiryDate) {
+                                if (new Date() >= $scope.tempExpiryDate) {
+                                    $scope.supplyForm.expiryDate.$setValidity('customDate2', false);
+                                } else {
+                                    $scope.supplyForm.expiryDate.$setValidity('customDate', false);
+                                }                                
+                            }
+                        }
+                    };
+
                     $scope.create = function () {
+                        if ($scope.expiryDateNA) {
+                            $scope.supply.expiryDate = 'NA';
+                        }
+
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/createSupplyPrompt.html',
                             className: 'ngdialog-theme-default dialog-generic',
@@ -58,5 +77,182 @@
                         });
                     };
                 }
-            ]);
+            ])
+            .directive('customMin', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customMin = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if ($scope.supply.maximum && modelValue > $scope.supply.maximum) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customMin2', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customMin2 = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if ($scope.supply.quantitySupplied && (modelValue > $scope.supply.quantitySupplied || (modelValue > Math.ceil($scope.supply.quantitySupplied / 2) && modelValue < $scope.supply.quantitySupplied))) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customMax', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customMax = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if (modelValue && $scope.supply.minimum && modelValue < $scope.supply.minimum) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customMax2', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customMax2 = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if ($scope.supply.quantitySupplied && (modelValue > $scope.supply.quantitySupplied || ($scope.supply.quantitySupplied - modelValue !== 0 && modelValue > $scope.supply.quantitySupplied - $scope.supply.minimum))) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customDate', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customDate = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if (!$scope.expiryDateNA && !modelValue) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customDate2', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customDate2 = function (modelValue) {
+                            $scope.tempExpiryDate = modelValue;
+                            //true or false based on custom dir validation
+                            if (!$scope.expiryDateNA && new Date() >= modelValue) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customQuantitySupplied', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customQuantitySupplied = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if ($scope.supply.minimum && !$scope.supply.maximum && ($scope.supply.minimum > modelValue || (modelValue > $scope.supply.minimum && modelValue < $scope.supply.minimum * 2))) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customQuantitySupplied2', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customQuantitySupplied2 = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if ($scope.supply.maximum && !$scope.supply.minimum && ($scope.supply.maximum > modelValue || (modelValue > $scope.supply.maximum && modelValue < $scope.supply.maximum * 2))) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customQuantitySupplied3', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customQuantitySupplied3 = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if ($scope.supply.maximum && $scope.supply.minimum && modelValue < $scope.supply.minimum + $scope.supply.maximum) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customNumber', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customNumber = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if (modelValue % 1 !== 0) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customQuantity', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customQuantity = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if (modelValue && !$scope.supply.quantitySupplied) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            });
 })();

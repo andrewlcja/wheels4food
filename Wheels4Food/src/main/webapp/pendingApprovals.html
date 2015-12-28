@@ -14,24 +14,48 @@
         <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <thead>
                 <tr class="info">
-                    <th class="text-center" width="30%">Item Name</th>
-                    <th class="text-center" width="10%">Category</th>
-                    <th class="text-center" width="15%">Organization Name</th>
-                    <th class="text-center" width="13%">Quantity Remaining</th>
-                    <th class="text-center" width="13%">Quantity Requested</th>
-                    <th class="text-center" width="10%">Expiry Date</th>
+                    <th class="text-center" width="28%" style="cursor: pointer" ng-click="sort('itemName')">
+                        Item Name
+                        <span ng-show="sortType == 'itemName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'itemName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="10%" style="cursor: pointer" ng-click="sort('category')">
+                        Category
+                        <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('organizationName')">
+                        Organization Name
+                        <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="14%" style="cursor: pointer" ng-click="sort('quantityRemaining')">
+                        Quantity Remaining
+                        <span ng-show="sortType == 'quantityRemaining' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'quantityRemaining' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="14%" style="cursor: pointer" ng-click="sort('quantityDemanded')">
+                        Quantity Requested
+                        <span ng-show="sortType == 'quantityDemanded' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'quantityDemanded' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="12%" style="cursor: pointer" ng-click="sort('dateRequested')">
+                        Date Requested
+                        <span ng-show="sortType == 'dateRequested' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'dateRequested' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr dir-paginate="pendingApproval in pendingApprovalList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
+                <tr dir-paginate="pendingApproval in pendingApprovalList | filter: proccessedSearchFilter | orderBy:sortBy:sortReverse | itemsPerPage:pageSize" current-page="currentPage">
                     <td ng-repeat="column in tableColumns" style="text-align:center">
                         <div style="margin-top: 0.33em;">{{getObj(pendingApproval, column)}}</div>
                     </td>
                     <td class="text-center">
                         <div style="margin-top:0.33em;">
                             <span class="action-item fa fa-check fa-lg" ng-click="approve(pendingApproval, $index)" tooltip-placement="top" tooltip="Approve"></span>
-                            <span class="action-item fa fa-times fa-lg" ng-click="delete($index)" tooltip-placement="top" tooltip="Reject"></span>
+                            <span class="action-item fa fa-times fa-lg" ng-click="reject(pendingApproval, $index)" tooltip-placement="top" tooltip="Reject"></span>
                         </div>
                     </td>
                 </tr>

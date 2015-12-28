@@ -21,6 +21,11 @@
                                     parseInt(parts[0], 10));
                             
                             $scope.showSupply = true;
+                            
+                            if ($scope.supply.expiryDate === 'NA') {
+                                $scope.expiryDate = 'dd/mm/yyyy';
+                                $scope.expiryDateNA = true;
+                            }
 
                             $scope.$watch('expiryDate', function (newValue, oldValue) {
                                 if (newValue !== '') {
@@ -31,6 +36,10 @@
                     }, 1000);
 
                     $scope.update = function () {
+                        if ($scope.expiryDateNA) {
+                            $scope.supply.expiryDate = 'NA';
+                        }
+                        
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/updateSupplyPrompt.html',
                             className: 'ngdialog-theme-default dialog-generic',

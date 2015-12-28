@@ -55,7 +55,8 @@ public class SupplyDAO {
     public List<Supply> retrieveAll() throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
-        List<Supply> supplyList = session.createCriteria(Supply.class).list();
+        List<Supply> supplyList = session.createCriteria(Supply.class)
+                .add(Restrictions.ne("quantityRemaining", 0)).list();
         tx.commit();
         session.close();
         return supplyList;
@@ -66,6 +67,16 @@ public class SupplyDAO {
         tx = session.beginTransaction();
         List<Supply> supplyList = session.createCriteria(Supply.class)
                 .add(Restrictions.eq("user.id", userID)).list();
+        tx.commit();
+        session.close();
+        return supplyList;
+    }
+    
+    public List<Supply> getSupplyListByCategory(String category) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Supply> supplyList = session.createCriteria(Supply.class)
+                .add(Restrictions.eq("category", category)).list();
         tx.commit();
         session.close();
         return supplyList;

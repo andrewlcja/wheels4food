@@ -20,7 +20,8 @@
                 'Wheels4Food.User',
                 'Wheels4Food.Inventory',
                 'Wheels4Food.Marketplace',
-                'Wheels4Food.PendingApprovals'
+                'Wheels4Food.PendingApprovals',
+                'Wheels4Food.Jobs'
             ])
 
             .config(['$stateProvider', '$urlRouterProvider', '$locationProvider',

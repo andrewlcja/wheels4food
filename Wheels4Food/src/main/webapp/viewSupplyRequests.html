@@ -1,0 +1,55 @@
+<div class="row" style="padding-top: 20px;">
+    <div class="col-sm-3 pull-left">
+        <div class="input-group">
+            <input type="text" ng-model="searchFilter" class="form-control" placeholder="Search..."/>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+        </div>
+    </div>    
+    <div class="col-sm-2 pull-right" style="padding-left: 57px;">
+        <button ui-sref="Inventory.Supply" class="btn btn-default">Back To Supply</button>
+    </div>
+</div>
+<div class="index-table" search-filter="searchFilter">
+    <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <thead>
+            <tr class="info">
+                <th class="text-center" width="28%">Item Name</th>
+                <th class="text-center" width="10%">Category</th>
+                <th class="text-center" width="15%">Organization Name</th>
+                <th class="text-center" width="13%">Quantity Remaining</th>
+                <th class="text-center" width="13%">Quantity Requested</th>
+                <th class="text-center" width="12%">Status</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
+                <td ng-repeat="column in tableColumns" style="text-align:center">
+                    <div style="margin-top: 0.33em;">{{getObj(demand, column)}}</div>
+                </td>
+                <td class="text-center">
+                    <div ng-show="demand.status === 'Pending'"><button class="btn btn-default" style="cursor: default;">Pending</button></div>
+                    <div ng-show="demand.status === 'Rejected'"><button class="btn btn-danger" style="cursor: default;">Rejected</button></div>
+                    <div ng-show="demand.status === 'Approved'"><button class="btn btn-success" style="cursor: default;">Approved</button></div>
+                    <div ng-show="demand.status === 'Job Created'"><button class="btn btn-primary" ng-click="viewJob(demand)" tooltip-placement="top" tooltip="Job Created - Click to view job details.">Job Created</button></div>
+                </td>
+                <td class="text-center">
+                    <div style="margin-top:0.33em;" ng-hide="demand.status !== 'Pending'">
+                        <span class="action-item fa fa-check fa-lg" ng-click="approve(demand, $index)" tooltip-placement="top" tooltip="Approve"></span>
+                        <span class="action-item fa fa-times fa-lg" ng-click="reject(demand, $index)" tooltip-placement="top" tooltip="Reject"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-if="!(demandList | filter:proccessedSearchFilter).length">
+                <td colspan="{{tableColumns.length + 2}}" class="text-center">
+                    <h5>No results found</h5>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <div style="text-align:center">
+        <dir-pagination-controls template-url="Wheels4Food/webjars/angular-utils-pagination/0.7.0/dirPagination.tpl.html"></dir-pagination-controls>
+    </div>
+</div>

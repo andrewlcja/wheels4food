@@ -5,9 +5,6 @@
             <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
         </div>
     </div>    
-    <div class="col-sm-2 pull-right">
-        <button ui-sref="Inventory.CreateSupply" class="btn btn-primary"><i class="fa fa-plus" style="padding-right: 5px;"></i> Create New Supply</button>
-    </div>
 </div>
 <div class="index-table" search-filter="searchFilter">
     <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
@@ -23,13 +20,13 @@
                     <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                     <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                 </th>
-                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('quantitySupplied')">
-                    Quantity Supplied
-                    <span ng-show="sortType == 'quantitySupplied' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'quantitySupplied' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('organizationName')">
+                    Organization Name
+                    <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                 </th>
                 <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('quantityRemaining')">
-                    Marketplace Quantity
+                    Quantity Remaining
                     <span ng-show="sortType == 'quantityRemaining' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                     <span ng-show="sortType == 'quantityRemaining' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                 </th>
@@ -42,16 +39,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | orderBy:sortBy:sortReverse | itemsPerPage:pageSize" current-page="currentPage">
+            <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage">
                 <td ng-repeat="column in tableColumns" style="text-align:center">
-                    <div style="margin-top: 0.33em;">{{getObj(supply, column)}}</div>
+                    <div style="margin-top: 0.65em;">{{getObj(supply, column)}}</div>
                 </td>
                 <td class="text-center">
-                    <div style="margin-top:0.33em;">
-                        <span class="action-item fa fa-eye fa-lg" ng-click="view(supply)" tooltip-placement="top" tooltip="View Supply Details"></span>
-                        <span class="action-item fa fa-shopping-cart fa-lg" ng-click="viewRequests(supply.id)" tooltip-placement="top" tooltip="View Requests"></span>
-                        <span class="action-item fa fa-edit fa-lg" ng-click="edit(supply.id)" tooltip-placement="top" tooltip="Edit"></span>
-                        <span class="action-item fa fa-trash fa-lg" ng-click="delete(supply)" tooltip-placement="top" tooltip="Delete"></span>
+                    <div>
+                        <button ng-disabled="supply.user.id === userID" ng-click="request(supply.id)" ng-class="{'btn btn-default cursor-disabled': supply.user.id === userID, 'btn btn-success': supply.user.id !== userID}">Request</button>
                     </div>
                 </td>
             </tr>

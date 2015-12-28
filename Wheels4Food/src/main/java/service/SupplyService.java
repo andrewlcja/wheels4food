@@ -64,7 +64,7 @@ public class SupplyService {
         }
 
         if (minimumStr.equals("")) {
-            errorList.add("Minimmum Quantity cannot be blank");
+            errorList.add("Minimmum Request Quantity cannot be blank");
         }
 
         if (maximumStr.equals("")) {
@@ -97,10 +97,10 @@ public class SupplyService {
             minimum = Integer.parseInt(minimumStr);
 
             if (minimum <= 0) {
-                errorList.add("Minimum Quantity must be more than 0");
+                errorList.add("Minimum Request Quantity must be more than 0");
             }
         } catch (NumberFormatException e) {
-            errorList.add("Minimum Quantity must be an integer");
+            errorList.add("Minimum Request Quantity must be an integer");
         }
 
         int maximum = 0;
@@ -108,10 +108,10 @@ public class SupplyService {
             maximum = Integer.parseInt(maximumStr);
 
             if (maximum <= 0) {
-                errorList.add("Maximum Quantity must be more than 0");
+                errorList.add("Maximum Request Quantity must be more than 0");
             }
         } catch (NumberFormatException e) {
-            errorList.add("Maximum Quantity must be an integer");
+            errorList.add("Maximum Request Quantity must be an integer");
         }
 
         //check if the errorlist is empty
@@ -121,19 +121,19 @@ public class SupplyService {
 
         //further validation on quantities
         if (minimum > quantitySupplied) {
-            errorList.add("Minimum Quantity cannot be more than the Quantity Supplied");
+            errorList.add("Minimum Request Quantity cannot be more than the Quantity Supplied");
         }
 
         if (minimum > maximum) {
-            errorList.add("Minimum Quantity cannot be more than the Maximum Quantity");
+            errorList.add("Minimum Request Quantity cannot be more than the Maximum Quantity");
         }
 
         if (maximum > quantitySupplied) {
-            errorList.add("Maximum Quantity cannot be more than the Quantity Supplied");
+            errorList.add("Maximum Request Quantity cannot be more than the Quantity Supplied");
         }
 
         if (maximum != quantitySupplied && (maximum + minimum) > quantitySupplied) {
-            errorList.add("Maximum Quantity must be either lesser than equals to " + (quantitySupplied - minimum) + " or equals to " + quantitySupplied);
+            errorList.add("Maximum Request Quantity must be either lesser than equals to " + (quantitySupplied - minimum) + " or equals to " + quantitySupplied);
         }
 
         //generate date posted
@@ -143,11 +143,13 @@ public class SupplyService {
         String datePosted = sdf.format(today);
 
         try {
-            Date expiry = sdf.parse(expiryDate);
+            if (!expiryDate.equals("NA")) {
+                Date expiry = sdf.parse(expiryDate);
 
-            //date validations
-            if (today.compareTo(expiry) >= 0) {
-                errorList.add("Expiry Date must be a date after today");
+                //date validations
+                if (today.compareTo(expiry) >= 0) {
+                    errorList.add("Expiry Date must be a date after today");
+                }
             }
         } catch (ParseException e) {
             errorList.add("Invalid Expiry Date");
@@ -177,7 +179,7 @@ public class SupplyService {
         String itemName = supply.getItemName().trim();
         String category = supply.getCategory().trim();
         int quantitySupplied = supply.getQuantitySupplied();
-        int quantityRemaining = supply.getQuantitySupplied();
+        int quantityRemaining = supply.getQuantityRemaining();
         int minimum = supply.getMinimum();
         int maximum = supply.getMaximum();
         String expiryDate = supply.getExpiryDate().trim();
@@ -198,11 +200,11 @@ public class SupplyService {
         }
 
         if (minimum <= 0) {
-            errorList.add("Minimum Quantity must be more than 0");
+            errorList.add("Minimum Request Quantity must be more than 0");
         }
 
-        if (maximum <= 0) {
-            errorList.add("Maximum Quantity must be more than 0");
+        if (maximum <= 0 && quantityRemaining > 0) {
+            errorList.add("Maximum Request Quantity must be more than 0");
         }
 
         if (expiryDate.equals("")) {
@@ -216,19 +218,19 @@ public class SupplyService {
 
         //further validation on quantities
         if (minimum > quantitySupplied) {
-            errorList.add("Minimum Quantity cannot be more than the Quantity Supplied");
+            errorList.add("Minimum Request Quantity cannot be more than the Quantity Supplied");
         }
 
-        if (minimum > maximum) {
-            errorList.add("Minimum Quantity cannot be more than the Maximum Quantity");
+        if (minimum > maximum && quantityRemaining > 0) {
+            errorList.add("Minimum Request Quantity cannot be more than the Maximum Quantity");
         }
 
         if (maximum > quantitySupplied) {
-            errorList.add("Maximum Quantity cannot be more than the Quantity Supplied");
+            errorList.add("Maximum Request Quantity cannot be more than the Quantity Supplied");
         }
 
         if (maximum != quantitySupplied && (maximum + minimum) > quantitySupplied) {
-            errorList.add("Maximum Quantity must be either lesser than equals to " + (quantitySupplied - minimum) + " or equals to " + quantitySupplied);
+            errorList.add("Maximum Request Quantity must be either lesser than equals to " + (quantitySupplied - minimum) + " or equals to " + quantitySupplied);
         }
 
         Date today = Calendar.getInstance().getTime();
@@ -236,11 +238,13 @@ public class SupplyService {
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
 
         try {
-            Date expiry = sdf.parse(expiryDate);
+            if (!expiryDate.equals("NA")) {
+                Date expiry = sdf.parse(expiryDate);
 
-            if (today.compareTo(expiry) >= 0) {
-                errorList.add("Expiry Date must be a date after today");
-                return new UpdateSupplyResponse(false, errorList);
+                if (today.compareTo(expiry) >= 0) {
+                    errorList.add("Expiry Date must be a date after today");
+                    return new UpdateSupplyResponse(false, errorList);
+                }
             }
         } catch (ParseException e) {
             errorList.add("Invalid Expiry Date");
@@ -253,8 +257,17 @@ public class SupplyService {
         }
 
         try {
+            Supply oldSupply = supplyDAO.getSupplyById(supply.getId());
+            int oldQuantitySupplied = oldSupply.getQuantitySupplied();
+
             if (quantitySupplied < quantityRemaining) {
                 supply.setQuantityRemaining(quantitySupplied);
+            } else if (quantitySupplied > quantityRemaining) {
+                int difference = quantitySupplied - oldQuantitySupplied;
+
+                if (difference > 0) {
+                    supply.setQuantityRemaining(quantityRemaining + difference);
+                }
             }
 
             supplyDAO.updateSupply(supply);
@@ -303,7 +316,11 @@ public class SupplyService {
     public List<Supply> getSupplyListByUserIdRequest(int userID) throws Exception {
         return supplyDAO.getSupplyListByUserId(userID);
     }
-    
+
+    public List<Supply> getSupplyListByCategoryRequest(String category) throws Exception {
+        return supplyDAO.getSupplyListByCategory(category);
+    }
+
     public Supply getSupplyByIdRequest(int id) throws Exception {
         return supplyDAO.getSupplyById(id);
     }

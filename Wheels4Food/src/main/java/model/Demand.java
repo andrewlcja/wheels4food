@@ -5,6 +5,7 @@
  */
 package model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @Entity
 @Table(name = "demand")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Demand {
+public class Demand implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -38,6 +39,9 @@ public class Demand {
     @Column(name = "quantityDemanded")
     private int quantityDemanded;
     
+    @Column(name = "dateRequested")
+    private String dateRequested;
+    
     @Column(name = "status")
     private String status;
     
@@ -47,10 +51,11 @@ public class Demand {
     public Demand() {
     }
 
-    public Demand(User user, Supply supply, int quantityDemanded, String status, String comments) {
+    public Demand(User user, Supply supply, int quantityDemanded, String dateRequested, String status, String comments) {
         this.user = user;
         this.supply = supply;
         this.quantityDemanded = quantityDemanded;
+        this.dateRequested = dateRequested;
         this.status = status;
         this.comments = comments;
     }
@@ -71,6 +76,10 @@ public class Demand {
         return quantityDemanded;
     }
 
+    public String getDateRequested() {
+        return dateRequested;
+    }
+    
     public String getStatus() {
         return status;
     }
@@ -85,5 +94,9 @@ public class Demand {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setQuantityDemanded(int quantityDemanded) {
+        this.quantityDemanded = quantityDemanded;
     }
 }

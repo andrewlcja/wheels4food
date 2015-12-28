@@ -10,28 +10,54 @@
     <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
         <thead>
             <tr class="info">
-                <th class="text-center" width="30%">Item Name</th>
-                <th class="text-center" width="10%">Category</th>
-                <th class="text-center" width="15%">Quantity Demanded</th>
-                <th class="text-center" width="15%">Expiry Date</th>
-                <th class="text-center" width="15%">Status</th>
+                <th class="text-center" width="30%" style="cursor: pointer" ng-click="sort('itemName')">
+                    Item Name
+                    <span ng-show="sortType == 'itemName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'itemName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center" width="10%" style="cursor: pointer" ng-click="sort('category')">
+                    Category
+                    <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('quantityDemanded')">
+                    Quantity Demanded
+                    <span ng-show="sortType == 'quantityDemanded' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'quantityDemanded' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('expiryDate')">
+                    Expiry Date
+                    <span ng-show="sortType == 'expiryDate' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'expiryDate' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
+                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('status')">
+                    Status
+                    <span ng-show="sortType == 'status' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                    <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                </th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
+            <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | orderBy:sortBy:sortReverse | itemsPerPage:pageSize" current-page="currentPage">
                 <td ng-repeat="column in tableColumns" style="text-align:center">
-                    <div style="margin-top: 0.33em;">{{getObj(demand, column)}}</div>
+                    <div style="margin-top: 0.33em;"><i ng-show="column === 'quantityDemanded' && demand.status === 'Approved' && demand.comments" class="fa fa-exclamation-triangle" style="color: sandybrown" tooltip-placement="top" tooltip="Quantity Reduced - {{demand.comments}}"></i> {{getObj(demand, column)}}</div>
+                </td>
+                <td class="text-center">
+                    <div ng-show="demand.status === 'Pending'"><button class="btn btn-default" style="cursor: default;" tooltip-placement="top" tooltip="Request submitted - Awaiting supplier's approval">Pending</button></div>
+                    <div ng-show="demand.status === 'Rejected'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Request rejected - {{demand.comments}}">Rejected</button></div>
+                    <div ng-show="demand.status === 'Approved'"><button class="btn btn-success" ng-click="confirm(demand)" tooltip-placement="top" tooltip="Request approved - Click to confirm.">Confirm Now!</button></div>
+                    <div ng-show="demand.status === 'Job Created'"><button class="btn btn-primary" ng-click="viewJob(demand)" tooltip-placement="top" tooltip="Job Created - Click to view job details.">Job Created</button></div>
                 </td>
                 <td class="text-center">
                     <div style="margin-top:0.33em;">
                         <span class="action-item fa fa-eye fa-lg" ng-click="view(demand)" tooltip-placement="top" tooltip="View"></span>
-                        <span class="action-item fa fa-times fa-lg" ng-click="cancel(demand, $index)" tooltip-placement="top" tooltip="Cancel"></span>
+                        <span ng-hide="demand.status === 'Job Created'" class="action-item fa fa-times fa-lg" ng-click="cancel(demand)" tooltip-placement="top" tooltip="Cancel"></span>
                     </div>
                 </td>
             </tr>
             <tr ng-if="!(demandList | filter:proccessedSearchFilter).length">
-                <td colspan="{{tableColumns.length + 1}}" class="text-center">
+                <td colspan="{{tableColumns.length + 2}}" class="text-center">
                     <h5>No results found</h5>
                 </td>
             </tr>
@@ -39,7 +65,7 @@
     </table>
 </div>
 <div>
-    <div style="text-align:center">
+    <div style="text-align:center" ng-show="demandList.length > pageSize">
         <dir-pagination-controls template-url="Wheels4Food/webjars/angular-utils-pagination/0.7.0/dirPagination.tpl.html"></dir-pagination-controls>
     </div>
 </div>

@@ -1,7 +1,17 @@
 <div class="ngdialog-message">
-    <h3><b>Are you sure you want to approve this request?</b></h3>
-    <div class="ngdialog-buttons" style="padding-top: 20px;">
-        <button type="button" class="ngdialog-button ngdialog-button-default" ng-click="closeThisDialog()">No</button>
-        <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm()">Yes</button>
+    <h3><b>Request Approval</b></h3>
+    <div>Select your preferred weekdays for the pickup of items:</div>
+    <div><i>*working hours from 9am to 5pm</i></div>
+    <div style="padding-top:10px;">
+        <input type="checkbox" ng-model="schedule.monday" ng-click="selectDay(schedule.monday)"/> Mondays<br/>
+        <input type="checkbox" ng-model="schedule.tuesday" ng-click="selectDay(schedule.tuesday)"/> Tuesdays<br/>
+        <input type="checkbox" ng-model="schedule.wednesday" ng-click="selectDay(schedule.wednesday)"/> Wednesdays<br/>
+        <input type="checkbox" ng-model="schedule.thursday" ng-click="selectDay(schedule.thursday)"/> Thursdays<br/>
+        <input type="checkbox" ng-model="schedule.friday" ng-click="selectDay(schedule.friday)"/> Fridays<br/>        
+    </div>
+    <div class="error-message" ng-show="dayCount < 3">At least 3 days should be selected.</div>
+    <div class="col-sm-offset-7" style="padding-top: 20px;">
+        <button type="button" class="btn btn-default" ng-click="closeThisDialog()">CANCEL</button>
+        <button type="button" class="btn btn-primary" ng-click="confirm(schedule)" ng-disabled="dayCount < 3" ng-class="{'cursor-disabled': dayCount < 3}">APPROVE</button>
     </div>
 </div>

@@ -1,5 +1,5 @@
-<div>
-    <nav class="navbar navbar-default" role="navigation">
+<div style="padding-bottom: 70px;">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
@@ -14,16 +14,18 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" collapse="navCollapsed">
             <ul class="nav navbar-nav">
-                <li ng-class="{active: currentState.indexOf('Marketplace') !== -1}"><a ui-sref="Marketplace.All">Marketplace</a></li>
-                <li ng-class="{active: currentState.indexOf('Inventory') !== -1}"><a ui-sref="Inventory.Supply">My Inventory</a></li>
-                <li ng-if="role !== 'Admin'" ui-sref-active="active"><a ui-sref="PendingApprovals">Pending Approvals</a></li>
+                <li ng-if="role !== 'Volunteer'" ng-class="{active: currentState.indexOf('Marketplace') !== -1}"><a ui-sref="Marketplace.All">Marketplace</a></li>
+                <li ng-if="role !== 'Volunteer'" ng-class="{active: currentState.indexOf('Inventory') !== -1}"><a ui-sref="Inventory.Supply">My Inventory</a></li>
+                <li ng-if="role !== 'Admin' && role !== 'Volunteer'" ui-sref-active="active"><a ui-sref="PendingApprovals">Pending Approvals</a></li>
+                <li ng-if="role === 'Volunteer'" ui-sref-active="active"><a ui-sref="Jobs">View Jobs</a></li>
+                <li ng-if="role === 'Volunteer'" ui-sref-active="active"><a ui-sref="MyJobs">My Jobs</a></li>
                 <li ng-if="role === 'Admin'" ui-sref-active="active"><a ui-sref="PendingRegistrations">Pending Registrations</a></li>
                 <li ng-if="role === 'Admin'" ui-sref-active="active"><a ui-sref="UserManagement">User Management</a></li>
             </ul>
             
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right" style="padding-right: 15px;">
                 <li dropdown>
-                    <a href="#" dropdown-toggle><i class="fa fa-lg fa-user" style="padding-right: 5px;"></i> {{username}} <b class="caret"></b></a>
+                    <a href="#" dropdown-toggle><i class="fa fa-lg fa-user" style="padding-right: 5px;"></i> {{username}} <b style="padding-left: 5px;" class="fa fa-lg fa-caret-down"></b></a>
                     <ul class="dropdown-menu">
                         <li><a ui-sref="Profile.View">My Profile</a></li>
                         <li><a ui-sref="ChangePassword">Change Password</a></li>
