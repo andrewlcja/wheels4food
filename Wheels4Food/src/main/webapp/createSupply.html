@@ -43,7 +43,7 @@
                         <div style="margin-top: 5px;" ng-message="customNumber">Please enter a whole number only.</div>
                         <div style="margin-top: 5px;" ng-message="min">Please enter a number greater than 0.</div>
                         <div style="margin-top: 5px;" ng-message="customMin">Please enter a number less than equals to {{supply.maximum}}.</div>
-                        <div style="margin-top: 5px;" ng-message="customMin2">This quantity must be either equals to {{supply.quantitySupplied}} or less than equals to {{supply.quantitySupplied / 2 | number:0}}.</div>
+                        <div style="margin-top: 5px;" ng-message="customMin2">This quantity must be either equals to {{supply.quantitySupplied}} or less than equals to {{supply.quantitySupplied / 2| number:0}}.</div>
                     </div>
                 </div>
                 <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.maximum.$touched && supplyForm.maximum.$invalid}"> 
@@ -57,18 +57,24 @@
                         <div style="margin-top: 5px;" ng-message="customMax">Please enter a number more than or equals to {{supply.minimum}}.</div>
                         <div style="margin-top: 5px;" ng-message="customMax2">This quantity must be either equals to {{supply.quantitySupplied}} or less than equals to {{supply.quantitySupplied - supply.minimum}}.</div>
                     </div>
-                </div>
+                </div>                   
                 <div class="col-md-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.expiryDate.$touched && supplyForm.expiryDate.$invalid}">
-                    <h4><b>Expiry Date</b></h4>
-                    <input type="date" class="form-control" ng-model="expiryDate" name="expiryDate" ng-disabled="expiryDateNA" custom-date custom-date-2/>
+                    <h4><b>Expiry Date (dd/mm/yyyy)</b></h4>
+                    <p class="input-group">
+                        <input type="text" class="form-control" ng-click="open($event)" datepicker-popup="{{format}}" ng-model="expiryDate" name="expiryDate" ng-disabled="expiryDateNA" min-date="minDate" is-open="opened" datepicker-options="dateOptions" close-text="Close" custom-date custom-date-3 custom-date-2/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event)" ng-disabled="expiryDateNA"><i class="fa fa-calendar"></i></button>
+                        </span>
+                    </p>
                     <div class="error-message" ng-messages="supplyForm.expiryDate.$error" ng-show="supplyForm.expiryDate.$touched">
                         <div style="margin-top: 5px;" ng-message="customDate">This field is required.</div>
+                        <div style="margin-top: 5px;" ng-message="date">Please enter a valid date in 'dd/mm/yyyy' format.</div>
                         <div style="margin-top: 5px;" ng-message="customDate2">Please choose a date after today.</div>
                     </div>
                 </div>
-                <div class="col-md-9" style="padding-top: 10px;">
+                <div class="col-md-9">
                     <input type="checkbox" ng-click="toggleExpiryValidity()" ng-model="expiryDateNA"/> <i>*Tick if item does not have an expiry date</i>
-                </div>                
+                </div>
             </div>
         </form>
     </div>

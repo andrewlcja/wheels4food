@@ -39,7 +39,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage">
+            <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage" ng-hide="supply.quantityRemaining === 0">
                 <td ng-repeat="column in tableColumns" style="text-align:center">
                     <div style="margin-top: 0.65em;">{{getObj(supply, column)}}</div>
                 </td>

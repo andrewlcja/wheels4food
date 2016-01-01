@@ -13,9 +13,8 @@
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
-                        var tempArray;
                         if (input === null || input === undefined) {
-                            proccessed = null;
+                            proccessed = {};
                         } else {
                             proccessed['itemName'] = input;
                         }
@@ -25,6 +24,10 @@
 
                     //retrieve details
                     $scope.getObj = function (component, column) {
+                        if (column.indexOf('.') === -1) {
+                            return component[column];
+                        }
+                        
                         var columnPath = column.split(".");
                         var obj = component;
                         for (var y = 0; y < columnPath.length; y++) {
