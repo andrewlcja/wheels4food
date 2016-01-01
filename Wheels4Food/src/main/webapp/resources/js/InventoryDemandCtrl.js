@@ -37,9 +37,8 @@
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
-                        var tempArray;
                         if (input === null || input === undefined) {
-                            proccessed = null;
+                            proccessed = {};
                         } else {
                             proccessed = {
                                 'supply': {

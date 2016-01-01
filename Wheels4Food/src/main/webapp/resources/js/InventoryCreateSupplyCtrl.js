@@ -33,10 +33,33 @@
                                     $scope.supplyForm.expiryDate.$setValidity('customDate2', false);
                                 } else {
                                     $scope.supplyForm.expiryDate.$setValidity('customDate', false);
-                                }                                
+                                }
                             }
                         }
                     };
+
+                    $scope.clear = function () {
+                        $scope.expiryDate = null;
+                    };
+
+                    $scope.toggleMin = function () {
+                        $scope.minDate = $scope.minDate ? null : new Date();
+                    };
+                    $scope.toggleMin();
+
+                    $scope.open = function ($event) {
+                        $event.preventDefault();
+                        $event.stopPropagation();
+
+                        $scope.opened = true;
+                    };
+
+                    $scope.dateOptions = {
+                        formatYear: 'yy',
+                        startingDay: 1
+                    };
+                    
+                    $scope.format = 'dd/MM/yyyy';
 
                     $scope.create = function () {
                         if ($scope.expiryDateNA) {
@@ -169,6 +192,19 @@
                             if (!$scope.expiryDateNA && new Date() >= modelValue) {
                                 return false;
                             }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+             .directive('customDate3', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customDate3 = function (modelValue) {
+                            console.log(modelValue);
 
                             return true;
                         };
