@@ -198,19 +198,6 @@
                     }
                 };
             })
-             .directive('customDate3', function () {
-                return {
-                    restrict: 'A',
-                    require: 'ngModel',
-                    link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customDate3 = function (modelValue) {
-                            console.log(modelValue);
-
-                            return true;
-                        };
-                    }
-                };
-            })
             .directive('customQuantitySupplied', function () {
                 return {
                     restrict: 'A',
