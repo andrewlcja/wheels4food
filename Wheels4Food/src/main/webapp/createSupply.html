@@ -61,7 +61,7 @@
                 <div class="col-md-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.expiryDate.$touched && supplyForm.expiryDate.$invalid}">
                     <h4><b>Expiry Date (dd/mm/yyyy)</b></h4>
                     <p class="input-group">
-                        <input type="text" class="form-control" ng-click="open($event)" datepicker-popup="{{format}}" ng-model="expiryDate" name="expiryDate" ng-disabled="expiryDateNA" min-date="minDate" is-open="opened" datepicker-options="dateOptions" close-text="Close" custom-date custom-date-3 custom-date-2/>
+                        <input type="text" class="form-control" ng-click="open($event)" readonly style="background-color: white; cursor: default;" datepicker-popup="{{format}}" ng-model="expiryDate" name="expiryDate" ng-disabled="expiryDateNA" min-date="minDate" is-open="opened" datepicker-options="dateOptions" close-text="Close" custom-date custom-date-2/>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event)" ng-disabled="expiryDateNA"><i class="fa fa-calendar"></i></button>
                         </span>
