@@ -31,6 +31,10 @@ public class UserService {
         return userDAO.retrieveAll();
     }
 
+    public List<User> getUserListByRoleRequest(String role) throws Exception {
+        return userDAO.getUserListByRole(role);
+    }
+    
     public User getUserByUsernameRequest(String username) throws Exception {
         return userDAO.getUser(username);
     }

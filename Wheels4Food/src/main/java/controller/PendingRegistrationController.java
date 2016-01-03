@@ -43,9 +43,42 @@ public class PendingRegistrationController {
         return pendingRegistrationList;
     }
     
+    @RequestMapping(value = "/GetPendingRegistrationListByRoleRequest/{role}", method = RequestMethod.GET)
+    public @ResponseBody List<PendingRegistration> getPendingRegistrationListByRoleRequest(@PathVariable("role") String role) {
+
+        List<PendingRegistration> pendingRegistrationList = null;
+        try {
+            pendingRegistrationList = pendingRegistrationService.getPendingRegistrationListByRoleRequest(role);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pendingRegistrationList;
+    }
+    
+    @RequestMapping(value = "/GetVolunteerPendingRegistrationListByOrganizationRequest/{organizationName}", method = RequestMethod.GET)
+    public @ResponseBody List<PendingRegistration> getVolunteerPendingRegistrationListByOrganizationRequest(@PathVariable("organizationName") String organizationName) {
+
+        List<PendingRegistration> pendingRegistrationList = null;
+        try {
+            pendingRegistrationList = pendingRegistrationService.getVolunteerPendingRegistrationListByOrganizationRequest(organizationName);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pendingRegistrationList;
+    }
+    
     @RequestMapping(value = "/CreatePendingRegistrationRequest", method = RequestMethod.POST)
     public @ResponseBody CreatePendingRegistrationResponse createPendingRegistrationRequest(@RequestBody CreatePendingRegistrationRequest request) {
         return pendingRegistrationService.createPendingRegistrationRequest(request);
+    }
+    
+    @RequestMapping(value = "/CreateVolunteerPendingRegistrationRequest", method = RequestMethod.POST)
+    public @ResponseBody CreatePendingRegistrationResponse createVolunteerPendingRegistrationRequest(@RequestBody CreatePendingRegistrationRequest request) {
+        return pendingRegistrationService.createVolunteerPendingRegistrationRequest(request);
     }
     
     @RequestMapping(value = "/DeletePendingRegistrationRequest/{id}", method = RequestMethod.DELETE)

@@ -55,6 +55,18 @@ public class PendingRegistrationDAO {
         return pendingRegistration;
     }
     
+    public PendingRegistration getPendingRegistrationByOrganization(String organization) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        PendingRegistration pendingRegistration = (PendingRegistration) session.createCriteria(PendingRegistration.class)
+                .add(Restrictions.eq("organizationName", organization))
+                .add(Restrictions.eq("role", "VWO"))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return pendingRegistration;
+    }
+    
     public PendingRegistration getPendingRegistrationById(int id) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -70,6 +82,27 @@ public class PendingRegistrationDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<PendingRegistration> pendingRegistrationList = session.createCriteria(PendingRegistration.class).list();
+        tx.commit();
+        session.close();
+        return pendingRegistrationList;
+    }
+    
+    public List<PendingRegistration> getPendingRegistrationListByRole(String role) {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<PendingRegistration> pendingRegistrationList = session.createCriteria(PendingRegistration.class)
+                .add(Restrictions.eq("role", role)).list();
+        tx.commit();
+        session.close();
+        return pendingRegistrationList;
+    }
+    
+    public List<PendingRegistration> getVolunteerPendingRegistrationListByOrganization(String organizationName) {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<PendingRegistration> pendingRegistrationList = session.createCriteria(PendingRegistration.class)
+                .add(Restrictions.eq("organizationName", organizationName))
+                .add(Restrictions.eq("role", "Volunteer")).list();
         tx.commit();
         session.close();
         return pendingRegistrationList;

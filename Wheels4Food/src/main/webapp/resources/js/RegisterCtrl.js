@@ -8,7 +8,7 @@
                         'username': '',
                         'password': '',
                         'confirmPassword': '',
-                        'organizationName': '', 
+                        'organizationName': '',
                         'email': '',
                         'address': '',
                         'postalCode': '',
@@ -18,6 +18,38 @@
                         'role': ''
                     };
 
+                    $scope.toggleVWO = function () {
+                        $scope.VWOSelected = !$scope.VWOSelected;
+                    };
+
+                    $scope.toggleVolunteer = function () {
+                        $scope.volunteerSelected = !$scope.volunteerSelected;
+                    };
+
+                    $scope.showVWOForm = function () {
+                        $scope.selectionPanel = true;
+                        $scope.VWOForm = true;
+                        $scope.registration.role = 'VWO';
+                        $scope.request = 'CreatePendingRegistrationRequest';
+                    };
+
+                    $scope.showVolunteerForm = function () {
+                        $scope.selectionPanel = true;
+                        $scope.volunteerForm = true;
+                        $scope.registration.role = 'Volunteer';
+                        $scope.request = 'CreateVolunteerPendingRegistrationRequest';
+                        
+                        $http({
+                            url: api.endpoint + 'GetUserListByRoleRequest/VWO',
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        }).then(function (response) {
+                            $scope.VWOList = response.data;
+                        });
+                    };
+
                     $scope.submit = function () {
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/registrationPrompt.html',
@@ -25,7 +57,7 @@
                             scope: $scope
                         }).then(function () {
                             $http({
-                                url: api.endpoint + 'CreatePendingRegistrationRequest',
+                                url: api.endpoint + $scope.request,
                                 method: 'POST',
                                 data: $scope.registration,
                                 headers: {
@@ -42,7 +74,7 @@
                                     });
                                 } else {
                                     $scope.errorList = response.data.errorList;
-                                    
+
                                     ngDialog.openConfirm({
                                         template: '/Wheels4Food/resources/ngTemplates/registrationError.html',
                                         className: 'ngdialog-theme-default dialog-registration-error',

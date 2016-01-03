@@ -2,8 +2,10 @@
     'use strict';
     angular
             .module('Wheels4Food.PendingRegistrations')
-            .controller('PendingRegistrationsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog',
-                function ($scope, $state, $http, api, $timeout, ngDialog) {
+            .controller('PendingRegistrationsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
+                    var authData = localStorageService.get('authorizationData');
+                    
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
@@ -98,8 +100,15 @@
                     //set up user table columns
                     $scope.tableColumns = ['username', 'organizationName', 'role'];
 
+                    var request = '';
+                    if (authData.role === 'Admin') {
+                        request = 'GetPendingRegistrationListByRoleRequest/VWO';
+                    } else if (authData.role === 'VWO') {
+                        request = 'GetVolunteerPendingRegistrationListByOrganizationRequest/' + authData.organizationName;
+                    }
+
                     var indexPromise = $http({
-                        url: api.endpoint + 'GetPendingRegistrationListRequest',
+                        url: api.endpoint + request,
                         method: 'GET'
                     });
 
