@@ -56,6 +56,54 @@ body {
     -webkit-border-radius: 15px;
 }
 
+.register-vwo-panel {
+    background: #e1846e;
+    padding: 50px 20px;
+    min-height: 445px;
+    height: 100%;
+    color: #fff;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.register-vwo-panel-selected {
+    background: #e79c8b;
+    padding: 50px 20px;
+    min-height: 445px;
+    height: 100%;
+    color: #fff;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    text-align: center;
+}
+
+.register-volunteer-panel {
+    background: #559e83;
+    padding: 50px 20px;
+    min-height: 445px;
+    height: 100%;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.register-volunteer-panel-selected {
+    background: #76b19b;
+    padding: 50px 20px;
+    min-height: 445px;
+    height: 100%;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    text-align: center;
+}
+
 .register-panel .form-control,
 .register-panel button {
     font-size: 18px;

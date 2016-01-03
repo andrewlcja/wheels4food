@@ -46,6 +46,20 @@ public class UserController {
         return userList;
     }
     
+    @RequestMapping(value = "/GetUserListByRoleRequest/{role}", method = RequestMethod.GET)
+    public @ResponseBody List<User> getUserListByRoleRequest(@PathVariable("role") String role) {
+
+        List<User> userList = null;
+        try {
+            userList = userService.getUserListByRoleRequest(role);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return userList;
+    }
+    
     @RequestMapping(value = "/GetUserByUsernameRequest/{username}", method = RequestMethod.GET)
     public @ResponseBody User getUserByUsernameRequest(@PathVariable("username") String username) {
 
