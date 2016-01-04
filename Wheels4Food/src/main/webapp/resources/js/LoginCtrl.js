@@ -33,7 +33,8 @@
                                     localStorageService.set('authorizationData', {
                                         userID: response.data.user.id,
                                         username: response.data.user.username,
-                                        role: response.data.user.role
+                                        role: response.data.user.role,
+                                        organizationName: response.data.user.organizationName
                                     });
 
                                     $state.go('Home');

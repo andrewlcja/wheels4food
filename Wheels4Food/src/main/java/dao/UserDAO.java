@@ -33,12 +33,34 @@ public class UserDAO {
         session.close();
         return userList;
     }
+    
+    public List<User> getUserListByRole(String role) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<User> userList = session.createCriteria(User.class)
+                .add(Restrictions.eq("role", role)).list();
+        tx.commit();
+        session.close();
+        return userList;
+    }
 
     public User getUser(String username) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         User user = (User) session.createCriteria(User.class)
                 .add(Restrictions.eq("username", username))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return user;
+    }
+    
+    public User getUserByOrganization(String organization) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        User user = (User) session.createCriteria(User.class)
+                .add(Restrictions.eq("organizationName", organization))
+                .add(Restrictions.eq("role", "VWO"))
                 .uniqueResult();
         tx.commit();
         session.close();

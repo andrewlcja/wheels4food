@@ -31,6 +31,10 @@ public class UserService {
         return userDAO.retrieveAll();
     }
 
+    public List<User> getUserListByRoleRequest(String role) throws Exception {
+        return userDAO.getUserListByRole(role);
+    }
+    
     public User getUserByUsernameRequest(String username) throws Exception {
         return userDAO.getUser(username);
     }
@@ -152,7 +156,7 @@ public class UserService {
                 }
             }
 
-            if (!email.contains("@")) {
+            if (!email.contains("@") || email.length() == 1) {
                 errorList.add("Invalid email");
             } else if (!email.equals(oldUser.getEmail())) {
                 if (userDAO.getUserByEmail(email) != null) {

@@ -59,6 +59,20 @@ public class DemandController {
         return demandList;
     }
     
+    @RequestMapping(value = "/GetDemandListBySupplyIdRequest/{supplyID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Demand> getDemandListBySupplyIdRequest(@PathVariable("supplyID") int supplyID) {
+        List<Demand> demandList = null;
+
+        try {
+            demandList = demandService.getDemandListBySupplyIdRequest(supplyID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandList;
+    }
+    
     @RequestMapping(value = "/GetPendingDemandListBySupplierIdRequest/{supplierID}", method = RequestMethod.GET)
     public @ResponseBody
     List<Demand> getPendingDemandListBySupplyIdRequest(@PathVariable("supplierID") int supplierID) {

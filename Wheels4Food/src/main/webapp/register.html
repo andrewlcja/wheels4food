@@ -1,11 +1,30 @@
 <div class="container">
     <div class="register-form">
-        <form method="post" class="register-panel" name="loginForm">
+        <form class="register-panel" ng-hide="selectionPanel">
+            <div class="col-sm-12" style="font-size:40px; font-weight: bolder;">I am a ...</div>
+            <div class="col-sm-6" style="padding-top: 10px;">
+                <div class="register-vwo-panel" ng-click="showVWOForm()" ng-class="{'register-vwo-panel-selected': VWOSelected}" ng-mouseover="toggleVWO()" ng-mouseleave="toggleVWO()">
+                    <i class="fa fa-home" style="font-size: 200px;" ng-mouseover="toggleVWO()" ng-mouseleave="toggleVWO()"></i>
+                    <h1 style="font-weight: bolder; padding-top: 30px;" ng-mouseover="toggleVWO()" ng-mouseleave="toggleVWO()">Voluntary Welfare Organization</h1>
+                </div>
+            </div>
+            <div class="col-sm-6" style="padding-top: 10px;">
+                <div class="register-volunteer-panel" ng-click="showVolunteerForm()" ng-class="{'register-volunteer-panel-selected': volunteerSelected}" ng-mouseover="toggleVolunteer()" ng-mouseleave="toggleVolunteer()">
+                    <i class="fa fa-child" style="font-size: 200px;" ng-mouseover="toggleVolunteer()" ng-mouseleave="toggleVolunteer()"></i>
+                    <h1 style="font-weight: bolder; padding-top: 50px;" ng-mouseover="toggleVolunteer()" ng-mouseleave="toggleVolunteer()">Volunteer / Deliverer</h1>
+                </div>
+            </div>
+        </form>
+
+        <form method="post" class="register-panel" name="loginForm" ng-show="VWOForm">
             <div class="col-sm-12" style="font-size:40px; font-weight: bolder;">Register new account</div>
             <div class="col-sm-6">
                 <div class="register-form-input">
                     <label>Username</label>
-                    <input ng-model="registration.username" type="text" class="form-control register-form-input-height" placeholder="Username"/>
+                    <input ng-model="registration.username" type="text" class="form-control register-form-input-height" placeholder="Username" name="username" required/>
+                    <div class="error-message" ng-messages="loginForm.username.$error" ng-show="loginForm.username.$touched">
+                        <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                    </div>
                 </div>
                 <div class="register-form-input">
                     <label>Password</label>
@@ -23,12 +42,12 @@
                     <label>Email</label>
                     <input ng-model="registration.email" type="text" class="form-control register-form-input-height" placeholder="Email"/>
                 </div>
+            </div>
+            <div class="col-sm-6">      
                 <div class="register-form-input">
                     <label>Address</label>
                     <input ng-model="registration.address" type="text" class="form-control register-form-input-height" placeholder="Address"/>
                 </div>
-            </div>
-            <div class="col-sm-6">                
                 <div class="register-form-input">
                     <label>Postal Code</label>
                     <input ng-model="registration.postalCode" type="text" class="form-control register-form-input-height" placeholder="Postal Code"/>
@@ -45,12 +64,52 @@
                     <label>License Number</label>
                     <input ng-model="registration.licenseNumber" type="text" class="form-control register-form-input-height" placeholder="License Number"/>
                 </div>
+                <div class="col-sm-offset-9 col-sm-2" style="padding-top: 37px;">
+                    <button class="btn btn-primary" ng-click="submit()">Submit</button>
+                </div>
+            </div>
+        </form>  
+        <form method="post" class="register-panel" name="volunteerRegForm" ng-show="volunteerForm">
+            <div class="col-sm-12" style="font-size:40px; font-weight: bolder;">Register new account</div>
+            <div class="col-sm-6">
                 <div class="register-form-input">
-                    <label>Role</label>
-                    <select ng-model="registration.role" class="form-control register-form-input-height">
-                        <option value="VWO">Voluntary Welfare Organization</option>
-                        <option value="CLC">Commercial Logistic Company</option>
+                    <label>Username</label>
+                    <input ng-model="registration.username" type="text" class="form-control register-form-input-height" placeholder="Username" name="username" required/>
+                    <div class="error-message" ng-messages="loginForm.username.$error" ng-show="loginForm.username.$touched">
+                        <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                    </div>
+                </div>
+                <div class="register-form-input">
+                    <label>Password</label>
+                    <input ng-model="registration.password" type="password" class="form-control register-form-input-height" placeholder="Password"/>
+                </div>
+                <div class="register-form-input">
+                    <label>Confirm Password</label>
+                    <input ng-model="registration.confirmPassword" type="password" class="form-control register-form-input-height" placeholder="Confirm Password"/>
+                </div>
+                <div class="register-form-input">
+                    <label>Organization Name</label>
+                    <select ng-model="registration.organizationName" class="form-control register-form-input-height">
+                        <option ng-repeat="VWO in VWOList">{{VWO.organizationName}}</option>
                     </select>
+                </div>
+                <div class="register-form-input">
+                    <label>Email</label>
+                    <input ng-model="registration.email" type="text" class="form-control register-form-input-height" placeholder="Email"/>
+                </div>
+            </div>
+            <div class="col-sm-6">      
+                <div class="register-form-input">
+                    <label>Full Name</label>
+                    <input ng-model="registration.pocName" type="text" class="form-control register-form-input-height" placeholder="Full Name"/>
+                </div>
+                <div class="register-form-input">
+                    <label>Contact Number</label>
+                    <input ng-model="registration.pocNumber" type="text" class="form-control register-form-input-height" placeholder="Contact Number"/>
+                </div>
+                <div class="register-form-input">
+                    <label>License Number</label>
+                    <input ng-model="registration.licenseNumber" type="text" class="form-control register-form-input-height" placeholder="License Number"/>
                 </div>
                 <div class="col-sm-offset-9 col-sm-2" style="padding-top: 37px;">
                     <button class="btn btn-primary" ng-click="submit()">Submit</button>

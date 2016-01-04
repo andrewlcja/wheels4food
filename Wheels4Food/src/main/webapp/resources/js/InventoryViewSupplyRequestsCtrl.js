@@ -1,12 +1,9 @@
 (function () {
     'use strict';
     angular
-            .module('Wheels4Food.PendingApprovals')
-            .controller('PendingApprovalsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
-                    var authData = localStorageService.get('authorizationData');
-                    var userID = authData.userID;
-
+            .module('Wheels4Food.Inventory')
+            .controller('InventoryViewSupplyRequestsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', '$stateParams',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, $stateParams) {
                     //set default schedule
                     $scope.schedule = {
                         'monday': false,
@@ -25,35 +22,6 @@
                             $scope.dayCount--;
                         }
                     };
-                    
-                    //default sort
-                    $scope.sortType = 'itemName';
-
-                    $scope.sort = function (sortType) {
-                        $scope.sortType = sortType;
-                        $scope.sortReverse = !$scope.sortReverse;
-                    };
-
-                    $scope.sortBy = function (pendingApproval) {
-                        if ($scope.sortType === 'organizationName') {
-                            return pendingApproval['user']['organizationName'];
-                        } else if ($scope.sortType === 'itemName') {
-                            return pendingApproval['supply']['itemName'];
-                        } else if ($scope.sortType === 'quantityRemaining') {
-                            return pendingApproval['supply']['quantityRemaining'];
-                        } else if ($scope.sortType === 'category') {
-                            return pendingApproval['supply']['category'];
-                        } else if ($scope.sortType === 'expiryDate') {
-                            if (pendingApproval.expiryDate === 'NA') {
-                                return new Date('1000', '01', '01')
-                            }
-                            
-                            var parts = pendingApproval.supply.expiryDate.split('/');
-                            var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
-                            return date;
-                        }
-                        return pendingApproval[$scope.sortType];
-                    };
 
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
@@ -66,6 +34,69 @@
                         }
 
                         return proccessed;
+                    };
+
+                    //retrieve details
+                    $scope.getObj = function (component, column) {
+                        var columnPath = column.split(".");
+                        var obj = component;
+                        for (var y = 0; y < columnPath.length; y++) {
+                            if (!obj[columnPath[y]]) {
+                                return '';
+                            }
+                            obj = obj[columnPath[y]];
+                        }
+
+                        return obj;
+                    };
+                    
+                    $scope.viewJob = function (demand) {
+                        $http({
+                            url: api.endpoint + 'GetJobByDemandIdRequest/' + demand.id,
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        }).then(function (response) {
+                            $scope.currentJob = response.data;
+
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/viewJobDetails.html',
+                                className: 'ngdialog-theme-default dialog-generic',
+                                scope: $scope
+                            }).then(function (schedule) {
+                                if ($scope.currentJob.monday) {
+                                    $scope.currentJob.monday = schedule.monday;
+                                }
+                                
+                                if ($scope.currentJob.tuesday) {
+                                    $scope.currentJob.tuesday = schedule.tuesday;
+                                }
+                                
+                                if ($scope.currentJob.wednesday) {
+                                    $scope.currentJob.wednesday = schedule.wednesday;
+                                }
+                                
+                                if ($scope.currentJob.thursday) {
+                                    $scope.currentJob.thursday = schedule.thursday;
+                                }
+                                
+                                if ($scope.currentJob.friday) {
+                                    $scope.currentJob.friday = schedule.friday;
+                                }
+                                
+                                $http({
+                                    url: api.endpoint + 'UpdateJobRequest',
+                                    method: 'PUT',
+                                    data: $scope.currentJob,
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    }
+                                }).then(function (response) {
+                                    console.log(response.data);
+                                });
+                            });
+                        });
                     };
 
                     var validApproval = function (pendingApproval, index, comment) {
@@ -91,24 +122,10 @@
                                 }
                             }).then(function (response) {
                                 if (response.data.isCreated) {
-                                    $scope.pendingApprovalList.splice(($scope.currentPage - 1) * 10 + index, 1);
+                                    $state.go($state.current, $stateParams, {reload: true, inherit: false});
                                 }
                             });
                         });
-                    };
-
-                    //retrieve details
-                    $scope.getObj = function (component, column) {
-                        var columnPath = column.split(".");
-                        var obj = component;
-                        for (var y = 0; y < columnPath.length; y++) {
-                            if (!obj[columnPath[y]]) {
-                                return '';
-                            }
-                            obj = obj[columnPath[y]];
-                        }
-
-                        return obj;
                     };
 
                     $scope.approve = function (pendingApproval, index) {
@@ -144,24 +161,24 @@
                                 }
                             }).then(function (response) {
                                 if (response.data.isRejected) {
-                                    $scope.pendingApprovalList.splice(($scope.currentPage - 1) * 10 + index, 1);
+                                    $state.go($state.current, $stateParams, {reload: true, inherit: false});
                                 }
                             });
                         });
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['supply.itemName', 'supply.category', 'user.organizationName', 'supply.quantitySupplied', 'quantityDemanded', 'dateRequested'];
+                    $scope.tableColumns = ['supply.itemName', 'supply.category', 'user.organizationName', 'supply.quantitySupplied', 'quantityDemanded'];
 
 
                     var indexPromise = $http({
-                        url: api.endpoint + 'GetPendingDemandListBySupplierIdRequest/' + userID,
+                        url: api.endpoint + 'GetDemandListBySupplyIdRequest/' + $stateParams.Id,
                         method: 'GET'
                     });
 
                     $timeout(function () {
                         indexPromise.then(function (response) {
-                            $scope.pendingApprovalList = response.data;
+                            $scope.demandList = response.data;
                             $scope.currentPage = 1;
                             $scope.pageSize = 10;
 
@@ -180,4 +197,4 @@
                     $scope.templateUrl = "/Wheels4Food/resources/ngTemplates/cgBusy.html";
                 }
             ]);
-        })();
+})();

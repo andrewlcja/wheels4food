@@ -13,9 +13,8 @@
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
-                        var tempArray;
                         if (input === null || input === undefined) {
-                            proccessed = null;
+                            proccessed = {};
                         } else {
                             proccessed['itemName'] = input;
                         }
@@ -25,7 +24,20 @@
 
                     //retrieve details
                     $scope.getObj = function (component, column) {
-                        return component[column];
+                        if (column.indexOf('.') === -1) {
+                            return component[column];
+                        }
+                        
+                        var columnPath = column.split(".");
+                        var obj = component;
+                        for (var y = 0; y < columnPath.length; y++) {
+                            if (!obj[columnPath[y]]) {
+                                return '';
+                            }
+                            obj = obj[columnPath[y]];
+                        }
+
+                        return obj;
                     };
 
                     $scope.request = function (id) {
@@ -41,6 +53,10 @@
                         if ($scope.sortType === 'organizationName') {
                             return supply['user']['organizationName'];
                         } else if ($scope.sortType === 'expiryDate') {
+                            if (supply.expiryDate === 'NA') {
+                                return new Date('1000', '01', '01')
+                            }
+                            
                             var parts = supply.expiryDate.split('/');
                             var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
                             return date;

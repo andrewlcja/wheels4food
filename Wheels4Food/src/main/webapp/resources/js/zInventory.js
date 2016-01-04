@@ -29,6 +29,11 @@
                                 url: '/Supply/Edit/:Id',
                                 templateUrl: 'Wheels4Food/editSupply.html',
                                 controller: 'InventoryEditSupplyCtrl'
+                            })
+                            .state('Inventory.ViewRequests', {
+                                url: '/Supply/ViewRequests/:Id',
+                                templateUrl: 'Wheels4Food/viewSupplyRequests.html',
+                                controller: 'InventoryViewSupplyRequestsCtrl'
                             });
                 }
             ]);
