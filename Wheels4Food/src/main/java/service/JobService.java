@@ -14,14 +14,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import model.ConfirmJobResponse;
 import model.CreateJobRequest;
 import model.CreateJobResponse;
-import model.CreateSupplyResponse;
 import model.Demand;
 import model.Job;
 import model.Supply;
-import model.UpdateJobResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -40,11 +40,7 @@ public class JobService {
 
     public CreateJobResponse createJobRequest(CreateJobRequest request) {
         int demandID = request.getDemandID();
-        boolean monday = request.isMonday();
-        boolean tuesday = request.isTuesday();
-        boolean wednesday = request.isWednesday();
-        boolean thursday = request.isThursday();
-        boolean friday = request.isFriday();
+        String schedule = request.getSchedule();
         String comments = request.getComments();
 
         Demand demand = demandDAO.getDemandById(demandID);
@@ -53,33 +49,12 @@ public class JobService {
         ArrayList<String> errorList = new ArrayList<String>();
 
         if (!status.equals("Pending")) {
-            errorList.add("Status of request must be pending");
+            errorList.add("Status of request must be pending.");
             return new CreateJobResponse(false, errorList);
         }
-        
-        int count = 0;
-        if (monday) {
-            count++;
-        }
 
-        if (tuesday) {
-            count++;
-        }
-
-        if (wednesday) {
-            count++;
-        }
-
-        if (thursday) {
-            count++;
-        }
-
-        if (friday) {
-            count++;
-        }
-
-        if (count < 2) {
-            errorList.add("At least 3 days must be selected");
+        if (StringUtils.countOccurrencesOf(schedule, "1") < 5) {
+            errorList.add("A minimum of 5 timeslots must be selected.");
             return new CreateJobResponse(false, errorList);
         }
 
@@ -114,7 +89,7 @@ public class JobService {
             sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
             String expiryDateStr = sdf.format(expiryDate);
 
-            jobDAO.createJob(new Job(demand, monday, tuesday, wednesday, thursday, friday, expiryDateStr));
+            jobDAO.createJob(new Job(demand, schedule, expiryDateStr, "Inactive"));
             return new CreateJobResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -122,63 +97,40 @@ public class JobService {
         }
     }
 
-    public UpdateJobResponse updateJobRequest(Job job) {
-        boolean monday = job.isMonday();
-        boolean tuesday = job.isTuesday();
-        boolean wednesday = job.isWednesday();
-        boolean thursday = job.isThursday();
-        boolean friday = job.isFriday();
+    public ConfirmJobResponse confirmJobRequest(Job job) {
+        String schedule = job.getSchedule();
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        int count = 0;
-        if (monday) {
-            count++;
+        if (StringUtils.countOccurrencesOf(schedule, "1") < 3) {
+            errorList.add("A minimum of 3 timeslots must be selected.");
+            return new ConfirmJobResponse(false, errorList);
         }
-
-        if (tuesday) {
-            count++;
-        }
-
-        if (wednesday) {
-            count++;
-        }
-
-        if (thursday) {
-            count++;
-        }
-
-        if (friday) {
-            count++;
-        }
-
-        if (count < 2) {
-            errorList.add("At least 2 days must be selected");
-            return new UpdateJobResponse(false, errorList);
-        }
-
+        
         try {
             Demand demand = job.getDemand();
             demand.setStatus("Job Created");
 
             demandDAO.updateDemand(demand);
-            jobDAO.updateJob(job);
             
-            return new UpdateJobResponse(true, null);
+            job.setStatus("Active");
+            jobDAO.updateJob(job);
+
+            return new ConfirmJobResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
-            return new UpdateJobResponse(false, errorList);
+            return new ConfirmJobResponse(false, errorList);
         }
     }
 
     public List<Job> getJobListRequest() throws Exception {
         return jobDAO.retrieveAll();
     }
-    
+
     public Job getJobByDemandIdRequest(int demandID) throws Exception {
         return jobDAO.getJobByDemandId(demandID);
     }
-    
+
     public Job getJobByIdRequest(int id) throws Exception {
         return jobDAO.getJobById(id);
     }

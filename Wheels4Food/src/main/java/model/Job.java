@@ -32,35 +32,23 @@ public class Job implements Serializable {
     @JoinColumn(name = "demandID")
     private Demand demand;
     
-    @Column(name = "monday")
-    private boolean monday;
-    
-    @Column(name = "tuesday")
-    private boolean tuesday;
-    
-    @Column(name = "wednesday")
-    private boolean wednesday;
-    
-    @Column(name = "thursday")
-    private boolean thursday;
-    
-    @Column(name = "friday")
-    private boolean friday;
+    @Column(name = "schedule")
+    private String schedule;
     
     @Column(name = "expiryDate")
     private String expiryDate;
     
+    @Column(name = "status")
+    private String status;
+    
     public Job() {        
     }
 
-    public Job(Demand demand, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, String expiryDate) {
+    public Job(Demand demand, String schedule, String expiryDate, String status) {
         this.demand = demand;
-        this.monday = monday;
-        this.tuesday = tuesday;
-        this.wednesday = wednesday;
-        this.thursday = thursday;
-        this.friday = friday;
+        this.schedule = schedule;
         this.expiryDate = expiryDate;
+        this.status = status;
     }
 
     public int getId() {
@@ -71,27 +59,19 @@ public class Job implements Serializable {
         return demand;
     }
 
-    public boolean isMonday() {
-        return monday;
-    }
-
-    public boolean isTuesday() {
-        return tuesday;
-    }
-
-    public boolean isWednesday() {
-        return wednesday;
-    }
-
-    public boolean isThursday() {
-        return thursday;
-    }
-
-    public boolean isFriday() {
-        return friday;
+    public String getSchedule() {
+        return schedule;
     }
 
     public String getExpiryDate() {
         return expiryDate;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

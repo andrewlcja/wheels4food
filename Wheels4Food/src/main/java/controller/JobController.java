@@ -6,10 +6,10 @@
 package controller;
 
 import java.util.List;
+import model.ConfirmJobResponse;
 import model.CreateJobRequest;
 import model.CreateJobResponse;
 import model.Job;
-import model.UpdateJobResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,10 +35,10 @@ public class JobController {
         return jobService.createJobRequest(request);
     }
     
-    @RequestMapping(value = "/UpdateJobRequest", method = RequestMethod.PUT)
+    @RequestMapping(value = "/ConfirmJobRequest", method = RequestMethod.PUT)
     public @ResponseBody
-    UpdateJobResponse updateJobRequest(@RequestBody Job job) {
-        return jobService.updateJobRequest(job);
+    ConfirmJobResponse confirmJobRequest(@RequestBody Job job) {
+        return jobService.confirmJobRequest(job);
     }
 
     @RequestMapping(value = "/GetJobListRequest", method = RequestMethod.GET)
