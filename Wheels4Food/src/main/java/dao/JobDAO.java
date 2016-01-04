@@ -44,7 +44,9 @@ public class JobDAO {
     public List<Job> retrieveAll() throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
-        List<Job> jobList = session.createCriteria(Job.class).list();
+        List<Job> jobList = session.createCriteria(Job.class)
+                .add(Restrictions.eq("status", "Active"))
+                .list();
         tx.commit();
         session.close();
         return jobList;

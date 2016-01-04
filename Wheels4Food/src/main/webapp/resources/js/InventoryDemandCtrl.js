@@ -26,7 +26,7 @@
                             if (supply.expiryDate === 'NA') {
                                 return new Date('1000', '01', '01')
                             }
-                            
+
                             var parts = demand.supply.expiryDate.split('/');
                             var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
                             return date;
@@ -73,7 +73,17 @@
                         });
                     };
 
+                    $scope.selectSlot = function (value) {
+                        if (value) {
+                            $scope.scheduleCount++;
+                        } else {
+                            $scope.scheduleCount--;
+                        }
+                    };
+
                     $scope.confirm = function (demand) {
+                        $scope.currentDemand = demand;
+
                         $http({
                             url: api.endpoint + 'GetJobByDemandIdRequest/' + demand.id,
                             method: 'GET',
@@ -83,33 +93,76 @@
                         }).then(function (response) {
                             $scope.currentJob = response.data;
 
+                            $scope.scheduleAMList = [];
+                            $scope.schedulePMList = [];
+                            $scope.disabledAMList = [];
+                            $scope.disabledPMList = [];
+                            $scope.scheduleCount = 0;
+
+                            for (var i = 0; i < $scope.currentJob.schedule.length; i++) {
+                                var value = $scope.currentJob.schedule.charAt(i);
+
+                                if (i % 2 === 0) {
+                                    if (value === '0') {
+                                        $scope.scheduleAMList.push({'value': false});
+                                        $scope.disabledAMList.push(i / 2);
+                                    } else {
+                                        $scope.scheduleAMList.push({'value': true});
+                                        $scope.scheduleCount++;
+                                    }
+                                } else {
+                                    if (value === '0') {
+                                        $scope.schedulePMList.push({'value': false});
+                                        $scope.disabledPMList.push(Math.floor(i / 2));
+                                    } else {
+                                        $scope.schedulePMList.push({'value': true});
+                                        $scope.scheduleCount++;
+                                    }
+                                }
+                            }
+
+                            var parts = $scope.currentJob.expiryDate.split("/");
+                            var expiryDate = new Date(parseInt(parts[2], 10),
+                                    parseInt(parts[1], 10) - 1,
+                                    parseInt(parts[0], 10));
+
+                            $scope.dates = [];
+
+                            for (var i = 0; i < 10; i++) {
+                                if (expiryDate.getDay() !== 0 && expiryDate.getDay() !== 6) {
+                                    $scope.dates.unshift({'value': new Date(expiryDate)});
+                                } else {
+                                    i--;
+                                }
+
+                                expiryDate.setDate(expiryDate.getDate() - 1);
+                            }
+
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/confirmDemandPrompt.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                className: 'ngdialog-theme-default dialog-approve-request-2',
                                 scope: $scope
-                            }).then(function (schedule) {
-                                if ($scope.currentJob.monday) {
-                                    $scope.currentJob.monday = schedule.monday;
-                                }
+                            }).then(function () {
+                                var combinedSchedule = '';
 
-                                if ($scope.currentJob.tuesday) {
-                                    $scope.currentJob.tuesday = schedule.tuesday;
-                                }
+                                for (var i = 0; i < 10; i++) {
+                                    if ($scope.scheduleAMList[i].value) {
+                                        combinedSchedule += '1';
+                                    } else {
+                                        combinedSchedule += '0';
+                                    }
 
-                                if ($scope.currentJob.wednesday) {
-                                    $scope.currentJob.wednesday = schedule.wednesday;
+                                    if ($scope.schedulePMList[i].value) {
+                                        combinedSchedule += '1';
+                                    } else {
+                                        combinedSchedule += '0';
+                                    }
                                 }
-
-                                if ($scope.currentJob.thursday) {
-                                    $scope.currentJob.thursday = schedule.thursday;
-                                }
-
-                                if ($scope.currentJob.friday) {
-                                    $scope.currentJob.friday = schedule.friday;
-                                }
-
+                                
+                                $scope.currentJob.schedule = combinedSchedule;
+                                
                                 $http({
-                                    url: api.endpoint + 'UpdateJobRequest',
+                                    url: api.endpoint + 'ConfirmJobRequest',
                                     method: 'PUT',
                                     data: $scope.currentJob,
                                     headers: {

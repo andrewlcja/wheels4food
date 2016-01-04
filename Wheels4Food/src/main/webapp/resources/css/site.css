@@ -163,6 +163,22 @@ body {
     padding-right: 20px;
 }
 
+.ngdialog.dialog-approve-request-2 .ngdialog-content{
+    width : 1200px;
+    height: auto;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+.ngdialog.dialog-approve-request-3 .ngdialog-content{
+    width : 1250px;
+    height: auto;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
 .ngdialog.dialog-approve-request .ngdialog-content{
     width : 600px;
     height: auto;
@@ -254,4 +270,25 @@ body {
 
 .rejected {
     background-color: #f5cfd9 !important;
+}
+
+.schedule-unchecked {
+    background-color: #e0ebf2;
+    text-align: center;
+}
+
+.schedule-checked {
+    background-color: #b9e5d2;
+    text-align: center;
+}
+
+.schedule-checkbox {
+    height: 20px; 
+    width: 20px;
+}
+
+.schedule-header {
+    background-color: #6497b1; 
+    color: white; 
+    text-align: center;
 }
