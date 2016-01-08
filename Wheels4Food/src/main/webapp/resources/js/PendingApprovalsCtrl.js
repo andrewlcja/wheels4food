@@ -109,12 +109,14 @@
                                 data: {
                                     'demandID': pendingApproval.id,
                                     'schedule': combinedSchedule, 
-                                    'comments': comment
+                                    'comments': comment,
+                                    'userID': pendingApproval.user.id
                                 },
                                 headers: {
                                     'Content-Type': 'application/json',
                                 }
                             }).then(function (response) {
+                                console.log(response);
                                 if (response.data.isCreated) {
                                     $scope.pendingApprovalList.splice(($scope.currentPage - 1) * 10 + index, 1);
                                 }

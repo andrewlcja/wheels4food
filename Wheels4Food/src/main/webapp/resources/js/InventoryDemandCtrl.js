@@ -176,7 +176,25 @@
                             });
                         });
                     };
-
+                    
+                    $scope.viewAcceptedJob = function (demand) {
+                        $http({
+                            url: api.endpoint + 'GetJobByDemandIdRequest/' + demand.id,
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        }).then(function (response) {
+                            $scope.currentJob = response.data;
+                            
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/viewAcceptedJobDetailsVWO.html',
+                                className: 'ngdialog-theme-default dialog-view-job',
+                                scope: $scope
+                            });
+                        });
+                    };
+                    
                     $scope.viewJob = function (demand) {
                         $http({
                             url: api.endpoint + 'GetJobByDemandIdRequest/' + demand.id,
@@ -186,42 +204,56 @@
                             }
                         }).then(function (response) {
                             $scope.currentJob = response.data;
+                            
+                            $scope.scheduleAMList = [];
+                            $scope.schedulePMList = [];
+                            $scope.disabledAMList = [];
+                            $scope.disabledPMList = [];
+                            $scope.scheduleCount = 0;
+
+                            for (var i = 0; i < $scope.currentJob.schedule.length; i++) {
+                                var value = $scope.currentJob.schedule.charAt(i);
+
+                                if (i % 2 === 0) {
+                                    if (value === '0') {
+                                        $scope.scheduleAMList.push({'value': false});
+                                        $scope.disabledAMList.push(i / 2);
+                                    } else {
+                                        $scope.scheduleAMList.push({'value': true});
+                                        $scope.scheduleCount++;
+                                    }
+                                } else {
+                                    if (value === '0') {
+                                        $scope.schedulePMList.push({'value': false});
+                                        $scope.disabledPMList.push(Math.floor(i / 2));
+                                    } else {
+                                        $scope.schedulePMList.push({'value': true});
+                                        $scope.scheduleCount++;
+                                    }
+                                }
+                            }
+
+                            var parts = $scope.currentJob.expiryDate.split("/");
+                            var expiryDate = new Date(parseInt(parts[2], 10),
+                                    parseInt(parts[1], 10) - 1,
+                                    parseInt(parts[0], 10));
+
+                            $scope.dates = [];
+
+                            for (var i = 0; i < 10; i++) {
+                                if (expiryDate.getDay() !== 0 && expiryDate.getDay() !== 6) {
+                                    $scope.dates.unshift({'value': new Date(expiryDate)});
+                                } else {
+                                    i--;
+                                }
+
+                                expiryDate.setDate(expiryDate.getDate() - 1);
+                            }
 
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/viewJobDetails.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                className: 'ngdialog-theme-default dialog-approve-request-3',
                                 scope: $scope
-                            }).then(function (schedule) {
-                                if ($scope.currentJob.monday) {
-                                    $scope.currentJob.monday = schedule.monday;
-                                }
-
-                                if ($scope.currentJob.tuesday) {
-                                    $scope.currentJob.tuesday = schedule.tuesday;
-                                }
-
-                                if ($scope.currentJob.wednesday) {
-                                    $scope.currentJob.wednesday = schedule.wednesday;
-                                }
-
-                                if ($scope.currentJob.thursday) {
-                                    $scope.currentJob.thursday = schedule.thursday;
-                                }
-
-                                if ($scope.currentJob.friday) {
-                                    $scope.currentJob.friday = schedule.friday;
-                                }
-
-                                $http({
-                                    url: api.endpoint + 'UpdateJobRequest',
-                                    method: 'PUT',
-                                    data: $scope.currentJob,
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    }
-                                }).then(function (response) {
-                                    console.log(response.data);
-                                });
                             });
                         });
                     };
@@ -248,6 +280,28 @@
                             });
                         });
                     };
+                    
+                    $scope.complete = function (demand) {
+                        $scope.currentDemand = demand;
+
+                        ngDialog.openConfirm({
+                            template: '/Wheels4Food/resources/ngTemplates/completeJobPrompt.html',
+                            className: 'ngdialog-theme-default dialog-generic',
+                            scope: $scope
+                        }).then(function () {
+                            $http({
+                                url: api.endpoint + 'CompleteJobByDemandIdRequest/' + demand.id,
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then(function (response) {
+                                if (response.data.isCompleted) {
+                                    $state.go($state.current, $stateParams, {reload: true, inherit: false});
+                                }
+                            });
+                        });
+                    };
 
                     //counts the days selected
                     $scope.dayCount = 0;
@@ -270,6 +324,7 @@
                     $timeout(function () {
                         indexPromise.then(function (response) {
                             $scope.demandList = response.data;
+                            console.log(response);
                             $scope.currentPage = 1;
                             $scope.pageSize = 10;
 

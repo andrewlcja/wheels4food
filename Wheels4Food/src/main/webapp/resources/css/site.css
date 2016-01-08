@@ -187,6 +187,14 @@ body {
     padding-right: 20px;
 }
 
+.ngdialog.dialog-view-job .ngdialog-content {
+    width : 900px;
+    height: auto;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
 .index-table {
     margin-top: 1.3em;
 }
@@ -291,4 +299,16 @@ body {
     background-color: #6497b1; 
     color: white; 
     text-align: center;
+}
+
+.schedule-checked-accept {
+    background-color: #b9e5d2;
+    text-align: center;
+    cursor: pointer;
+}
+
+.schedule-checked-accept-select {
+    background-color: #eaf7f1;
+    text-align: center;
+    cursor: pointer;
 }

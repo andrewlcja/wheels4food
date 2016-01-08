@@ -48,11 +48,14 @@
                     <div ng-show="demand.status === 'Rejected'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Request rejected - {{demand.comments}}">Rejected</button></div>
                     <div ng-show="demand.status === 'Approved'"><button class="btn btn-success" ng-click="confirm(demand)" tooltip-placement="top" tooltip="Request approved - Click to confirm.">Confirm Now!</button></div>
                     <div ng-show="demand.status === 'Job Created'"><button class="btn btn-primary" ng-click="viewJob(demand)" tooltip-placement="top" tooltip="Job Created - Click to view job details.">Job Created</button></div>
+                    <div ng-show="demand.status === 'Job Accepted'"><button class="btn btn-success" ng-click="viewAcceptedJob(demand)" tooltip-placement="top" tooltip="Job Accepted - Click to view job details.">Job Accepted</button></div>
+                    <div ng-show="demand.status === 'Job Completed'"><button class="btn btn-default" style="cursor: default;">Job Completed</button></div>
                 </td>
                 <td class="text-center">
                     <div style="margin-top:0.33em;">
                         <span class="action-item fa fa-eye fa-lg" ng-click="view(demand)" tooltip-placement="top" tooltip="View"></span>
-                        <span ng-hide="demand.status === 'Job Created'" class="action-item fa fa-times fa-lg" ng-click="cancel(demand)" tooltip-placement="top" tooltip="Cancel"></span>
+                        <span ng-hide="demand.status === 'Job Created' || demand.status === 'Job Accepted' || demand.status === 'Job Completed'" class="action-item fa fa-times fa-lg" ng-click="cancel(demand)" tooltip-placement="top" tooltip="Cancel"></span>
+                        <span ng-show="demand.status === 'Job Accepted'" class="action-item fa fa-check fa-lg" ng-click="complete(demand)" tooltip-placement="top" tooltip="Complete"></span>
                     </div>
                 </td>
             </tr>
