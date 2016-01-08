@@ -41,14 +41,31 @@ public class Job implements Serializable {
     @Column(name = "status")
     private String status;
     
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "userID")
+    private User user;
+    
+    @Column(name = "deliveryDate")
+    private String deliveryDate;
+    
+    @Column(name = "collectionTime")
+    private String collectionTime;
+    
+    @Column(name = "deliveryTime")
+    private String deliveryTime;
+    
     public Job() {        
     }
 
-    public Job(Demand demand, String schedule, String expiryDate, String status) {
+    public Job(Demand demand, String schedule, String expiryDate, String status, User user, String deliveryDate, String collectionTime, String deliveryTime) {
         this.demand = demand;
         this.schedule = schedule;
         this.expiryDate = expiryDate;
         this.status = status;
+        this.user = user;
+        this.deliveryDate = deliveryDate;
+        this.collectionTime = collectionTime;
+        this.deliveryTime = deliveryTime;
     }
 
     public int getId() {
@@ -66,12 +83,44 @@ public class Job implements Serializable {
     public String getExpiryDate() {
         return expiryDate;
     }
-    
+
     public String getStatus() {
         return status;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public String getCollectionTime() {
+        return collectionTime;
+    }
+
+    public String getDeliveryTime() {
+        return deliveryTime;
+    }
+
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public void setCollectionTime(String collectionTime) {
+        this.collectionTime = collectionTime;
+    }
+
+    public void setDeliveryTime(String deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 }

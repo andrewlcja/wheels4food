@@ -6,7 +6,11 @@
             <td class="dialog-padding">{{currentJob.demand.supply.user.organizationName}}</td>
         </tr>
         <tr>
-            <th>Quantity Demanded</th>
+            <th>Receiving Organization</th>
+            <td class="dialog-padding">{{currentJob.demand.user.organizationName}}</td>
+        </tr>
+        <tr>
+            <th>Quantity</th>
             <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
         </tr>
         <tr>
@@ -15,7 +19,7 @@
         </tr>
         <tr>
             <th>Status</th>
-            <td class="dialog-padding">Active</td>
+            <td class="dialog-padding">{{currentJob.status}}</td>
         </tr>
         <tr>
             <th>Schedule</th>
@@ -25,18 +29,18 @@
         <table style="width: 100%; margin-top: 20px;">
             <tr>
                 <th></th>
-                <th class="schedule-header" ng-repeat="date in dates">{{date.value| date:'dd/MM/yyyy'}}</th>
+                <th class="schedule-header" ng-repeat="date in dates">{{date.value | date: 'EEE'}}<br>{{date.value | date:'dd/MM/yyyy'}}</th>
             </tr>
             <tr>
                 <th class="schedule-header">9AM-12PM</th>
                 <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
-                    <input type="checkbox" class="schedule-checkbox" ng-hide="disabledAMList.indexOf($index) !== -1" ng-model="scheduleAM.value" ng-click="selectSlot(scheduleAM.value)"/>
+                    <i class="fa fa-check fa-lg" ng-hide="disabledAMList.indexOf($index) !== -1"></i>
                 </td>
             </tr>
             <tr>
                 <th class="schedule-header">2PM-5PM</th>
                 <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
-                    <input type="checkbox" class="schedule-checkbox" ng-hide="disabledPMList.indexOf($index) !== -1" ng-model="schedulePM.value" ng-click="selectSlot(schedulePM.value)"/>
+                    <i class="fa fa-check fa-lg" ng-hide="disabledPMList.indexOf($index) !== -1"></i>
                 </td>
             </tr>
         </table>

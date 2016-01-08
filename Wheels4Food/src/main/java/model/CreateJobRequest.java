@@ -13,14 +13,16 @@ public class CreateJobRequest {
     private int demandID;
     private String schedule;
     private String comments;
+    private int userID;
 
     public CreateJobRequest() {
     }
 
-    public CreateJobRequest(int demandID, String schedule, String comments) {
+    public CreateJobRequest(int demandID, String schedule, String comments, int userID) {
         this.demandID = demandID;
         this.schedule = schedule;
         this.comments = comments;
+        this.userID = userID;
     }
 
     public int getDemandID() {
@@ -33,5 +35,9 @@ public class CreateJobRequest {
 
     public String getComments() {
         return comments;
+    }
+
+    public int getUserID() {
+        return userID;
     }
 }

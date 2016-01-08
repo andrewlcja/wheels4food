@@ -2,7 +2,7 @@
     'use strict';
     angular
             .module('Wheels4Food.Jobs')
-            .controller('JobsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog',
+            .controller('ViewJobsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog',
                 function ($scope, $state, $http, api, $timeout, ngDialog) {
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
