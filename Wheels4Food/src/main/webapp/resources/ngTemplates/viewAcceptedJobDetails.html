@@ -1,0 +1,43 @@
+<div class="ngdialog-message">
+    <h3><b>Job Details</b></h3>
+    <table>
+        <tr>
+            <th>Supplying Organization</th>
+            <td class="dialog-padding">{{currentJob.demand.supply.user.organizationName}}</td>
+            <th style="padding-left: 40px;">Receiving Organization</th>
+            <td class="dialog-padding">{{currentJob.demand.user.organizationName}}</td>
+        </tr>
+        <tr>
+            <th>Point of Contact Name</th>
+            <td class="dialog-padding">{{currentJob.demand.supply.user.pocName}}</td>
+            <th style="padding-left: 40px;">Point of Contact Name</th>
+            <td class="dialog-padding">{{currentJob.demand.user.pocName}}</td>
+        </tr>
+        <tr>
+            <th>Point of Contact Number</th>
+            <td class="dialog-padding">{{currentJob.demand.supply.user.pocNumber}}</td>
+            <th style="padding-left: 40px;">Point of Contact Number</th>
+            <td class="dialog-padding">{{currentJob.demand.user.pocNumber}}</td>
+        </tr>
+        <tr><td><br/></td></tr>        
+        <tr>
+            <th>Quantity</th>
+            <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
+        </tr>
+        <tr>
+            <th>Delivery Date</th>
+            <td class="dialog-padding">{{currentJob.deliveryDate}}</td>
+        </tr>
+        <tr>
+            <th>Collection Time</th>
+            <td class="dialog-padding">{{currentJob.collectionTime}}</td>
+        </tr>
+        <tr>
+            <th>Delivery Time</th>
+            <td class="dialog-padding">{{currentJob.deliveryTime}}</td>
+        </tr>
+    </table>    
+    <div class="ngdialog-buttons" style="padding-top: 20px;">
+        <button type="button" class="ngdialog-button ngdialog-button-default" ng-click="closeThisDialog()">Close</button>
+    </div>
+</div>

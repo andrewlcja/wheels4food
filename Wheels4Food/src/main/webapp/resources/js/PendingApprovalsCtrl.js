@@ -6,23 +6,36 @@
                 function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
-
-                    //set default schedule
-                    $scope.schedule = {
-                        'monday': false,
-                        'tuesday': false,
-                        'wednesday': false,
-                        'thursday': false,
-                        'friday': false
-                    };
-
-                    //counts the days selected
-                    $scope.dayCount = 0;
-                    $scope.selectDay = function (day) {
-                        if (day) {
-                            $scope.dayCount++;
+                    
+                    $scope.scheduleAMList = [];
+                    $scope.schedulePMList = [];
+                    
+                    for (var i = 0; i < 10; i++) {
+                        $scope.scheduleAMList.push({'value': false});
+                        $scope.schedulePMList.push({'value': false});
+                    }
+                    
+                    var today = new Date();
+                    
+                    $scope.dates = [];
+                    
+                    for (var i = 0; i < 10; i++) {
+                        today.setDate(today.getDate() + 1);
+                        
+                        if (today.getDay() !== 0 && today.getDay() !== 6) {
+                            $scope.dates.push({'value': new Date(today)});
                         } else {
-                            $scope.dayCount--;
+                            i--;
+                        }                        
+                    }
+                    
+                    $scope.scheduleCount = 0;
+                    
+                    $scope.selectSlot = function(value) {
+                        if (value) {
+                            $scope.scheduleCount++;
+                        } else {
+                            $scope.scheduleCount--;
                         }
                     };
                     
@@ -71,25 +84,39 @@
                     var validApproval = function (pendingApproval, index, comment) {
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/approveRequestPrompt.html',
-                            className: 'ngdialog-theme-default dialog-generic',
+                            className: 'ngdialog-theme-default dialog-approve-request-2',
                             scope: $scope
-                        }).then(function (schedule) {
+                        }).then(function () {
+                            var combinedSchedule = '';
+                            
+                            for (var i = 0; i < 10; i++) {
+                                if ($scope.scheduleAMList[i].value) {
+                                    combinedSchedule += '1';
+                                } else {
+                                    combinedSchedule += '0';
+                                }
+                                
+                                if ($scope.schedulePMList[i].value) {
+                                    combinedSchedule += '1';
+                                } else {
+                                    combinedSchedule += '0';
+                                }
+                            }
+                            
                             $http({
                                 url: api.endpoint + 'CreateJobRequest',
                                 method: 'POST',
                                 data: {
                                     'demandID': pendingApproval.id,
-                                    'monday': schedule.monday,
-                                    'tuesday': schedule.tuesday,
-                                    'wednesday': schedule.wednesday,
-                                    'thursday': schedule.thursday,
-                                    'friday': schedule.friday,
-                                    'comments': comment
+                                    'schedule': combinedSchedule, 
+                                    'comments': comment,
+                                    'userID': pendingApproval.user.id
                                 },
                                 headers: {
                                     'Content-Type': 'application/json',
                                 }
                             }).then(function (response) {
+                                console.log(response);
                                 if (response.data.isCreated) {
                                     $scope.pendingApprovalList.splice(($scope.currentPage - 1) * 10 + index, 1);
                                 }

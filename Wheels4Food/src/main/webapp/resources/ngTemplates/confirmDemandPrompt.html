@@ -1,17 +1,29 @@
 <div class="ngdialog-message">
     <h3><b>Confirmation</b></h3>
-    <div>Select your preferred weekdays for the delivery of items:</div>
-    <div><i>*working hours from 9am to 5pm</i></div>
-    <div style="padding-top:10px;">
-        <div ng-show="currentJob.monday"><input type="checkbox" ng-model="schedule.monday" ng-click="selectDay(schedule.monday)"/> Mondays<br/></div>
-        <div ng-show="currentJob.tuesday"><input type="checkbox" ng-model="schedule.tuesday" ng-click="selectDay(schedule.tuesday)"/> Tuesdays<br/></div>
-        <div ng-show="currentJob.wednesday"><input type="checkbox" ng-model="schedule.wednesday" ng-click="selectDay(schedule.wednesday)"/> Wednesdays<br/></div>
-        <div ng-show="currentJob.thursday"><input type="checkbox" ng-model="schedule.thursday" ng-click="selectDay(schedule.thursday)"/> Thursdays<br/></div>
-        <div ng-show="currentJob.friday"><input type="checkbox" ng-model="schedule.friday" ng-click="selectDay(schedule.friday)"/> Fridays<br/></div>   
+    <div>Select your preferred timeslots for the collection of <b>{{currentJob.demand.quantityDemanded}} <i class="fa fa-times"></i> {{currentJob.demand.supply.itemName}}</b></div>
+    <div>
+        <table style="width: 100%; margin-top: 20px;">
+            <tr>
+                <th></th>
+                <th class="schedule-header" ng-repeat="date in dates">{{date.value | date: 'EEE'}}<br>{{date.value | date:'dd/MM/yyyy'}}</th>
+            </tr>
+            <tr>
+                <th class="schedule-header">9AM-12PM</th>
+                <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
+                    <input type="checkbox" class="schedule-checkbox" ng-hide="disabledAMList.indexOf($index) !== -1" ng-model="scheduleAM.value" ng-click="selectSlot(scheduleAM.value)"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="schedule-header">2PM-5PM</th>
+                <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
+                    <input type="checkbox" class="schedule-checkbox" ng-hide="disabledPMList.indexOf($index) !== -1" ng-model="schedulePM.value" ng-click="selectSlot(schedulePM.value)"/>
+                </td>
+            </tr>
+        </table>
     </div>
-    <div class="error-message" ng-show="dayCount < 2">At least 2 days should be selected.</div>
-    <div class="col-sm-offset-7" style="padding-top: 20px;">
+    <div class="error-message" ng-show="scheduleCount < 3">Please select at least 3 timeslots.</div>
+    <div class="col-sm-offset-10" style="padding-top: 20px; padding-left: 20px;">
         <button type="button" class="btn btn-default" ng-click="closeThisDialog()">CANCEL</button>
-        <button type="button" class="btn btn-primary" ng-click="confirm(schedule)" ng-disabled="dayCount < 2" ng-class="{'cursor-disabled': dayCount < 2}">CONFIRM</button>
+        <button type="button" class="btn btn-primary" ng-click="confirm()" ng-disabled="scheduleCount < 3" ng-class="{'cursor-disabled': scheduleCount < 3}">CONFIRM</button>
     </div>
 </div>

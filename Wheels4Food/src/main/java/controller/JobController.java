@@ -6,10 +6,13 @@
 package controller;
 
 import java.util.List;
+import model.AcceptJobRequest;
+import model.AcceptJobResponse;
+import model.CompleteJobByDemandIdResponse;
+import model.ConfirmJobResponse;
 import model.CreateJobRequest;
 import model.CreateJobResponse;
 import model.Job;
-import model.UpdateJobResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,17 +31,23 @@ public class JobController {
 
     @Autowired
     JobService jobService;
-    
+
     @RequestMapping(value = "/CreateJobRequest", method = RequestMethod.POST)
     public @ResponseBody
     CreateJobResponse createJobRequest(@RequestBody CreateJobRequest request) {
         return jobService.createJobRequest(request);
     }
-    
-    @RequestMapping(value = "/UpdateJobRequest", method = RequestMethod.PUT)
+
+    @RequestMapping(value = "/ConfirmJobRequest", method = RequestMethod.PUT)
     public @ResponseBody
-    UpdateJobResponse updateJobRequest(@RequestBody Job job) {
-        return jobService.updateJobRequest(job);
+    ConfirmJobResponse confirmJobRequest(@RequestBody Job job) {
+        return jobService.confirmJobRequest(job);
+    }
+
+    @RequestMapping(value = "/AcceptJobRequest", method = RequestMethod.PUT)
+    public @ResponseBody
+    AcceptJobResponse confirmJobRequest(@RequestBody AcceptJobRequest request) {
+        return jobService.acceptJobRequest(request);
     }
 
     @RequestMapping(value = "/GetJobListRequest", method = RequestMethod.GET)
@@ -54,30 +63,52 @@ public class JobController {
 
         return jobList;
     }
-    
+
+    @RequestMapping(value = "/GetJobListByUserIdRequest/{userID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Job> getJobListByUserIdRequest(@PathVariable("userID") int userID) {
+        List<Job> jobList = null;
+
+        try {
+            jobList = jobService.getJobListByUserIdRequest(userID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jobList;
+    }
+
     @RequestMapping(value = "/GetJobByDemandIdRequest/{demandID}", method = RequestMethod.GET)
-    public @ResponseBody Job getJobByDemandIdRequest(@PathVariable("demandID") int demandID) {
+    public @ResponseBody
+    Job getJobByDemandIdRequest(@PathVariable("demandID") int demandID) {
         Job job = null;
-        
+
         try {
             job = jobService.getJobByDemandIdRequest(demandID);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return job;
     }
-    
+
     @RequestMapping(value = "/GetJobByIdRequest/{jobID}", method = RequestMethod.GET)
-    public @ResponseBody Job getJobByIdRequest(@PathVariable("jobID") int jobID) {
+    public @ResponseBody
+    Job getJobByIdRequest(@PathVariable("jobID") int jobID) {
         Job job = null;
-        
+
         try {
-            job = jobService.getJobByDemandIdRequest(jobID);
+            job = jobService.getJobByIdRequest(jobID);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return job;
+    }
+
+    @RequestMapping(value = "/CompleteJobByDemandIdRequest/{demandID}", method = RequestMethod.PUT)
+    public @ResponseBody
+    CompleteJobByDemandIdResponse completeJobByDemandIdRequest(@PathVariable("demandID") int demandID) {
+        return jobService.completeJobByDemandIdRequest(demandID);
     }
 }

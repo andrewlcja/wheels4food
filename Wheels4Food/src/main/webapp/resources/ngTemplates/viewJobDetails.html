@@ -6,28 +6,12 @@
             <td class="dialog-padding">{{currentJob.demand.supply.user.organizationName}}</td>
         </tr>
         <tr>
-            <th>Quantity Demanded</th>
-            <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
+            <th>Receiving Organization</th>
+            <td class="dialog-padding">{{currentJob.demand.user.organizationName}}</td>
         </tr>
-        <tr valign="top">
-            <th>Schedule</th>
-            <td class="dialog-padding">
-                <div ng-show="currentJob.monday">
-                    Mondays
-                </div>
-                <div ng-show="currentJob.tuesday">
-                    Tuesdays
-                </div>
-                <div ng-show="currentJob.wednesday">
-                    Wednesdays
-                </div>
-                <div ng-show="currentJob.thursday">
-                    Thursdays
-                </div>
-                <div ng-show="currentJob.friday">
-                    Fridays
-                </div>
-            </td>
+        <tr>
+            <th>Quantity</th>
+            <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
         </tr>
         <tr>
             <th>Job Expiry Date</th>
@@ -35,9 +19,32 @@
         </tr>
         <tr>
             <th>Status</th>
-            <td class="dialog-padding">Active</td>
+            <td class="dialog-padding">{{currentJob.status}}</td>
+        </tr>
+        <tr>
+            <th>Schedule</th>
         </tr>
     </table>
+    <div>
+        <table style="width: 100%; margin-top: 20px;">
+            <tr>
+                <th></th>
+                <th class="schedule-header" ng-repeat="date in dates">{{date.value | date: 'EEE'}}<br>{{date.value | date:'dd/MM/yyyy'}}</th>
+            </tr>
+            <tr>
+                <th class="schedule-header">9AM-12PM</th>
+                <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
+                    <i class="fa fa-check fa-lg" ng-hide="disabledAMList.indexOf($index) !== -1"></i>
+                </td>
+            </tr>
+            <tr>
+                <th class="schedule-header">2PM-5PM</th>
+                <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
+                    <i class="fa fa-check fa-lg" ng-hide="disabledPMList.indexOf($index) !== -1"></i>
+                </td>
+            </tr>
+        </table>
+    </div>
     <div class="ngdialog-buttons" style="padding-top: 20px;">
         <button type="button" class="ngdialog-button ngdialog-button-default" ng-click="closeThisDialog()">Close</button>
     </div>

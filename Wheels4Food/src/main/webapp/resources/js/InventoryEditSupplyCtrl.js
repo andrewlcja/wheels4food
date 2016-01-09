@@ -23,7 +23,7 @@
                             $scope.showSupply = true;
 
                             if ($scope.supply.expiryDate === 'NA') {
-                                $scope.expiryDate = 'dd/mm/yyyy';
+                                $scope.expiryDate = '01/01/1999';
                                 $scope.expiryDateNA = true;
                             }
 
@@ -115,14 +115,14 @@
                     $scope.templateUrl = "/Wheels4Food/resources/ngTemplates/cgBusy.html";
                 }
             ])
-            .directive('customMin', function () {
+            .directive('ecustomMin', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customMin = function (modelValue) {
+                        ngModel.$validators.ecustomMin = function (modelValue) {
                             //true or false based on custom dir validation
-                            if ($scope.supply.maximum && modelValue > $scope.supply.maximum) {
+                            if (modelValue && $scope.supply.maximum && modelValue > $scope.supply.maximum) {
                                 return false;
                             }
 
@@ -131,14 +131,14 @@
                     }
                 };
             })
-            .directive('customMin2', function () {
+            .directive('ecustomMin2', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customMin2 = function (modelValue) {
+                        ngModel.$validators.ecustomMin2 = function (modelValue) {
                             //true or false based on custom dir validation
-                            if ($scope.supply.quantitySupplied && (modelValue > $scope.supply.quantitySupplied || (modelValue > Math.ceil($scope.supply.quantitySupplied / 2) && modelValue < $scope.supply.quantitySupplied))) {
+                            if (modelValue && $scope.supply.quantitySupplied && (modelValue > $scope.supply.quantitySupplied || (modelValue > Math.ceil($scope.supply.quantitySupplied / 2) && modelValue < $scope.supply.quantitySupplied))) {
                                 return false;
                             }
 
@@ -147,12 +147,12 @@
                     }
                 };
             })
-            .directive('customMax', function () {
+            .directive('ecustomMax', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customMax = function (modelValue) {
+                        ngModel.$validators.ecustomMax = function (modelValue) {
                             //true or false based on custom dir validation
                             if (modelValue && $scope.supply.minimum && modelValue < $scope.supply.minimum) {
                                 return false;
@@ -163,14 +163,14 @@
                     }
                 };
             })
-            .directive('customMax2', function () {
+            .directive('ecustomMax2', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customMax2 = function (modelValue) {
+                        ngModel.$validators.ecustomMax2 = function (modelValue) {
                             //true or false based on custom dir validation
-                            if ($scope.supply.quantitySupplied && (modelValue > $scope.supply.quantitySupplied || ($scope.supply.quantitySupplied - modelValue !== 0 && modelValue > $scope.supply.quantitySupplied - $scope.supply.minimum))) {
+                            if (modelValue && $scope.supply.quantitySupplied && (modelValue > $scope.supply.quantitySupplied || ($scope.supply.quantitySupplied - modelValue !== 0 && modelValue > $scope.supply.quantitySupplied - $scope.supply.minimum))) {
                                 return false;
                             }
 
@@ -179,12 +179,12 @@
                     }
                 };
             })
-            .directive('customDate', function () {
+            .directive('ecustomDate', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customDate = function (modelValue) {
+                        ngModel.$validators.ecustomDate = function (modelValue) {
                             //true or false based on custom dir validation
                             if (!$scope.expiryDateNA && !modelValue) {
                                 return false;
@@ -195,12 +195,12 @@
                     }
                 };
             })
-            .directive('customDate2', function () {
+            .directive('ecustomDate2', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customDate2 = function (modelValue) {
+                        ngModel.$validators.ecustomDate2 = function (modelValue) {
                             $scope.tempExpiryDate = modelValue;
                             //true or false based on custom dir validation
                             if (!$scope.expiryDateNA && new Date() >= modelValue) {
@@ -212,14 +212,14 @@
                     }
                 };
             })
-            .directive('customQuantitySupplied', function () {
+            .directive('ecustomQuantitySupplied', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customQuantitySupplied = function (modelValue) {
+                        ngModel.$validators.ecustomQuantitySupplied = function (modelValue) {
                             //true or false based on custom dir validation
-                            if ($scope.supply.minimum && !$scope.supply.maximum && ($scope.supply.minimum > modelValue || (modelValue > $scope.supply.minimum && modelValue < $scope.supply.minimum * 2))) {
+                            if (modelValue && $scope.supply.minimum && !$scope.supply.maximum && ($scope.supply.minimum > modelValue || (modelValue > $scope.supply.minimum && modelValue < $scope.supply.minimum * 2))) {
                                 return false;
                             }
 
@@ -228,14 +228,14 @@
                     }
                 };
             })
-            .directive('customQuantitySupplied2', function () {
+            .directive('ecustomQuantitySupplied2', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customQuantitySupplied2 = function (modelValue) {
+                        ngModel.$validators.ecustomQuantitySupplied2 = function (modelValue) {
                             //true or false based on custom dir validation
-                            if ($scope.supply.maximum && !$scope.supply.minimum && ($scope.supply.maximum > modelValue || (modelValue > $scope.supply.maximum && modelValue < $scope.supply.maximum * 2))) {
+                            if (modelValue && $scope.supply.maximum && !$scope.supply.minimum && ($scope.supply.maximum > modelValue || (modelValue > $scope.supply.maximum && modelValue < $scope.supply.maximum * 2))) {
                                 return false;
                             }
 
@@ -244,14 +244,14 @@
                     }
                 };
             })
-            .directive('customQuantitySupplied3', function () {
+            .directive('ecustomQuantitySupplied3', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customQuantitySupplied3 = function (modelValue) {
+                        ngModel.$validators.ecustomQuantitySupplied3 = function (modelValue) {
                             //true or false based on custom dir validation
-                            if ($scope.supply.maximum && $scope.supply.minimum && modelValue < $scope.supply.minimum + $scope.supply.maximum) {
+                            if (modelValue && $scope.supply.maximum && $scope.supply.minimum && modelValue < $scope.supply.minimum + $scope.supply.maximum) {
                                 return false;
                             }
 
@@ -260,12 +260,12 @@
                     }
                 };
             })
-            .directive('customNumber', function () {
+            .directive('ecustomNumber', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customNumber = function (modelValue) {
+                        ngModel.$validators.ecustomNumber = function (modelValue) {
                             //true or false based on custom dir validation
                             if (modelValue % 1 !== 0) {
                                 return false;
@@ -276,12 +276,12 @@
                     }
                 };
             })
-            .directive('customQuantity', function () {
+            .directive('ecustomQuantity', function () {
                 return {
                     restrict: 'A',
                     require: 'ngModel',
                     link: function ($scope, $element, $attrs, ngModel) {
-                        ngModel.$validators.customQuantity = function (modelValue) {
+                        ngModel.$validators.ecustomQuantity = function (modelValue) {
                             //true or false based on custom dir validation
                             if (modelValue && !$scope.supply.quantitySupplied) {
                                 return false;

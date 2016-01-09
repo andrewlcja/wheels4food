@@ -11,51 +11,33 @@ package model;
  */
 public class CreateJobRequest {
     private int demandID;
-    private boolean monday;
-    private boolean tuesday;
-    private boolean wednesday;
-    private boolean thursday;
-    private boolean friday;
+    private String schedule;
     private String comments;
+    private int userID;
 
     public CreateJobRequest() {
     }
 
-    public CreateJobRequest(int demandID, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, String comments) {
+    public CreateJobRequest(int demandID, String schedule, String comments, int userID) {
         this.demandID = demandID;
-        this.monday = monday;
-        this.tuesday = tuesday;
-        this.wednesday = wednesday;
-        this.thursday = thursday;
-        this.friday = friday;
-        this.comments= comments;
+        this.schedule = schedule;
+        this.comments = comments;
+        this.userID = userID;
     }
 
     public int getDemandID() {
         return demandID;
     }
 
-    public boolean isMonday() {
-        return monday;
+    public String getSchedule() {
+        return schedule;
     }
 
-    public boolean isTuesday() {
-        return tuesday;
-    }
-
-    public boolean isWednesday() {
-        return wednesday;
-    }
-
-    public boolean isThursday() {
-        return thursday;
-    }
-
-    public boolean isFriday() {
-        return friday;
-    }
-    
     public String getComments() {
         return comments;
+    }
+
+    public int getUserID() {
+        return userID;
     }
 }
