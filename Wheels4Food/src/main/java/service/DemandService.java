@@ -8,6 +8,7 @@ package service;
 import dao.DemandDAO;
 import dao.SupplyDAO;
 import dao.UserDAO;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,11 +21,14 @@ import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.GetUnavailableTimeslotsByDeliveryDateRequest;
 import model.RejectDemandRequest;
 import model.RejectDemandResponse;
 import model.Supply;
+import model.UpdateDemandResponse;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -45,6 +49,9 @@ public class DemandService {
         int userID = request.getUserID();
         int supplyID = request.getSupplyID();
         String quantityDemandedStr = request.getQuantityDemanded().trim();
+        String preferredDeliveryDateStr = request.getPreferredDeliveryDate();
+        String preferredTimeslot = request.getPreferredTimeslot();
+        String preferredSchedule = request.getPreferredSchedule();
 
         ArrayList<String> errorList = new ArrayList<String>();
 
@@ -58,7 +65,19 @@ public class DemandService {
         }
 
         if (quantityDemandedStr.equals("")) {
-            errorList.add("Quantity requested cannot be blank");
+            errorList.add("Quantity requested cannot be blank.");
+        }
+
+        if (preferredDeliveryDateStr.equals("")) {
+            errorList.add("Preferred Delivery Date cannot be blank.");
+        }
+
+        if (preferredTimeslot.equals("")) {
+            errorList.add("Preferred Timeslot requested cannot be blank.");
+        }
+
+        if (preferredSchedule.equals("")) {
+            errorList.add("Preferred Schedule cannot be blank.");
         }
 
         //check if the errorlist is empty
@@ -71,6 +90,32 @@ public class DemandService {
 
             if (quantityDemanded <= 0) {
                 errorList.add("Quantity requested must be more than 0");
+            }
+
+            if (preferredSchedule.equals("NA")) {
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                Date today = cal.getTime();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+                try {
+                    Date preferredDeliveryDate = sdf.parse(preferredDeliveryDateStr);
+
+                    if (today.compareTo(preferredDeliveryDate) >= 0 || (preferredDeliveryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24) <= 3) {
+                        errorList.add("Preferred Delivery Date must be a date at least 3 days after today");
+                        return new CreateDemandResponse(false, errorList);
+                    }
+                } catch (ParseException e) {
+                    errorList.add("Invalid Preferred Delivery Date");
+                }
+            } else {
+                if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 5) {
+                    errorList.add("A minimum of 5 timeslots must be selected.");
+                }
             }
 
             try {
@@ -93,21 +138,15 @@ public class DemandService {
                 int minimum = supply.getMinimum();
                 int maximum = supply.getMaximum();
 
-                int quantityRemaining = supply.getQuantityRemaining();
-
-                //check if item is still in stock
-                if (quantityRemaining == 0) {
-                    errorList.add("Unfortunately, the requested item is out of stock");
-                    return new CreateDemandResponse(false, errorList);
-                }
+                int quantitySupplied = supply.getQuantitySupplied();
 
                 //check if quantity demanded is in the valid range
-                if ((quantityRemaining - minimum < minimum) && quantityDemanded != quantityRemaining) {
-                    errorList.add("Quantity requested must be equals to " + quantityRemaining);
-                } else if (quantityRemaining - minimum == minimum && quantityDemanded != quantityRemaining && quantityDemanded != minimum) {
+                if ((quantitySupplied - minimum < minimum) && quantityDemanded != quantitySupplied) {
+                    errorList.add("Quantity requested must be equals to " + quantitySupplied);
+                } else if (quantitySupplied - minimum == minimum && quantityDemanded != quantitySupplied && quantityDemanded != minimum) {
                     errorList.add("Quantity requested must be equals to " + minimum + " OR equals to " + maximum);
-                } else if ((minimum + maximum) > quantityRemaining && (quantityRemaining - quantityDemanded) < minimum && (quantityRemaining - quantityDemanded) != 0) {
-                    errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + (quantityRemaining - minimum) + " OR equals to " + quantityRemaining);
+                } else if ((minimum + maximum) > quantitySupplied && (quantitySupplied - quantityDemanded) < minimum && (quantitySupplied - quantityDemanded) != 0) {
+                    errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + (quantitySupplied - minimum) + " OR equals to " + quantitySupplied);
                 } else if (quantityDemanded > maximum || quantityDemanded < minimum) {
                     errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + maximum);
                 }
@@ -117,25 +156,13 @@ public class DemandService {
                     return new CreateDemandResponse(false, errorList);
                 }
 
-                //set quantity remaining
-                supply.setQuantityRemaining(quantityRemaining - quantityDemanded);
-
-                //check if there's a need to update the maximum limit
-                if (maximum > supply.getQuantityRemaining()) {
-                    supply.setMaximum(supply.getQuantityRemaining());
-                } else if (supply.getQuantityRemaining() - maximum < minimum) {
-                    supply.setMaximum(supply.getQuantityRemaining() - minimum);
-                }
-
-                supplyDAO.updateSupply(supply);
-
                 //generate date requested
                 Date today = Calendar.getInstance().getTime();
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
                 String dateRequested = sdf.format(today);
 
-                demandDAO.createDemand(new Demand(user, supply, quantityDemanded, dateRequested, "Pending", ""));
+                demandDAO.createDemand(new Demand(user, supply, quantityDemanded, dateRequested, preferredDeliveryDateStr, preferredTimeslot, preferredSchedule, "Pending", ""));
                 return new CreateDemandResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());
@@ -164,20 +191,6 @@ public class DemandService {
                 Supply supply = demand.getSupply();
 
                 if (demand.getStatus().equals("Pending")) {
-                    //add back the quantity demanded
-                    int newQuantityRemaining = supply.getQuantityRemaining() + demand.getQuantityDemanded();
-                    supply.setQuantityRemaining(newQuantityRemaining);
-
-                    //check initial maximum limit
-                    int initialMaximum = supply.getInitialMaximum();
-                    int minimum = supply.getMinimum();
-
-                    if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
-                        supply.setMaximum(initialMaximum);
-                    } else {
-                        supply.setMaximum(newQuantityRemaining - minimum);
-                    }
-
                     supplyDAO.updateSupply(supply);
                 }
 
@@ -190,6 +203,75 @@ public class DemandService {
         } catch (NumberFormatException e) {
             errorList.add("Id must be an integer");
             return new DeleteDemandResponse(false, errorList);
+        }
+    }
+
+    public UpdateDemandResponse updateDemandRequest(Demand demand) {
+        int quantityDemanded = demand.getQuantityDemanded();
+        String preferredDeliveryDateStr = demand.getPreferredDeliveryDate();
+        String preferredTimeslot = demand.getPreferredTimeslot();
+        String preferredSchedule = demand.getPreferredSchedule();
+
+        ArrayList<String> errorList = new ArrayList<String>();
+
+        if (quantityDemanded <= 0) {
+            errorList.add("Quantity requested must be more than 0");
+        }
+
+        if (preferredSchedule.equals("NA")) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            Date today = cal.getTime();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+            try {
+                Date preferredDeliveryDate = sdf.parse(preferredDeliveryDateStr);
+
+                if (today.compareTo(preferredDeliveryDate) >= 0 || (preferredDeliveryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24) <= 3) {
+                    errorList.add("Preferred Delivery Date must be a date at least 3 days after today");
+                    return new UpdateDemandResponse(false, errorList);
+                }
+            } catch (ParseException e) {
+                errorList.add("Invalid Preferred Delivery Date");
+            }
+        } else {
+            if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 5) {
+                errorList.add("A minimum of 5 timeslots must be selected.");
+            }
+        }
+
+        try {
+            //get min and max of supply
+            int minimum = demand.getSupply().getMinimum();
+            int maximum = demand.getSupply().getMaximum();
+
+            int quantitySupplied = demand.getSupply().getQuantitySupplied();
+
+            //check if quantity demanded is in the valid range
+            if ((quantitySupplied - minimum < minimum) && quantityDemanded != quantitySupplied) {
+                errorList.add("Quantity requested must be equals to " + quantitySupplied);
+            } else if (quantitySupplied - minimum == minimum && quantityDemanded != quantitySupplied && quantityDemanded != minimum) {
+                errorList.add("Quantity requested must be equals to " + minimum + " OR equals to " + maximum);
+            } else if ((minimum + maximum) > quantitySupplied && (quantitySupplied - quantityDemanded) < minimum && (quantitySupplied - quantityDemanded) != 0) {
+                errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + (quantitySupplied - minimum) + " OR equals to " + quantitySupplied);
+            } else if (quantityDemanded > maximum || quantityDemanded < minimum) {
+                errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + maximum);
+            }
+
+            //check if the errorlist is empty
+            if (!errorList.isEmpty()) {
+                return new UpdateDemandResponse(false, errorList);
+            }
+            
+            demandDAO.updateDemand(demand);
+            return new UpdateDemandResponse(true, null);
+        } catch (Exception e) {
+            errorList.add(e.getMessage());
+            return new UpdateDemandResponse(false, errorList);
         }
     }
 
@@ -273,25 +355,10 @@ public class DemandService {
                 return new RejectDemandResponse(false, errorList);
             }
 
-            //add back the quantity demanded
-            int newQuantityRemaining = supply.getQuantityRemaining() + demand.getQuantityDemanded();
-            supply.setQuantityRemaining(newQuantityRemaining);
-
-            //check initial maximum limit
-            int initialMaximum = supply.getInitialMaximum();
-            int minimum = supply.getMinimum();
-
-            if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
-                supply.setMaximum(initialMaximum);
-            } else {
-                supply.setMaximum(newQuantityRemaining - minimum);
-            }
-
             demand.setComments(comments);
             demand.setStatus("Rejected");
 
             try {
-                supplyDAO.updateSupply(supply);
                 demandDAO.updateDemand(demand);
                 return new RejectDemandResponse(true, null);
             } catch (Exception e) {
@@ -314,5 +381,21 @@ public class DemandService {
 
     public List<Demand> getPendingDemandListBySupplierIdRequest(int supplierID) throws Exception {
         return demandDAO.getPendingDemandListBySupplierId(supplierID);
+    }
+
+    public List<String> getUnavailableTimeslotsByDeliveryDateRequest(GetUnavailableTimeslotsByDeliveryDateRequest request) throws Exception {
+        List<Demand> demandList = demandDAO.getDemandListByDeliveryDate(request.getSupplierID(), request.getDeliveryDate());
+
+        List<String> unavailableTimeslots = new ArrayList<String>();
+
+        for (Demand d : demandList) {
+            unavailableTimeslots.add(d.getPreferredTimeslot());
+        }
+
+        return unavailableTimeslots;
+    }
+
+    public Demand getDemandByIdRequest(int id) throws Exception {
+        return demandDAO.getDemandById(id);
     }
 }

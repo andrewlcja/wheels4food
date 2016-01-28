@@ -12,8 +12,10 @@ import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.GetUnavailableTimeslotsByDeliveryDateRequest;
 import model.RejectDemandRequest;
 import model.RejectDemandResponse;
+import model.UpdateDemandResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -87,6 +89,26 @@ public class DemandController {
         return demandList;
     }
     
+    @RequestMapping(value = "/GetUnavailableTimeslotsByDeliveryDateRequest", method = RequestMethod.POST)
+    public @ResponseBody
+    List<String> getUnavailableTimeslotsByDeliveryDateRequest(@RequestBody GetUnavailableTimeslotsByDeliveryDateRequest request) {
+        List<String> unavailableTimeslots = null;
+
+        try {
+            unavailableTimeslots = demandService.getUnavailableTimeslotsByDeliveryDateRequest(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return unavailableTimeslots;
+    }
+    
+    @RequestMapping(value = "/UpdateDemandRequest", method = RequestMethod.PUT)
+    public @ResponseBody
+    UpdateDemandResponse updateDemandRequest(@RequestBody Demand demand) {
+        return demandService.updateDemandRequest(demand);
+    }
+    
     @RequestMapping(value = "/ApproveDemandRequest/{id}", method = RequestMethod.PUT)
     public @ResponseBody ApproveDemandResponse approveDemandRequest(@PathVariable("id") String id, @RequestBody ApproveDemandRequest request) {
         return demandService.approveDemandRequest(id, request);
@@ -95,5 +117,19 @@ public class DemandController {
     @RequestMapping(value = "/RejectDemandRequest/{id}", method = RequestMethod.PUT)
     public @ResponseBody RejectDemandResponse rejectDemandRequest(@PathVariable("id") String id, @RequestBody RejectDemandRequest request) {
         return demandService.rejectDemandRequest(id, request);
+    }
+    
+    @RequestMapping(value = "/GetDemandByIdRequest/{id}", method = RequestMethod.GET)
+    public @ResponseBody Demand getDemandByIdRequest(@PathVariable("id") int id) {
+        Demand demand = null;
+        
+        try {
+            demand = demandService.getDemandByIdRequest(id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return demand;
     }
 }

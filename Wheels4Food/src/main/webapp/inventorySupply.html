@@ -12,8 +12,8 @@
 <div class="index-table" search-filter="searchFilter">
     <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
         <thead>
-            <tr class="info">
-                <th class="text-center" width="30%" style="cursor: pointer" ng-click="sort('itemName')">
+            <tr class="header-row">
+                <th class="text-center" width="40%" style="cursor: pointer" ng-click="sort('itemName')">
                     Item Name
                     <span ng-show="sortType == 'itemName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                     <span ng-show="sortType == 'itemName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
@@ -27,11 +27,6 @@
                     Quantity Supplied
                     <span ng-show="sortType == 'quantitySupplied' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                     <span ng-show="sortType == 'quantitySupplied' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                </th>
-                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('quantityRemaining')">
-                    Marketplace Quantity
-                    <span ng-show="sortType == 'quantityRemaining' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'quantityRemaining' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                 </th>
                 <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('expiryDate')">
                     Expiry Date

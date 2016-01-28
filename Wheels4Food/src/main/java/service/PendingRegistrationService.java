@@ -164,7 +164,7 @@ public class PendingRegistrationService {
         String postalCodeStr = "NA";
         String pocName = request.getPocName().trim();
         String pocNumber = request.getPocNumber().trim();
-        String licenseNumber = request.getLicenseNumber().trim();
+        String licenseNumber = "NA";
         String role = request.getRole().trim();
 
         ArrayList<String> errorList = new ArrayList<String>();
@@ -196,10 +196,6 @@ public class PendingRegistrationService {
 
         if (pocNumber.equals("")) {
             errorList.add("Point of Contact Number cannot be blank");
-        }
-
-        if (licenseNumber.equals("")) {
-            errorList.add("License Number cannot be blank");
         }
 
         if (role.equals("")) {

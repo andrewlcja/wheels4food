@@ -14,15 +14,21 @@ public class CreateDemandRequest {
     private int userID;
     private int supplyID;
     private String quantityDemanded;
+    private String preferredDeliveryDate;
+    private String preferredTimeslot;
+    private String preferredSchedule;   
 
     public CreateDemandRequest() {
     }
 
-    public CreateDemandRequest(int userID, int supplyID, String quantityDemanded) {
+    public CreateDemandRequest(int userID, int supplyID, String quantityDemanded, String preferredDeliveryDate, String preferredTimeslot, String preferredSchedule) {
         this.userID = userID;
         this.supplyID = supplyID;
         this.quantityDemanded = quantityDemanded;
-    }
+        this.preferredDeliveryDate = preferredDeliveryDate;
+        this.preferredTimeslot = preferredTimeslot;
+        this.preferredSchedule = preferredSchedule;
+    }    
 
     public int getUserID() {
         return userID;
@@ -35,4 +41,16 @@ public class CreateDemandRequest {
     public String getQuantityDemanded() {
         return quantityDemanded;
     }
+
+    public String getPreferredDeliveryDate() {
+        return preferredDeliveryDate;
+    }
+
+    public String getPreferredTimeslot() {
+        return preferredTimeslot;
+    }
+
+    public String getPreferredSchedule() {
+        return preferredSchedule;
+    }    
 }

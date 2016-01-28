@@ -51,6 +51,7 @@
 
                     $scope.delete = function (user, index) {
                         $scope.currentUser = user;
+                        index = $scope.userList.indexOf(user);
 
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/deleteUserPrompt.html',
@@ -65,7 +66,7 @@
                                 }
                             }).then(function (response) {
                                 if (response.data.isDeleted) {
-                                    $scope.userList.splice(($scope.currentPage - 1) * 10 + index, 1);
+                                    $scope.userList.splice(index, 1);
                                 }
                             });
                         });

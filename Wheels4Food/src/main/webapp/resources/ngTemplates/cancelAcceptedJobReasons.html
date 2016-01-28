@@ -1,0 +1,12 @@
+<div class="ngdialog-message">
+    <h3><b>Please select a reason for cancellation</b></h3>
+    <div>
+        <input type="radio" ng-model="currentDemand.comments" value="Requesting VWO, {{currentDemand.user.organizationName}}, is unable to collect the items at the specified timing"/> I am unable to collect the items at the specified timing <br/>
+        <input type="radio" ng-model="currentDemand.comments" value="Volunteer did not delivered the items at the specified timing"/> Volunteer did not deliver the items at the specified timing
+    </div>
+    <div class="error-message" ng-show="currentDemand.comments === ''">Please select at 1 option.</div>
+    <div class="col-sm-offset-6" style="padding-top: 20px; padding-left: 50px;">
+        <button type="button" class="btn btn-default" ng-click="closeThisDialog()">CLOSE</button>
+        <button type="button" class="btn btn-primary" ng-click="confirm()" ng-disabled="currentDemand.comments === ''" ng-class="{'cursor-disabled': currentSelfCollection.demand.comments === ''}">CONFIRM</button>
+    </div>
+</div>

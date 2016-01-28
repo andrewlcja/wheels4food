@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.TimeZone;
 import model.AcceptJobRequest;
 import model.AcceptJobResponse;
+import model.CancelJobByDemandIdResponse;
 import model.CompleteJobByDemandIdResponse;
 import model.ConfirmJobResponse;
 import model.CreateJobRequest;
@@ -64,12 +65,12 @@ public class JobService {
             return new CreateJobResponse(false, errorList);
         }
 
-        if (StringUtils.countOccurrencesOf(schedule, "1") < 5) {
-            errorList.add("A minimum of 5 timeslots must be selected.");
+        if (StringUtils.countOccurrencesOf(schedule, "1") < 3) {
+            errorList.add("A minimum of 3 timeslots must be selected.");
             return new CreateJobResponse(false, errorList);
         }
 
-        demand.setStatus("Approved");
+        demand.setStatus("Job Created");
 
         Supply supply = demand.getSupply();
         int quantitySupplied = supply.getQuantitySupplied();
@@ -109,7 +110,7 @@ public class JobService {
                 return new CreateJobResponse(false, errorList);
             }
 
-            jobDAO.createJob(new Job(demand, schedule, expiryDateStr, "Inactive", user, "", "", ""));
+            jobDAO.createJob(new Job(demand, schedule, expiryDateStr, "Active", user, "", "", ""));
             return new CreateJobResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -220,17 +221,67 @@ public class JobService {
 
     }
 
+    public CancelJobByDemandIdResponse cancelJobByDemandIdRequest(Demand demand) {
+        int demandID = demand.getId();
+        String comments = demand.getComments();
+
+        ArrayList<String> errorList = new ArrayList<String>();
+
+        if (demandID <= 0) {
+            errorList.add("Invalid job id.");
+        }
+
+        if (comments.equals("")) {
+            errorList.add("Reason cannot be blank.");
+        }
+
+        if (!errorList.isEmpty()) {
+            return new CancelJobByDemandIdResponse(false, errorList);
+        }
+
+        Job job = jobDAO.getJobByDemandId(demandID);
+        job.setStatus("Cancelled");
+
+        demand.setStatus("Job Cancelled");
+        
+        Supply supply = demand.getSupply();
+
+        //add back the quantity demanded
+        int newQuantityRemaining = supply.getQuantitySupplied() + demand.getQuantityDemanded();
+        supply.setQuantitySupplied(newQuantityRemaining);
+
+        //check initial maximum limit
+        int initialMaximum = supply.getInitialMaximum();
+        int minimum = supply.getMinimum();
+
+        if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
+            supply.setMaximum(initialMaximum);
+        } else {
+            supply.setMaximum(newQuantityRemaining - minimum);
+        }
+
+        try {
+            jobDAO.updateJob(job);
+            demandDAO.updateDemand(demand);
+            supplyDAO.updateSupply(supply);
+            return new CancelJobByDemandIdResponse(true, null);
+        } catch (Exception e) {
+            errorList.add(e.getMessage());
+            return new CancelJobByDemandIdResponse(false, errorList);
+        }
+    }
+
     public CompleteJobByDemandIdResponse completeJobByDemandIdRequest(int demandID) {
         ArrayList<String> errorList = new ArrayList<String>();
 
         if (demandID <= 0) {
-            errorList.add("Invalid job id");
+            errorList.add("Invalid demand id");
             return new CompleteJobByDemandIdResponse(false, errorList);
         }
 
         Job job = jobDAO.getJobByDemandId(demandID);
         job.setStatus("Completed");
-        
+
         Demand demand = demandDAO.getDemandById(demandID);
         demand.setStatus("Job Completed");
 

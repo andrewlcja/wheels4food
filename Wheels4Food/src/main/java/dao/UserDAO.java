@@ -105,4 +105,12 @@ public class UserDAO {
         tx.commit();
         session.close();
     }
+    
+    public void createUser(User user) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        session.save(user);
+        tx.commit();
+        session.close();
+    }
 }

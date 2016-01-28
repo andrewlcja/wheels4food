@@ -12,13 +12,12 @@
 <div class="index-table" search-filter="searchFilter">
     <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
         <thead>
-            <tr class="info">
+            <tr class="header-row">
                 <th class="text-center" width="28%">Item Name</th>
-                <th class="text-center" width="10%">Category</th>
-                <th class="text-center" width="15%">Organization Name</th>
+                <th class="text-center" width="15%">Requester</th>
                 <th class="text-center" width="13%">Quantity Remaining</th>
                 <th class="text-center" width="13%">Quantity Requested</th>
-                <th class="text-center" width="12%">Status</th>
+                <th class="text-center" width="18%">Status</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
@@ -30,13 +29,21 @@
                 <td class="text-center">
                     <div ng-show="demand.status === 'Pending'"><button class="btn btn-default" style="cursor: default;">Pending</button></div>
                     <div ng-show="demand.status === 'Rejected'"><button class="btn btn-danger" style="cursor: default;">Rejected</button></div>
-                    <div ng-show="demand.status === 'Approved'"><button class="btn btn-success" style="cursor: default;">Approved</button></div>
                     <div ng-show="demand.status === 'Job Created'"><button class="btn btn-primary" ng-click="viewJob(demand)" tooltip-placement="top" tooltip="Job Created - Click to view job details.">Job Created</button></div>
+                    <div ng-show="demand.status === 'Self Collection Created'"><button class="btn btn-primary" ng-click="viewSelfCollection(demand)" tooltip-placement="top" tooltip="Self Collection Created - Click to view more details.">Self Collection Created</button></div>
+                    <div ng-show="demand.status === 'Job Accepted'"><button class="btn btn-success" ng-click="viewAcceptedJob(demand)" tooltip-placement="top" tooltip="Job Accepted - Click to view job details.">Job Accepted</button></div>
+                    <div ng-show="demand.status === 'Job Completed'"><button class="btn btn-default" style="cursor: default;">Job Completed</button></div>
+                    <div ng-show="demand.status === 'Job Cancelled'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Job cancelled - {{demand.comments}}">Job Cancelled</button></div>
+                    <div ng-show="demand.status === 'Self Collection Cancelled'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Self Collection cancelled - {{demand.comments}}">Self Collection Cancelled</button></div>
+                    <div ng-show="demand.status === 'Self Collection Completed'"><button class="btn btn-default" style="cursor: default;">Self Collection Completed</button></div> 
                 </td>
                 <td class="text-center">
                     <div style="margin-top:0.33em;" ng-hide="demand.status !== 'Pending'">
                         <span class="action-item fa fa-check fa-lg" ng-click="approve(demand, $index)" tooltip-placement="top" tooltip="Approve"></span>
                         <span class="action-item fa fa-times fa-lg" ng-click="reject(demand, $index)" tooltip-placement="top" tooltip="Reject"></span>
+                    </div>
+                    <div style="margin-top:0.33em;">
+                        <span ng-show="demand.status === 'Self Collection Created' || demand.status === 'Job Created' || demand.status === 'Job Accepted'" class="action-item fa fa-times fa-lg" ng-click="cancel(demand)" tooltip-placement="top" tooltip="Cancel"></span>
                     </div>
                 </td>
             </tr>

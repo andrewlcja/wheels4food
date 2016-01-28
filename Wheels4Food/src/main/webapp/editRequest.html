@@ -1,0 +1,122 @@
+<div class="container">
+    <div class="page-header">
+        <h1 style="color: #003366;">Edit Request</h1>
+    </div>
+    <div cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div ng-show="showDemand">
+            <form name="editForm" novalidate>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="col-sm-9"> 
+                            <h4><b>Item Name</b></h4>
+                            <p>{{demand.supply.itemName}}</p>               
+                        </div>    
+                        <div class="col-sm-9"> 
+                            <h4><b>Requesting Organization</b></h4>
+                            <p>{{demand.user.organizationName}}</p>               
+                        </div>   
+                        <div class="col-sm-9"> 
+                            <h4><b>Quantity Remaining</b></h4>
+                            <p>{{demand.supply.quantitySupplied}}</p>               
+                        </div>                        
+                    </div> 
+                    <div class="col-sm-4">
+                        <div class="col-sm-9"> 
+                            <h4><b>Minimum Request Quantity</b></h4>                            
+                            <p>{{demand.supply.minimum}}</p>                              
+                        </div>
+                        <div class="col-sm-9"> 
+                            <h4><b>Maximum Request Quantity</b></h4>                             
+                            <p>{{demand.supply.maximum}}</p>                              
+                        </div>
+                        <div class="col-sm-9"> 
+                            <h4><b>Date Requested</b></h4>                             
+                            <p>{{demand.dateRequested}}</p>                              
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 15px;">
+                    <div class="col-sm-12">
+                        <div class="col-sm-12">
+                            <h4><span class="fa fa-exclamation-circle"></span><i> It is recommended that a call is made to <b>{{demand.user.organizationName}}</b> at <b>{{demand.user.pocNumber}}</b>, before making any ammendments to the request.</i></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="col-sm-9"  ng-class="{'error-input': editForm.quantityRequested.$touched && editForm.quantityRequested.$invalid}"> 
+                            <h4><b>Quantity Requested</b></h4>
+                            <input ng-model="demand.quantityDemanded" name="quantityRequested" class="form-control" type="number" min="{{demand.supply.minimum}}" max="{{demand.supply.maximum}}" required custom-number/>
+                            <div class="error-message" ng-messages="editForm.quantityRequested.$error" ng-show="editForm.quantityRequested.$touched">
+                                <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                                <div style="margin-top: 5px;" ng-message="number">Please enter a whole number only.</div>
+                                <div style="margin-top: 5px;" ng-message="customNumber">Please enter a whole number only.</div>
+                                <div style="margin-top: 5px;" ng-message="min">Please enter a number greater than or equals to {{demand.supply.minimum}}.</div>
+                                <div style="margin-top: 5px;" ng-message="max">Please enter a number lesser than or equals to {{demand.supply.maximum}}.</div>
+                            </div>
+                        </div>                      
+                    </div> 
+                </div>
+                <div class="row" ng-if="demand.preferredSchedule === 'NA'">
+                    <div class="col-sm-4">
+                        <div class="col-sm-9" style="padding-top: 15px;" ng-class="{'error-input': editForm.deliveryDate.$touched && editForm.deliveryDate.$invalid}"> 
+                            <h4><b>Delivery Date (dd/mm/yyyy)</b></h4>
+                            <p class="input-group">
+                                <input type="text" class="form-control" ng-click="open($event)" datepicker-popup="{{format}}" name="deliveryDate" ng-model="deliveryDate" min-date="minDate" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" ng-required="true" custom-date custom-date-2/>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </p>
+                            <div class="error-message" ng-messages="editForm.deliveryDate.$error" ng-show="editForm.deliveryDate.$touched">
+                                <div style="margin-top: 5px;" ng-message="customDate">This field is required.</div>
+                                <div style="margin-top: 5px;" ng-message="date">Please enter a valid date in 'dd/mm/yyyy' format.</div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 15px;"> 
+                            <h4><b>Timeslot</b></h4>
+                            <div ng-hide="timeslot !== '9AM-10AM' && unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('9AM-10AM') !== -1"><input type="radio" ng-model="demand.preferredTimeslot" value="9AM-10AM"/> 9AM-10AM<br/></div>
+                            <div ng-hide="timeslot !== '10AM-11AM' && unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('10AM-11AM') !== -1"><input type="radio" ng-model="demand.preferredTimeslot" value="10AM-11AM"/> 10AM-11AM<br/></div>
+                            <div ng-hide="timeslot !== '11AM-12PM' && unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('11AM-12PM') !== -1"><input type="radio" ng-model="demand.preferredTimeslot" value="11AM-12PM"/> 11AM-12PM<br/></div>
+                            <div ng-hide="timeslot !== '2PM-3PM' && unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('2PM-3PM') !== -1"><input type="radio" ng-model="demand.preferredTimeslot" value="2PM-3PM"/> 2PM-3PM<br/></div>
+                            <div ng-hide="timeslot !== '3PM-4PM' && unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('3PM-4PM') !== -1"><input type="radio" ng-model="demand.preferredTimeslot" value="3PM-4PM"/> 3PM-4PM<br/></div>
+                            <div ng-hide="timeslot !== '4PM-5PM' && unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('4PM-5PM') !== -1"><input type="radio" ng-model="demand.preferredTimeslot" value="4PM-5PM"/> 4PM-5PM</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-if="demand.preferredSchedule !== 'NA'">
+                    <div class="col-sm-4">
+                        <div class="col-sm-9" style="padding-top: 15px;"> 
+                            <h4><b>Schedule</b></h4>
+                        </div>
+                    </div>
+                    <table style="width: 100%; margin-top: 20px;">
+                        <tr>
+                            <th></th>
+                            <th class="schedule-header" ng-repeat="date in dates">{{date.value| date: 'EEE'}}<br>{{date.value| date:'dd/MM/yyyy'}}</th>
+                        </tr>
+                        <tr>
+                            <th class="schedule-header">9AM-12PM</th>
+                            <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
+                                <input type="checkbox" class="schedule-checkbox" ng-model="scheduleAM.value" ng-click="selectSlot(scheduleAM.value)"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="schedule-header">2PM-5PM</th>
+                            <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
+                                <input type="checkbox" class="schedule-checkbox" ng-model="schedulePM.value" ng-click="selectSlot(schedulePM.value)"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="error-message" ng-show="scheduleCount < 5">Please select at least 5 timeslots.</div>
+                </div>
+            </form>
+            <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
+                <div class="col-sm-offset-10 col-sm-2">
+                    <button ng-click="update()" class="btn btn-primary" ng-disabled="editForm.$invalid || (demand.preferredSchedule !== 'NA' && scheduleCount < 5)">Update</button>
+                    <button ui-sref="PendingApprovals" class="btn btn-default">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

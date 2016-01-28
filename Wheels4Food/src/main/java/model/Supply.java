@@ -42,10 +42,7 @@ public class Supply implements Serializable {
 
     @Column(name = "quantitySupplied")
     private int quantitySupplied;
-    
-    @Column(name = "quantityRemaining")
-    private int quantityRemaining;
-    
+        
     @Column(name = "minimum")
     private int minimum;
     
@@ -64,12 +61,11 @@ public class Supply implements Serializable {
     public Supply() {
     }
 
-    public Supply(User user, String itemName, String category, int quantitySupplied, int quantityRemaining, int minimum, int maximum, int initialMaximum, String expiryDate, String datePosted) {
+    public Supply(User user, String itemName, String category, int quantitySupplied, int minimum, int maximum, int initialMaximum, String expiryDate, String datePosted) {
         this.user = user;
         this.itemName = itemName;
         this.category = category;
-        this.quantitySupplied = quantitySupplied;
-        this.quantityRemaining = quantityRemaining;
+        this.quantitySupplied = quantitySupplied;        
         this.minimum = minimum;
         this.maximum = maximum;
         this.initialMaximum = initialMaximum;
@@ -97,10 +93,6 @@ public class Supply implements Serializable {
         return quantitySupplied;
     }
 
-    public int getQuantityRemaining() {
-        return quantityRemaining;
-    }
-
     public int getMinimum() {
         return minimum;
     }
@@ -123,10 +115,6 @@ public class Supply implements Serializable {
 
     public void setQuantitySupplied(int quantitySupplied) {
         this.quantitySupplied = quantitySupplied;
-    }
-
-    public void setQuantityRemaining(int quantityRemaining) {
-        this.quantityRemaining = quantityRemaining;
     }
 
     public void setMaximum(int maximum) {

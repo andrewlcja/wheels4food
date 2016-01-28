@@ -26,7 +26,7 @@
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
-                        
+
                         if (input === null || input === undefined) {
                             proccessed = {};
                         } else {
@@ -49,7 +49,7 @@
 
                         return obj;
                     };
-                    
+
                     $scope.viewJob = function (demand) {
                         $http({
                             url: api.endpoint + 'GetJobByDemandIdRequest/' + demand.id,
@@ -64,39 +64,144 @@
                                 template: '/Wheels4Food/resources/ngTemplates/viewJobDetails.html',
                                 className: 'ngdialog-theme-default dialog-generic',
                                 scope: $scope
-                            }).then(function (schedule) {
-                                if ($scope.currentJob.monday) {
-                                    $scope.currentJob.monday = schedule.monday;
-                                }
-                                
-                                if ($scope.currentJob.tuesday) {
-                                    $scope.currentJob.tuesday = schedule.tuesday;
-                                }
-                                
-                                if ($scope.currentJob.wednesday) {
-                                    $scope.currentJob.wednesday = schedule.wednesday;
-                                }
-                                
-                                if ($scope.currentJob.thursday) {
-                                    $scope.currentJob.thursday = schedule.thursday;
-                                }
-                                
-                                if ($scope.currentJob.friday) {
-                                    $scope.currentJob.friday = schedule.friday;
-                                }
-                                
-                                $http({
-                                    url: api.endpoint + 'UpdateJobRequest',
-                                    method: 'PUT',
-                                    data: $scope.currentJob,
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    }
-                                }).then(function (response) {
-                                    console.log(response.data);
-                                });
                             });
                         });
+                    };
+
+                    $scope.viewAcceptedJob = function (demand) {
+                        $http({
+                            url: api.endpoint + 'GetJobByDemandIdRequest/' + demand.id,
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        }).then(function (response) {
+                            $scope.currentJob = response.data;
+
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/viewAcceptedJobDetailsVWO.html',
+                                className: 'ngdialog-theme-default dialog-view-job',
+                                scope: $scope
+                            });
+                        });
+                    };
+
+                    $scope.viewSelfCollection = function (demand) {
+                        $http({
+                            url: api.endpoint + 'GetSelfCollectionByDemandIdRequest/' + demand.id,
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        }).then(function (response) {
+                            $scope.currentSelfCollection = response.data;
+
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/viewSelfCollectionDetails.html',
+                                className: 'ngdialog-theme-default dialog-generic',
+                                scope: $scope
+                            });
+                        });
+                    };
+
+                    $scope.cancel = function (demand) {
+                        $scope.currentDemand = demand;
+                        demand.comments = '';
+
+                        if (demand.status === 'Self Collection Created') {
+                             $http({
+                                url: api.endpoint + 'GetSelfCollectionByDemandIdRequest/' + demand.id,
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then(function (response) {
+                                $scope.currentSelfCollection = response.data;
+                                
+                                ngDialog.openConfirm({
+                                    template: '/Wheels4Food/resources/ngTemplates/cancelSelfCollectionPrompt.html',
+                                    className: 'ngdialog-theme-default dialog-generic',
+                                    scope: $scope
+                                }).then(function () {
+                                    ngDialog.openConfirm({
+                                        template: '/Wheels4Food/resources/ngTemplates/cancelSelfCollectionSupplierReasons.html',
+                                        className: 'ngdialog-theme-default dialog-generic-2',
+                                        scope: $scope
+                                    }).then(function () {
+                                        $http({
+                                            url: api.endpoint + 'CancelSelfCollectionByDemandIdRequest',
+                                            method: 'PUT',
+                                            data: $scope.currentSelfCollection.demand,
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            }
+                                        }).then(function (response) {
+                                            if (response.data.isCancelled) {
+                                                $state.go($state.current, $stateParams, {reload: true, inherit: false});
+                                            }
+                                        });
+                                    });
+                                });
+                            });                            
+                        } else if (demand.status === 'Job Created') {
+                            demand.comments = '';
+
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobPrompt.html',
+                                className: 'ngdialog-theme-default dialog-generic',
+                                scope: $scope
+                            }).then(function () {
+                                ngDialog.openConfirm({
+                                    template: '/Wheels4Food/resources/ngTemplates/cancelCreatedJobSupplierReasons.html',
+                                    className: 'ngdialog-theme-default dialog-generic',
+                                    scope: $scope
+                                }).then(function (reason) {
+                                    if (demand.comments === 'other') {
+                                        demand.comments = reason;
+                                    }
+                                    
+                                    $http({
+                                        url: api.endpoint + 'CancelJobByDemandIdRequest',
+                                        method: 'PUT',
+                                        data: demand,
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        }
+                                    }).then(function (response) {
+                                        if (response.data.isCancelled) {
+                                            $state.go($state.current, $stateParams, {reload: true, inherit: false});
+                                        }
+                                    });
+                                });
+                            });
+                        } else if (demand.status === 'Job Accepted') {
+                            demand.comments = '';
+
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobPrompt.html',
+                                className: 'ngdialog-theme-default dialog-generic',
+                                scope: $scope
+                            }).then(function () {
+                                ngDialog.openConfirm({
+                                    template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobSupplierReasons.html',
+                                    className: 'ngdialog-theme-default dialog-generic',
+                                    scope: $scope
+                                }).then(function () {
+                                    $http({
+                                        url: api.endpoint + 'CancelJobByDemandIdRequest',
+                                        method: 'PUT',
+                                        data: demand,
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        }
+                                    }).then(function (response) {
+                                        if (response.data.isCancelled) {
+                                            $state.go($state.current, $stateParams, {reload: true, inherit: false});
+                                        }
+                                    });
+                                });
+                            });
+                        }
                     };
 
                     var validApproval = function (pendingApproval, index, comment) {
@@ -168,7 +273,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['supply.itemName', 'supply.category', 'user.organizationName', 'supply.quantitySupplied', 'quantityDemanded'];
+                    $scope.tableColumns = ['supply.itemName', 'user.organizationName', 'supply.quantitySupplied', 'quantityDemanded'];
 
 
                     var indexPromise = $http({
