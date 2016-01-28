@@ -1,8 +1,8 @@
 <div class="container">
     <div ng-class="{extraPadding: !showSupply}" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
         <div ng-show="showSupply">
-            <div class="row">
-                <form name="supplyForm" novalidate>
+            <form name="requestForm" novalidate>
+                <div class="row">
                     <div class="col-sm-4">
                         <div class="col-sm-9" style="padding-top: 25px;"> 
                             <h4><b>Item Name</b></h4>
@@ -20,7 +20,7 @@
                     <div class="col-sm-4">
                         <div class="col-sm-9" style="padding-top: 20px;"> 
                             <h4><b>Quantity Remaining</b></h4>
-                            <p>{{supply.quantityRemaining}}</p>                     
+                            <p>{{supply.quantitySupplied}}</p>                     
                         </div>
                         <div class="col-sm-9" style="padding-top: 25px;"> 
                             <h4><b>Minimum Request Quantity</b></h4>                            
@@ -36,16 +36,87 @@
                             <h4><b>Expiry Date</b></h4>
                             <p>{{supply.expiryDate}}</p> 
                         </div>
-                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': requestForm.quantityRequested.$touched && requestForm.quantityRequested.$invalid}"> 
                             <h4><b>Quantity Requested</b></h4>
-                            <input ng-model="quantityRequested" class="form-control" type="text"/>                    
+                            <input ng-model="quantityRequested" name="quantityRequested" class="form-control" type="number" min="{{supply.minimum}}" max="{{supply.maximum}}" required custom-number/>                    
+                            <div class="error-message" ng-messages="requestForm.quantityRequested.$error" ng-show="requestForm.quantityRequested.$touched">
+                                <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                                <div style="margin-top: 5px;" ng-message="number">Please enter a whole number only.</div>
+                                <div style="margin-top: 5px;" ng-message="customNumber">Please enter a whole number only.</div>
+                                <div style="margin-top: 5px;" ng-message="min">Please enter a number greater than or equals to {{supply.minimum}}.</div>
+                                <div style="margin-top: 5px;" ng-message="max">Please enter a number lesser than or equals to {{supply.maximum}}.</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;"> 
+                            <h4><b>Delivery Type</b></h4>
+                            <input type="radio" ng-model="deliveryType" value="selfCollect" ng-click="showSelfCollect()"/> Self Collect<br/>   
+                            <input type="radio" ng-model="deliveryType" value="volunteer" ng-click="showVolunteer()"/> Through Volunteers  
                         </div>
                     </div>
-                </form>
+                </div>
+            </form>
+            <form name="selfCollectForm" novalidate>
+                <div class="row" ng-show="selfCollectOptions">
+                    <div class="col-sm-4">
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': selfCollectForm.deliveryDate.$touched && selfCollectForm.deliveryDate.$invalid}"> 
+                            <h4><b>Delivery Date (dd/mm/yyyy)</b></h4>
+                            <p class="input-group">
+                                <input type="text" class="form-control" ng-click="open($event)" readonly style="background-color: white; cursor: default;" datepicker-popup="{{format}}" ng-model="deliveryDate" name="deliveryDate" min-date="minDate" is-open="opened" datepicker-options="dateOptions" ng-click="test()" date-disabled="disabled(date, mode)" close-text="Close" custom-date/>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </p>
+                            <div class="error-message" ng-messages="selfCollectForm.deliveryDate.$error" ng-show="selfCollectForm.deliveryDate.$touched">
+                                <div style="margin-top: 5px;" ng-message="customDate">This field is required.</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-show="showTimeslots"> 
+                            <h4><b>Timeslot</b></h4>
+                            <div ng-show="unavailableTimeslots.length === 6">There are no available timeslots on this date, please choose another date!</div>
+                            <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('9AM-10AM') !== -1"><input type="radio" ng-model="timeslot" value="9AM-10AM"/> 9AM-10AM<br/></div>
+                            <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('10AM-11AM') !== -1"><input type="radio" ng-model="timeslot" value="10AM-11AM"/> 10AM-11AM<br/></div>
+                            <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('11AM-12PM') !== -1"><input type="radio" ng-model="timeslot" value="11AM-12PM"/> 11AM-12PM<br/></div>
+                            <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('2PM-3PM') !== -1"><input type="radio" ng-model="timeslot" value="2PM-3PM"/> 2PM-3PM<br/></div>
+                            <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('3PM-4PM') !== -1"><input type="radio" ng-model="timeslot" value="3PM-4PM"/> 3PM-4PM<br/></div>
+                            <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('4PM-5PM') !== -1"><input type="radio" ng-model="timeslot" value="4PM-5PM"/> 4PM-5PM</div>
+                            <div class="error-message" style="padding-top: 10px;" ng-show="!timeslot">Please select 1 timeslot.</div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="row" ng-show="volunteerOptions">
+                <div class="col-sm-7">
+                    <div class="col-sm-9" style="padding-top: 20px;"> 
+                        <h4><b>Preferred Collection Timeslots</b></h4>
+                    </div>
+                </div>
+                <table style="width: 100%; margin-top: 20px;">
+                    <tr>
+                        <th></th>
+                        <th class="schedule-header" ng-repeat="date in dates">{{date.value| date: 'EEE'}}<br>{{date.value| date:'dd/MM/yyyy'}}</th>
+                    </tr>
+                    <tr>
+                        <th class="schedule-header">9AM-12PM</th>
+                        <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
+                            <input type="checkbox" class="schedule-checkbox" ng-model="scheduleAM.value" ng-click="selectSlot(scheduleAM.value)"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="schedule-header">2PM-5PM</th>
+                        <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
+                            <input type="checkbox" class="schedule-checkbox" ng-model="schedulePM.value" ng-click="selectSlot(schedulePM.value)"/>
+                        </td>
+                    </tr>
+                </table>
+                <div class="error-message" ng-show="scheduleCount < 5">Please select at least 5 timeslots.</div>
             </div>
-            <div class="row" style="padding-top: 30px;">
+            <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
                 <div class="col-sm-offset-10 col-sm-2">
-                    <button ng-click="request()" class="btn btn-primary">Request</button>
+                    <button ng-click="request()" class="btn btn-primary" ng-disabled="(!selfCollectOptions && !volunteerOptions) || requestForm.$invalid || (volunteerOptions && scheduleCount < 5) || (selfCollectOptions && selfCollectForm.$invalid) || (selfCollectOptions && !timeslot)">Request</button>
                     <button ui-sref="Marketplace.All" class="btn btn-default">Back</button>
                 </div>
             </div>

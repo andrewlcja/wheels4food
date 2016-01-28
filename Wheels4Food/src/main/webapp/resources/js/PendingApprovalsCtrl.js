@@ -6,39 +6,15 @@
                 function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
-                    
-                    $scope.scheduleAMList = [];
-                    $scope.schedulePMList = [];
-                    
-                    for (var i = 0; i < 10; i++) {
-                        $scope.scheduleAMList.push({'value': false});
-                        $scope.schedulePMList.push({'value': false});
-                    }
-                    
-                    var today = new Date();
-                    
-                    $scope.dates = [];
-                    
-                    for (var i = 0; i < 10; i++) {
-                        today.setDate(today.getDate() + 1);
-                        
-                        if (today.getDay() !== 0 && today.getDay() !== 6) {
-                            $scope.dates.push({'value': new Date(today)});
-                        } else {
-                            i--;
-                        }                        
-                    }
-                    
-                    $scope.scheduleCount = 0;
-                    
-                    $scope.selectSlot = function(value) {
+
+                    $scope.selectSlot = function (value) {
                         if (value) {
                             $scope.scheduleCount++;
                         } else {
                             $scope.scheduleCount--;
                         }
                     };
-                    
+
                     //default sort
                     $scope.sortType = 'itemName';
 
@@ -52,15 +28,15 @@
                             return pendingApproval['user']['organizationName'];
                         } else if ($scope.sortType === 'itemName') {
                             return pendingApproval['supply']['itemName'];
-                        } else if ($scope.sortType === 'quantityRemaining') {
-                            return pendingApproval['supply']['quantityRemaining'];
+                        } else if ($scope.sortType === 'quantitySupplied') {
+                            return pendingApproval['supply']['quantitySupplied'];
                         } else if ($scope.sortType === 'category') {
                             return pendingApproval['supply']['category'];
                         } else if ($scope.sortType === 'expiryDate') {
                             if (pendingApproval.expiryDate === 'NA') {
                                 return new Date('1000', '01', '01')
                             }
-                            
+
                             var parts = pendingApproval.supply.expiryDate.split('/');
                             var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
                             return date;
@@ -71,7 +47,7 @@
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
-                        
+
                         if (input === null || input === undefined) {
                             proccessed = {};
                         } else {
@@ -82,46 +58,121 @@
                     };
 
                     var validApproval = function (pendingApproval, index, comment) {
-                        ngDialog.openConfirm({
-                            template: '/Wheels4Food/resources/ngTemplates/approveRequestPrompt.html',
-                            className: 'ngdialog-theme-default dialog-approve-request-2',
-                            scope: $scope
-                        }).then(function () {
-                            var combinedSchedule = '';
-                            
-                            for (var i = 0; i < 10; i++) {
-                                if ($scope.scheduleAMList[i].value) {
-                                    combinedSchedule += '1';
+                        var finalIndex = $scope.pendingApprovalList.indexOf(pendingApproval);
+                        
+                        if (pendingApproval.preferredSchedule === 'NA') {
+                            $scope.currentPendingApproval = pendingApproval;
+
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/approveSelfCollectionPrompt.html',
+                                className: 'ngdialog-theme-default dialog-generic',
+                                scope: $scope
+                            }).then(function () {
+                                $http({
+                                    url: api.endpoint + 'CreateSelfCollectionRequest',
+                                    method: 'POST',
+                                    data: {
+                                        'demandID': pendingApproval.id,
+                                        'deliveryDate': pendingApproval.preferredDeliveryDate,
+                                        'timeslot': pendingApproval.preferredTimeslot
+                                    },
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    }
+                                }).then(function (response) {
+                                    if (response.data.isCreated) {
+                                        $scope.pendingApprovalList.splice(finalIndex, 1);
+                                    }
+                                });
+                            });
+                        } else {
+                            $scope.scheduleAMList = [];
+                            $scope.schedulePMList = [];
+                            $scope.disabledAMList = [];
+                            $scope.disabledPMList = [];
+                            $scope.scheduleCount = 0;
+
+                            for (var i = 0; i < $scope.currentPendingApproval.preferredSchedule.length; i++) {
+                                var value = $scope.currentPendingApproval.preferredSchedule.charAt(i);
+
+                                if (i % 2 === 0) {
+                                    if (value === '0') {
+                                        $scope.scheduleAMList.push({'value': false});
+                                        $scope.disabledAMList.push(i / 2);
+                                    } else {
+                                        $scope.scheduleAMList.push({'value': true});
+                                        $scope.scheduleCount++;
+                                    }
                                 } else {
-                                    combinedSchedule += '0';
-                                }
-                                
-                                if ($scope.schedulePMList[i].value) {
-                                    combinedSchedule += '1';
-                                } else {
-                                    combinedSchedule += '0';
+                                    if (value === '0') {
+                                        $scope.schedulePMList.push({'value': false});
+                                        $scope.disabledPMList.push(Math.floor(i / 2));
+                                    } else {
+                                        $scope.schedulePMList.push({'value': true});
+                                        $scope.scheduleCount++;
+                                    }
                                 }
                             }
-                            
-                            $http({
-                                url: api.endpoint + 'CreateJobRequest',
-                                method: 'POST',
-                                data: {
-                                    'demandID': pendingApproval.id,
-                                    'schedule': combinedSchedule, 
-                                    'comments': comment,
-                                    'userID': pendingApproval.user.id
-                                },
-                                headers: {
-                                    'Content-Type': 'application/json',
+
+                            var parts = $scope.currentPendingApproval.dateRequested.split("/");
+                            var requestDate = new Date(parseInt(parts[2], 10),
+                                    parseInt(parts[1], 10) - 1,
+                                    parseInt(parts[0], 10));
+
+                            requestDate.setDate(requestDate.getDate() + 3);
+                            $scope.dates = [];
+
+                            for (var i = 0; i < 10; i++) {
+                                if (requestDate.getDay() !== 0 && requestDate.getDay() !== 6) {
+                                    $scope.dates.push({'value': new Date(requestDate)});
+                                } else {
+                                    i--;
                                 }
-                            }).then(function (response) {
-                                console.log(response);
-                                if (response.data.isCreated) {
-                                    $scope.pendingApprovalList.splice(($scope.currentPage - 1) * 10 + index, 1);
+
+
+                                requestDate.setDate(requestDate.getDate() + 1);
+                            }
+
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/approveRequestPrompt.html',
+                                className: 'ngdialog-theme-default dialog-approve-request-2',
+                                scope: $scope
+                            }).then(function () {
+                                var combinedSchedule = '';
+
+                                for (var i = 0; i < 10; i++) {
+                                    if ($scope.scheduleAMList[i].value) {
+                                        combinedSchedule += '1';
+                                    } else {
+                                        combinedSchedule += '0';
+                                    }
+
+                                    if ($scope.schedulePMList[i].value) {
+                                        combinedSchedule += '1';
+                                    } else {
+                                        combinedSchedule += '0';
+                                    }
                                 }
+
+                                $http({
+                                    url: api.endpoint + 'CreateJobRequest',
+                                    method: 'POST',
+                                    data: {
+                                        'demandID': pendingApproval.id,
+                                        'schedule': combinedSchedule,
+                                        'comments': comment,
+                                        'userID': pendingApproval.user.id
+                                    },
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    }
+                                }).then(function (response) {
+                                    if (response.data.isCreated) {
+                                        $scope.pendingApprovalList.splice(finalIndex, 1);
+                                    }
+                                });
                             });
-                        });
+                        }
                     };
 
                     //retrieve details
@@ -136,6 +187,75 @@
                         }
 
                         return obj;
+                    };
+
+                    $scope.view = function (pendingApproval) {
+                        $scope.currentPendingApproval = pendingApproval;
+
+                        if (pendingApproval.preferredSchedule === 'NA') {
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/viewSelfCollectionRequest.html',
+                                className: 'ngdialog-theme-default dialog-generic',
+                                scope: $scope
+                            });
+                        } else {
+                            $scope.scheduleAMList = [];
+                            $scope.schedulePMList = [];
+                            $scope.disabledAMList = [];
+                            $scope.disabledPMList = [];
+                            $scope.scheduleCount = 0;
+
+                            for (var i = 0; i < $scope.currentPendingApproval.preferredSchedule.length; i++) {
+                                var value = $scope.currentPendingApproval.preferredSchedule.charAt(i);
+
+                                if (i % 2 === 0) {
+                                    if (value === '0') {
+                                        $scope.scheduleAMList.push({'value': false});
+                                        $scope.disabledAMList.push(i / 2);
+                                    } else {
+                                        $scope.scheduleAMList.push({'value': true});
+                                        $scope.scheduleCount++;
+                                    }
+                                } else {
+                                    if (value === '0') {
+                                        $scope.schedulePMList.push({'value': false});
+                                        $scope.disabledPMList.push(Math.floor(i / 2));
+                                    } else {
+                                        $scope.schedulePMList.push({'value': true});
+                                        $scope.scheduleCount++;
+                                    }
+                                }
+                            }
+
+                            var parts = $scope.currentPendingApproval.dateRequested.split("/");
+                            var requestDate = new Date(parseInt(parts[2], 10),
+                                    parseInt(parts[1], 10) - 1,
+                                    parseInt(parts[0], 10));
+
+                            requestDate.setDate(requestDate.getDate() + 3);
+                            $scope.dates = [];
+
+                            for (var i = 0; i < 10; i++) {
+                                if (requestDate.getDay() !== 0 && requestDate.getDay() !== 6) {
+                                    $scope.dates.push({'value': new Date(requestDate)});
+                                } else {
+                                    i--;
+                                }
+
+
+                                requestDate.setDate(requestDate.getDate() + 1);
+                            }
+
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/viewVolunteerRequest.html',
+                                className: 'ngdialog-theme-default dialog-approve-request-3',
+                                scope: $scope
+                            });
+                        }
+                    };
+
+                    $scope.edit = function (id) {
+                        $state.go('PendingApprovalsEdit', {Id: id});
                     };
 
                     $scope.approve = function (pendingApproval, index) {
@@ -155,6 +275,8 @@
                     };
 
                     $scope.reject = function (pendingApproval, index) {
+                        var finalIndex = $scope.pendingApprovalList.indexOf(pendingApproval);
+                        
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/rejectRequestPrompt.html',
                             className: 'ngdialog-theme-default dialog-generic',
@@ -171,14 +293,14 @@
                                 }
                             }).then(function (response) {
                                 if (response.data.isRejected) {
-                                    $scope.pendingApprovalList.splice(($scope.currentPage - 1) * 10 + index, 1);
+                                    $scope.pendingApprovalList.splice(finalIndex, 1);
                                 }
                             });
                         });
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['supply.itemName', 'supply.category', 'user.organizationName', 'supply.quantitySupplied', 'quantityDemanded', 'dateRequested'];
+                    $scope.tableColumns = ['supply.itemName', 'user.organizationName', 'supply.quantitySupplied', 'quantityDemanded'];
 
 
                     var indexPromise = $http({
@@ -207,4 +329,4 @@
                     $scope.templateUrl = "/Wheels4Food/resources/ngTemplates/cgBusy.html";
                 }
             ]);
-        })();
+})();

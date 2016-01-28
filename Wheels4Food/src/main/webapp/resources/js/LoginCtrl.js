@@ -34,7 +34,8 @@
                                         userID: response.data.user.id,
                                         username: response.data.user.username,
                                         role: response.data.user.role,
-                                        organizationName: response.data.user.organizationName
+                                        organizationName: response.data.user.organizationName,
+                                        pocName: response.data.user.pocName
                                     });
 
                                     $state.go('Home');

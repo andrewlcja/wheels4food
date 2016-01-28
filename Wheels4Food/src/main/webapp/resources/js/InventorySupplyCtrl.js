@@ -48,7 +48,7 @@
 
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/viewSupplyDetails.html',
-                            className: 'ngdialog-theme-default dialog-generic',
+                            className: 'ngdialog-theme-default dialog-generic-2',
                             scope: $scope
                         });
                     };
@@ -98,7 +98,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['itemName', 'category', 'quantitySupplied', 'quantityRemaining', 'expiryDate'];
+                    $scope.tableColumns = ['itemName', 'category', 'quantitySupplied', 'expiryDate'];
 
                     var indexPromise = $http({
                         url: api.endpoint + 'GetSupplyListByUserIdRequest/' + userID,

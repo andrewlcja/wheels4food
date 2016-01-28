@@ -42,6 +42,15 @@ public class Demand implements Serializable {
     @Column(name = "dateRequested")
     private String dateRequested;
     
+    @Column(name = "preferredDeliveryDate")
+    private String preferredDeliveryDate;
+    
+    @Column(name = "preferredTimeslot")
+    private String preferredTimeslot;
+    
+    @Column(name = "preferredSchedule")
+    private String preferredSchedule;    
+    
     @Column(name = "status")
     private String status;
     
@@ -51,11 +60,14 @@ public class Demand implements Serializable {
     public Demand() {
     }
 
-    public Demand(User user, Supply supply, int quantityDemanded, String dateRequested, String status, String comments) {
+    public Demand(User user, Supply supply, int quantityDemanded, String dateRequested, String preferredDeliveryDate, String preferredTimeslot, String preferredSchedule, String status, String comments) {
         this.user = user;
         this.supply = supply;
         this.quantityDemanded = quantityDemanded;
         this.dateRequested = dateRequested;
+        this.preferredDeliveryDate = preferredDeliveryDate;
+        this.preferredTimeslot = preferredTimeslot;
+        this.preferredSchedule = preferredSchedule;
         this.status = status;
         this.comments = comments;
     }
@@ -79,7 +91,19 @@ public class Demand implements Serializable {
     public String getDateRequested() {
         return dateRequested;
     }
-    
+
+    public String getPreferredDeliveryDate() {
+        return preferredDeliveryDate;
+    }
+
+    public String getPreferredTimeslot() {
+        return preferredTimeslot;
+    }
+
+    public String getPreferredSchedule() {
+        return preferredSchedule;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -87,7 +111,7 @@ public class Demand implements Serializable {
     public String getComments() {
         return comments;
     }
-
+    
     public void setComments(String comments) {
         this.comments = comments;
     }

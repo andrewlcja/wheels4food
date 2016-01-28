@@ -13,12 +13,12 @@
     <div class="index-table" search-filter="searchFilter">
         <table style="table-layout: fixed;" class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <thead>
-                <tr class="info">
+                <tr class="header-row">
                     <th class="text-center">Item Name</th>
                     <th class="text-center" width="20%">Supplier</th>
                     <th class="text-center" width="20%">Receiver</th>
                     <th class="text-center" width="7%">Quantity</th>
-                    <th class="text-center" width="13%">Expiry Date</th>
+                    <th class="text-center" width="13%">Status</th>
                     <th class="text-center" width="13%">Actions</th>
                 </tr>
             </thead>
@@ -28,13 +28,19 @@
                         <div style="margin-top: 0.33em;">{{getObj(job, column)}}</div>
                     </td>
                     <td class="text-center">
+                        <div ng-show="job.status === 'Completed'"><button class="btn btn-default" style="cursor: default;">Completed</button></div>         
+                        <div ng-show="job.status === 'Accepted'"><button class="btn btn-success" style="cursor: default;">In Progress</button></div> 
+                        <div ng-show="job.status === 'Cancelled'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Job cancelled - {{job.demand.comments}}">Cancelled</button></div>
+                    </td>
+                    <td class="text-center">
                         <div style="margin-top:0.33em;">
                             <span class="action-item fa fa-eye fa-lg" ng-click="view(job)" tooltip-placement="top" tooltip="View"></span>
+                            <span ng-show="job.status === 'Accepted'" class="action-item fa fa-times fa-lg" ng-click="cancel(job)" tooltip-placement="top" tooltip="Cancel"></span>
                         </div>
                     </td>
                 </tr>
                 <tr ng-if="!(jobList | filter:proccessedSearchFilter).length">
-                    <td colspan="{{tableColumns.length + 1}}" class="text-center">
+                    <td colspan="{{tableColumns.length + 2}}" class="text-center">
                         <h5>No results found</h5>
                     </td>
                 </tr>
