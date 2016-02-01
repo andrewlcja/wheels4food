@@ -1,1 +1,8 @@
-<div ng-show="$parent.isLoggedIn" class="container"></div>
+<div ng-show="$parent.isLoggedIn" class="container">
+    <div class="jumbotron" style="height: 84vh; background-color: #708599; color: white;">
+        <h1>Welcome, {{displayName}}!</h1>
+        <p ng-show="role === 'Volunteer'">As a volunteer, use the <a ui-sref="Jobs.View" style="color: lightblue;">View Jobs</a> tab to see all available jobs and use the <a ui-sref="MyJobs" style="color: lightblue;">My Jobs</a> tab to see all your accepted jobs.</p>
+        <p ng-show="role === 'VWO'">As a VWO, use the <a ui-sref="Marketplace.All" style="color: lightblue;">Marketplace</a> tab to request for items and the <a ui-sref="Inventory.Supply" style="color: lightblue;">My Inventory</a> tab to manage your Supply & Demand.</p>
+        <p ng-show="role === 'VWO'">Use the <a ui-sref="PendingApprovals" style="color: lightblue;">Pending Approvals</a> tab to approve incoming requests and the <a ui-sref="PendingRegistrations" style="color: lightblue;">Pending Registrations</a> tab to approve volunteer registrations.</p>        
+    </div>    
+</div>

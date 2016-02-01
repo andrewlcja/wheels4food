@@ -18,12 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author andrew.lim.2013
  */
 public class DemandDAO {
+
     @Autowired
     SessionFactory sessionFactory;
 
     Session session = null;
     Transaction tx = null;
-    
+
     public void createDemand(Demand demand) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -31,7 +32,7 @@ public class DemandDAO {
         tx.commit();
         session.close();
     }
-    
+
     public void updateDemand(Demand demand) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -39,7 +40,7 @@ public class DemandDAO {
         tx.commit();
         session.close();
     }
-    
+
     public void deleteDemand(int id) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -48,7 +49,7 @@ public class DemandDAO {
         tx.commit();
         session.close();
     }
-    
+
     public List<Demand> retrieveAll() throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -57,7 +58,7 @@ public class DemandDAO {
         session.close();
         return demandList;
     }
-    
+
     public List<Demand> getDemandListByUserId(int userID) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -67,7 +68,23 @@ public class DemandDAO {
         session.close();
         return demandList;
     }
-    
+
+    public List<Demand> getDemandListByDeliveryDate(int supplierID, String deliveryDate) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Demand> demandList = session.createCriteria(Demand.class)
+                .createAlias("supply.user", "supplier")
+                .add(Restrictions.eq("supplier.id", supplierID))
+                .add(Restrictions.eq("preferredDeliveryDate", deliveryDate))
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.eq("status", "Pending"))
+                        .add(Restrictions.eq("status", "Self Collection Created"))
+                        .add(Restrictions.eq("status", "Approved"))).list();
+        tx.commit();
+        session.close();
+        return demandList;
+    }
+
     public List<Demand> getDemandListBySupplyId(int supplyID) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -77,7 +94,7 @@ public class DemandDAO {
         session.close();
         return demandList;
     }
-    
+
     public List<Demand> getPendingDemandListBySupplierId(int supplierID) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -89,7 +106,7 @@ public class DemandDAO {
         session.close();
         return demandList;
     }
-    
+
     public Demand getDemandById(int id) {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();

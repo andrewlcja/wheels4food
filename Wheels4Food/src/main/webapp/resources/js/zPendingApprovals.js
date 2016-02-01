@@ -9,6 +9,11 @@
                                 url: '/Wheels4Food/PendingApprovals',
                                 templateUrl: 'Wheels4Food/pendingApprovals.html',
                                 controller: 'PendingApprovalsCtrl'
+                            })
+                            .state('PendingApprovalsEdit', {
+                                url: '/Wheels4Food/PendingApprovals/Edit/:Id',
+                                templateUrl: 'Wheels4Food/editRequest.html',
+                                controller: 'PendingApprovalsEditCtrl'
                             });
                 }
             ]);

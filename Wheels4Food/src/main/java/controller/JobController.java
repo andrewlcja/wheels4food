@@ -8,10 +8,12 @@ package controller;
 import java.util.List;
 import model.AcceptJobRequest;
 import model.AcceptJobResponse;
+import model.CancelJobByDemandIdResponse;
 import model.CompleteJobByDemandIdResponse;
 import model.ConfirmJobResponse;
 import model.CreateJobRequest;
 import model.CreateJobResponse;
+import model.Demand;
 import model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,6 +50,12 @@ public class JobController {
     public @ResponseBody
     AcceptJobResponse confirmJobRequest(@RequestBody AcceptJobRequest request) {
         return jobService.acceptJobRequest(request);
+    }
+    
+    @RequestMapping(value = "/CancelJobByDemandIdRequest", method = RequestMethod.PUT)
+    public @ResponseBody
+    CancelJobByDemandIdResponse cancelJobByDemandIdRequest(@RequestBody Demand demand) {
+        return jobService.cancelJobByDemandIdRequest(demand);
     }
 
     @RequestMapping(value = "/GetJobListRequest", method = RequestMethod.GET)

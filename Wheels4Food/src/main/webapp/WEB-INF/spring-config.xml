@@ -28,6 +28,7 @@
                 <value>model.Supply</value>
                 <value>model.Demand</value>
                 <value>model.Job</value>
+                <value>model.SelfCollection</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -55,5 +56,7 @@
     <bean id="demandDAO" class="dao.DemandDAO"></bean>
     <bean id="demandService" class="service.DemandService"></bean>  
     <bean id="jobDAO" class="dao.JobDAO"></bean>
-    <bean id="jobService" class="service.JobService"></bean> 
+    <bean id="jobService" class="service.JobService"></bean>   
+    <bean id="selfCollectionDAO" class="dao.SelfCollectionDAO"></bean>
+    <bean id="selfCollectionService" class="service.SelfCollectionService"></bean> 
 </beans>

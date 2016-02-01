@@ -5,12 +5,16 @@
  */
 package service;
 
+import dao.SupplyDAO;
 import dao.UserDAO;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.ChangePasswordRequest;
 import model.ChangePasswordResponse;
 import model.DeleteUserResponse;
+import model.Supply;
 import model.UpdateUserResponse;
 import model.User;
 import model.UserLoginRequest;
@@ -26,6 +30,9 @@ public class UserService {
 
     @Autowired
     UserDAO userDAO;
+    
+    @Autowired
+    SupplyDAO supplyDAO;
 
     public List<User> getUserListRequest() throws Exception {
         return userDAO.retrieveAll();

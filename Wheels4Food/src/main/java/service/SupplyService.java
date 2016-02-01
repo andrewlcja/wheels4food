@@ -167,7 +167,7 @@ public class SupplyService {
                 return new CreateSupplyResponse(false, errorList);
             }
 
-            supplyDAO.createSupply(new Supply(user, itemName, category, quantitySupplied, quantitySupplied, minimum, maximum, maximum, expiryDate, datePosted));
+            supplyDAO.createSupply(new Supply(user, itemName, category, quantitySupplied, minimum, maximum, maximum, expiryDate, datePosted));
             return new CreateSupplyResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -179,7 +179,6 @@ public class SupplyService {
         String itemName = supply.getItemName().trim();
         String category = supply.getCategory().trim();
         int quantitySupplied = supply.getQuantitySupplied();
-        int quantityRemaining = supply.getQuantityRemaining();
         int minimum = supply.getMinimum();
         int maximum = supply.getMaximum();
         String expiryDate = supply.getExpiryDate().trim();
@@ -203,7 +202,7 @@ public class SupplyService {
             errorList.add("Minimum Request Quantity must be more than 0");
         }
 
-        if (maximum <= 0 && quantityRemaining > 0) {
+        if (maximum <= 0) {
             errorList.add("Maximum Request Quantity must be more than 0");
         }
 
@@ -221,7 +220,7 @@ public class SupplyService {
             errorList.add("Minimum Request Quantity cannot be more than the Quantity Supplied");
         }
 
-        if (minimum > maximum && quantityRemaining > 0) {
+        if (minimum > maximum) {
             errorList.add("Minimum Request Quantity cannot be more than the Maximum Quantity");
         }
 
@@ -257,19 +256,6 @@ public class SupplyService {
         }
 
         try {
-            Supply oldSupply = supplyDAO.getSupplyById(supply.getId());
-            int oldQuantitySupplied = oldSupply.getQuantitySupplied();
-
-            if (quantitySupplied < quantityRemaining) {
-                supply.setQuantityRemaining(quantitySupplied);
-            } else if (quantitySupplied > quantityRemaining) {
-                int difference = quantitySupplied - oldQuantitySupplied;
-
-                if (difference > 0) {
-                    supply.setQuantityRemaining(quantityRemaining + difference);
-                }
-            }
-
             supplyDAO.updateSupply(supply);
             return new UpdateSupplyResponse(true, errorList);
         } catch (Exception e) {

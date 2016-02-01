@@ -2,8 +2,8 @@
     'use strict';
     angular
             .module('Wheels4Food.Jobs')
-            .controller('MyJobsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
+            .controller('MyJobsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams) {
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
 
@@ -39,7 +39,7 @@
 
                         return obj;
                     };
-                    
+
                     $scope.view = function (job) {
                         $http({
                             url: api.endpoint + 'GetJobByIdRequest/' + job.id,
@@ -49,7 +49,7 @@
                             }
                         }).then(function (response) {
                             $scope.currentJob = response.data;
-                            
+
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/viewAcceptedJobDetails.html',
                                 className: 'ngdialog-theme-default dialog-view-job',
@@ -59,7 +59,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['demand.supply.itemName', 'demand.supply.user.organizationName', 'demand.user.organizationName', 'demand.quantityDemanded', 'expiryDate'];
+                    $scope.tableColumns = ['demand.supply.itemName', 'demand.supply.user.organizationName', 'demand.user.organizationName', 'demand.quantityDemanded'];
 
 
                     var indexPromise = $http({
@@ -78,6 +78,37 @@
                             });
                         });
                     }, 1000);
+
+                    $scope.cancel = function (job) {
+                        $scope.currentJob = job;
+
+                        job.demand.comments = '';
+
+                        ngDialog.openConfirm({
+                            template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobVolunteerPrompt.html',
+                            className: 'ngdialog-theme-default dialog-generic',
+                            scope: $scope
+                        }).then(function () {
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobReasonsVolunteer.html',
+                                className: 'ngdialog-theme-default dialog-generic-2',
+                                scope: $scope
+                            }).then(function () {
+                                $http({
+                                    url: api.endpoint + 'CancelJobByDemandIdRequest',
+                                    method: 'PUT',
+                                    data: job.demand,
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    }
+                                }).then(function (response) {
+                                    if (response.data.isCancelled) {
+                                        $state.go($state.current, $stateParams, {reload: true, inherit: false});
+                                    }
+                                });
+                            });
+                        });
+                    };
 
                     //cgBusy configuration
                     $scope.delay = 1;

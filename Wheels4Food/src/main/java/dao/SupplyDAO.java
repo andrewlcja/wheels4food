@@ -56,7 +56,7 @@ public class SupplyDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Supply> supplyList = session.createCriteria(Supply.class)
-                .add(Restrictions.ne("quantityRemaining", 0)).list();
+                .add(Restrictions.ne("quantitySupplied", 0)).list();
         tx.commit();
         session.close();
         return supplyList;

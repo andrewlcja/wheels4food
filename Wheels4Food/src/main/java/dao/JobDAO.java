@@ -56,7 +56,6 @@ public class JobDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Job> jobList = session.createCriteria(Job.class)
-                .add(Restrictions.eq("status", "Accepted"))
                 .add(Restrictions.eq("user.id", userID))
                 .list();
         tx.commit();

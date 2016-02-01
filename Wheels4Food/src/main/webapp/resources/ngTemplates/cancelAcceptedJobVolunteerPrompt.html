@@ -1,0 +1,33 @@
+<div class="ngdialog-message">
+    <h3><b>Are you sure you want to cancel this job?</b></h3>
+    <table>
+        <tr>
+            <th>Item Name</th>
+            <td class="dialog-padding">{{currentJob.demand.supply.itemName}}</td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td class="dialog-padding">{{currentJob.demand.supply.category}}</td>
+        </tr>
+        <tr>
+            <th>Supplying Organization</th>
+            <td class="dialog-padding">{{currentJob.demand.supply.user.organizationName}}</td>
+        </tr>
+        <tr>
+            <th>Requesting Organization</th>
+            <td class="dialog-padding">{{currentJob.demand.user.organizationName}}</td>
+        </tr>
+        <tr>
+            <th>Quantity Demanded</th>
+            <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td class="dialog-padding">In Progress</td>
+        </tr>
+    </table>
+    <div class="ngdialog-buttons" style="padding-top: 20px;">
+        <button type="button" class="ngdialog-button ngdialog-button-default" ng-click="closeThisDialog()">No</button>
+        <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm()">Yes</button>
+    </div>
+</div>

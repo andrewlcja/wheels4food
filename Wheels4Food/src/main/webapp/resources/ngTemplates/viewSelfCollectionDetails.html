@@ -1,0 +1,36 @@
+<div class="ngdialog-message">
+    <h3><b>Self Collection Details</b></h3>
+    <table>
+        <tr>
+            <th>Item Name</th>
+            <td class="dialog-padding">{{currentSelfCollection.demand.supply.itemName}}</td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td class="dialog-padding">{{currentSelfCollection.demand.supply.category}}</td>
+        </tr>
+        <tr>
+            <th>Supplying Organization</th>
+            <td class="dialog-padding">{{currentSelfCollection.demand.supply.user.organizationName}}</td>
+        </tr>
+        <tr>
+            <th>Requesting Organization</th>
+            <td class="dialog-padding">{{currentSelfCollection.demand.user.organizationName}}</td>
+        </tr>
+        <tr>
+            <th>Quantity Requested</th>
+            <td class="dialog-padding">{{currentSelfCollection.demand.quantityDemanded}}</td>
+        </tr>
+        <tr>
+            <th>Delivery Date</th>
+            <td class="dialog-padding">{{currentSelfCollection.deliveryDate}}</td>
+        </tr>
+        <tr>
+            <th>Timeslot</th>
+            <td class="dialog-padding">{{currentSelfCollection.timeslot}}</td>
+        </tr>
+    </table>
+    <div class="ngdialog-buttons" style="padding-top: 20px;">
+        <button type="button" class="ngdialog-button ngdialog-button-default" ng-click="closeThisDialog()">Close</button>
+    </div>
+</div>

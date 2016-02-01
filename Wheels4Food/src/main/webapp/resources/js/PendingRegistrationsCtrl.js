@@ -5,11 +5,11 @@
             .controller('PendingRegistrationsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService',
                 function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
                     var authData = localStorageService.get('authorizationData');
-                    
+
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
-                        
+
                         if (input === null || input === undefined) {
                             proccessed = {};
                         } else {
@@ -41,15 +41,23 @@
                         }
                         return obj;
                     };
-                    
+
                     $scope.view = function (pendingRegistration) {
                         $scope.currentRegistration = pendingRegistration;
 
-                        ngDialog.openConfirm({
-                            template: '/Wheels4Food/resources/ngTemplates/viewRegistrationDetails.html',
-                            className: 'ngdialog-theme-default dialog-generic',
-                            scope: $scope
-                        });
+                        if (pendingRegistration.role === 'Volunteer') {
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/viewVolunteerRegistrationDetails.html',
+                                className: 'ngdialog-theme-default dialog-generic',
+                                scope: $scope
+                            });
+                        } else {
+                            ngDialog.openConfirm({
+                                template: '/Wheels4Food/resources/ngTemplates/viewRegistrationDetails.html',
+                                className: 'ngdialog-theme-default dialog-generic',
+                                scope: $scope
+                            });
+                        }
                     };
 
                     $scope.approve = function (pendingRegistration, index) {
@@ -68,13 +76,13 @@
                                 }
                             }).then(function (response) {
                                 console.log(response);
-                                if (response.data.isApproved) {                                    
+                                if (response.data.isApproved) {
                                     $scope.pendingRegistrationList.splice(($scope.currentPage - 1) * 10 + index, 1);
                                 }
                             });
                         });
                     };
-                    
+
                     $scope.delete = function (pendingRegistration, index) {
                         $scope.currentRegistration = pendingRegistration;
 
@@ -90,7 +98,7 @@
                                     'Content-Type': 'application/json',
                                 }
                             }).then(function (response) {
-                                if (response.data.isDeleted) {                                    
+                                if (response.data.isDeleted) {
                                     $scope.pendingRegistrationList.splice(($scope.currentPage - 1) * 10 + index, 1);
                                 }
                             });

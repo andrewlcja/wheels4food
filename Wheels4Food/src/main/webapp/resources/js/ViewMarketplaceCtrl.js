@@ -65,7 +65,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['itemName', 'category', 'user.organizationName', 'quantityRemaining', 'expiryDate'];
+                    $scope.tableColumns = ['itemName', 'category', 'user.organizationName', 'quantitySupplied', 'expiryDate'];
 
                     var indexPromise;
 
@@ -86,7 +86,7 @@
                             $scope.supplyList = response.data;
                             $scope.currentPage = 1;
                             $scope.pageSize = 10;
-
+                            
                             $scope.$watch('searchFilter', function () {
                                 $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['itemName']);
                             });
