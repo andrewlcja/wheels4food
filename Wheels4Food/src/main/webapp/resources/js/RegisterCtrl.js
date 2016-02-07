@@ -15,6 +15,7 @@
                         'pocName': '',
                         'pocNumber': '',
                         'licenseNumber': '',
+                        'description': '',
                         'role': ''
                     };
 

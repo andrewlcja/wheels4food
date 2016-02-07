@@ -44,15 +44,15 @@
                     <div style="margin-top: 0.33em;"><i ng-show="column === 'quantityDemanded' && demand.status === 'Approved' && demand.comments" class="fa fa-exclamation-triangle" style="color: sandybrown" tooltip-placement="top" tooltip="Quantity Reduced - {{demand.comments}}"></i> {{getObj(demand, column)}}</div>
                 </td>
                 <td class="text-center">
-                    <div ng-show="demand.status === 'Pending'"><button class="btn btn-default" style="cursor: default;" tooltip-placement="top" tooltip="Request submitted - Awaiting supplier's approval">Pending</button></div>
-                    <div ng-show="demand.status === 'Rejected'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Request rejected - {{demand.comments}}">Rejected</button></div>
-                    <div ng-show="demand.status === 'Job Created'"><button class="btn btn-primary" ng-click="viewJob(demand)" tooltip-placement="top" tooltip="Job Created - Click to view job details.">Job Created</button></div>                    
-                    <div ng-show="demand.status === 'Self Collection Created'"><button class="btn btn-primary" ng-click="viewSelfCollection(demand)" tooltip-placement="top" tooltip="Self Collection Created - Click to view more details.">Self Collection Created</button></div>
-                    <div ng-show="demand.status === 'Job Accepted'"><button class="btn btn-success" ng-click="viewAcceptedJob(demand)" tooltip-placement="top" tooltip="Job Accepted - Click to view job details.">Job Accepted</button></div>
-                    <div ng-show="demand.status === 'Job Completed'"><button class="btn btn-default" style="cursor: default;">Job Completed</button></div>                    
-                    <div ng-show="demand.status === 'Job Cancelled'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Job cancelled - {{demand.comments}}">Job Cancelled</button></div>                    
-                    <div ng-show="demand.status === 'Self Collection Cancelled'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Self Collection cancelled - {{demand.comments}}">Self Collection Cancelled</button></div>
-                    <div ng-show="demand.status === 'Self Collection Completed'"><button class="btn btn-default" style="cursor: default;">Self Collection Completed</button></div> 
+                    <div ng-show="demand.status === 'Pending'"><button class="btn btn-default btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Request submitted - Awaiting supplier's approval">Pending</button></div>
+                    <div ng-show="demand.status === 'Rejected'"><button class="btn btn-danger btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Request rejected - {{demand.comments}}">Rejected</button></div>
+                    <div ng-show="demand.status === 'Job Created'"><button class="btn btn-primary btn-block" ng-click="viewJob(demand)" tooltip-placement="top" tooltip="Job Created - Click to view job details.">Job Created</button></div>                    
+                    <div ng-show="demand.status === 'Self Collection Created'"><button class="btn btn-primary btn-block" ng-click="viewSelfCollection(demand)" tooltip-placement="top" tooltip="Self Collection Created - Click to view more details.">Self Collection Created</button></div>
+                    <div ng-show="demand.status === 'Job Accepted'"><button class="btn btn-success btn-block" ng-click="viewAcceptedJob(demand)" tooltip-placement="top" tooltip="Job Accepted - Click to view job details.">Job Accepted</button></div>
+                    <div ng-show="demand.status === 'Job Completed'"><button class="btn btn-default btn-block" style="cursor: default;">Job Completed</button></div>                    
+                    <div ng-show="demand.status === 'Job Cancelled'"><button class="btn btn-danger btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Job cancelled - {{demand.comments}}">Job Cancelled</button></div>                    
+                    <div ng-show="demand.status === 'Self Collection Cancelled'"><button class="btn btn-danger btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Self Collection cancelled - {{demand.comments}}">Self Collection Cancelled</button></div>
+                    <div ng-show="demand.status === 'Self Collection Completed'"><button class="btn btn-default btn-block" style="cursor: default;">Self Collection Completed</button></div> 
                 </td>
                 <td class="text-center">
                     <div style="margin-top:0.33em;">

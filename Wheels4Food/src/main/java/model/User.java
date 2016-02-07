@@ -56,13 +56,22 @@ public class User implements Serializable {
     @Column(name = "licenseNumber")
     private String licenseNumber;
     
+    @Column(name = "description")
+    private String description;
+    
     @Column(name = "role")
     private String role;
+    
+    @Column(name = "demeritPoints")
+    private int demeritPoints;
+    
+    @Column(name = "status")
+    private String status;
 
     public User() {
     }
 
-    public User(String username, String hashedPassword, String salt, String organizationName, String email, String address, String postalCode, String pocName, String pocNumber, String licenseNumber, String role) {
+    public User(String username, String hashedPassword, String salt, String organizationName, String email, String address, String postalCode, String pocName, String pocNumber, String licenseNumber, String description, String role, int demeritPoints, String status) {
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.salt = salt;
@@ -73,7 +82,10 @@ public class User implements Serializable {
         this.pocName = pocName;
         this.pocNumber = pocNumber;
         this.licenseNumber = licenseNumber;
+        this.description = description;
         this.role = role;
+        this.demeritPoints = demeritPoints;
+        this.status = status;
     }
 
     public int getId() {
@@ -120,8 +132,20 @@ public class User implements Serializable {
         return licenseNumber;
     }
 
+    public String getDescription() {
+        return description;
+    }
+        
     public String getRole() {
         return role;
+    }
+
+    public int getDemeritPoints() {
+        return demeritPoints;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setUsername(String username) {
@@ -167,4 +191,12 @@ public class User implements Serializable {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public void setDemeritPoints(int demeritPoints) {
+        this.demeritPoints = demeritPoints;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }    
 }

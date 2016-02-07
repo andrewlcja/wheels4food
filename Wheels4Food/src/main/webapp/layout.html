@@ -20,7 +20,7 @@
                 <li ng-if="role === 'Volunteer'" ui-sref-active="active"><a ui-sref="Jobs.View">View Jobs</a></li>
                 <li ng-if="role === 'Volunteer'" ui-sref-active="active"><a ui-sref="MyJobs">My Jobs</a></li>
                 <li ng-if="role !== 'Volunteer'" ui-sref-active="active"><a ui-sref="PendingRegistrations">Pending Registrations</a></li>
-                <li ng-if="role === 'Admin'" ui-sref-active="active"><a ui-sref="UserManagement">User Management</a></li>
+                <li ng-if="role !== 'Volunteer'" ui-sref-active="active"><a ui-sref="UserManagement">User Management</a></li>
             </ul>
             
             <ul class="nav navbar-nav navbar-right" style="padding-right: 15px;">

@@ -6,6 +6,12 @@
                 function ($scope, $state, localStorageService, $http, api, $timeout) {
                     var authData = localStorageService.get('authorizationData');
                     var username = authData.username;
+                    
+                    if (authData.role === 'VWO' || authData.role === 'Admin') {
+                        $scope.isVWO = true;
+                    } else {
+                        $scope.isVWO = false;
+                    }
 
                     var indexPromise = $http({
                         url: api.endpoint + 'GetUserByUsernameRequest/' + username,

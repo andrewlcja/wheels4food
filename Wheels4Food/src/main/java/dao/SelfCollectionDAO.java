@@ -73,12 +73,15 @@ public class SelfCollectionDAO {
         return jobList;
     }
     
-    public List<SelfCollection> getSelfCollectionListByUserId(int userID) throws Exception {
+    public List<SelfCollection> getSelfCollectionListBySupplierId(int supplierID) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<SelfCollection> selfCollectionList = session.createCriteria(SelfCollection.class)
-                .add(Restrictions.eq("user.id", userID))
-                .list();
+                .createAlias("demand.supply.user", "supplier")
+                .createAlias("demand.user", "requester")
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.eq("supplier.id", supplierID))
+                        .add(Restrictions.eq("requester.id", supplierID))).list();
         tx.commit();
         session.close();
         return selfCollectionList;

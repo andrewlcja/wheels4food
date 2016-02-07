@@ -13,14 +13,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import model.CancelSelfCollectionByDemandIdResponse;
 import model.CompleteSelfCollectionByDemandIdResponse;
 import model.CreateSelfCollectionRequest;
 import model.CreateSelfCollectionResponse;
 import model.Demand;
+import model.GetSelfCollectionBreakdownBySupplierIdResponse;
 import model.Job;
 import model.SelfCollection;
 import model.Supply;
+import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -139,11 +142,25 @@ public class SelfCollectionService {
         } else {
             supply.setMaximum(newQuantityRemaining - minimum);
         }
+        
+        //update demerit points to responsible party
+        User deductUser = null;
+        
+        if (comments.contains("Requesting")) {
+            deductUser = demand.getUser();        
+        } else if (comments.contains("Supplying")) {
+            deductUser = demand.getSupply().getUser();
+        }
+        
+        if (deductUser != null) {
+            deductUser.setDemeritPoints(deductUser.getDemeritPoints() + 1);
+        }
 
         try {
             selfCollectionDAO.updateSelfCollection(selfCollection);
             demandDAO.updateDemand(demand);
             supplyDAO.updateSupply(supply);
+            userDAO.updateUser(deductUser);
             return new CancelSelfCollectionByDemandIdResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -173,5 +190,31 @@ public class SelfCollectionService {
             errorList.add(e.getMessage());
             return new CompleteSelfCollectionByDemandIdResponse(false, errorList);
         }
+    }
+    
+    public GetSelfCollectionBreakdownBySupplierIdResponse getSelfCollectionBreakdownBySupplierIdRequest(int supplierID) throws Exception {
+        List<SelfCollection> selfCollectionList = selfCollectionDAO.getSelfCollectionListBySupplierId(supplierID);
+        
+        int pending = 0;
+        int cancelled = 0;
+        int completed = 0;
+        
+        for (SelfCollection selfCollection : selfCollectionList) {
+            String status = selfCollection.getDemand().getStatus();
+            
+            switch (status) {
+                case "Self Collection Created":
+                    pending++;
+                    break;
+                case "Self Collection Cancelled":
+                    cancelled++;
+                    break;
+                case "Self Collection Completed":
+                    completed++;
+                    break;
+            }
+        }
+        
+        return new GetSelfCollectionBreakdownBySupplierIdResponse(pending, cancelled, completed);
     }
 }

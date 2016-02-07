@@ -16,7 +16,7 @@
             </div>
         </form>
 
-        <form method="post" class="register-panel" name="loginForm" ng-show="VWOForm">
+        <form method="post" class="register-panel-2" name="loginForm" ng-show="VWOForm">
             <div class="col-sm-12" style="font-size:40px; font-weight: bolder;">Register new account</div>
             <div class="col-sm-6">
                 <div class="register-form-input">
@@ -63,15 +63,21 @@
                 <div class="register-form-input">
                     <label>License Number</label>
                     <input ng-model="registration.licenseNumber" type="text" class="form-control register-form-input-height" placeholder="License Number"/>
+                </div>                
+            </div>
+            <div class="col-sm-12">
+                <div class="register-form-input">
+                    <label>Organization Description</label>
+                    <textarea class="form-control" style="height: 100px; resize: none;" ng-model="registration.description" placeholder="Organization Description"></textarea>
                 </div>
-                <div class="col-sm-offset-9 col-sm-2" style="padding-top: 37px;">
+                <div class="col-sm-offset-11" style="padding-top: 20px;">
                     <button class="btn btn-primary" ng-click="submit()">Submit</button>
                 </div>
             </div>
         </form>  
-        <form method="post" class="register-panel" name="volunteerRegForm" ng-show="volunteerForm">
+        <form method="post" class="register-panel-3" name="volunteerRegForm" ng-show="volunteerForm">
             <div class="col-sm-12" style="font-size:40px; font-weight: bolder;">Register new account</div>
-            <div class="col-sm-6" style="padding-top: 40px;">
+            <div class="col-sm-6">
                 <div class="register-form-input">
                     <label>Username</label>
                     <input ng-model="registration.username" type="text" class="form-control register-form-input-height" placeholder="Username" name="username"/>
@@ -91,7 +97,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-sm-6" style="padding-top: 40px;"> 
+            <div class="col-sm-6"> 
                 <div class="register-form-input">
                     <label>Email</label>
                     <input ng-model="registration.email" type="text" class="form-control register-form-input-height" placeholder="Email"/>

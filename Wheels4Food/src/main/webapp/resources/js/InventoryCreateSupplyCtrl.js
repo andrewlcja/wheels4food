@@ -9,12 +9,15 @@
 
                     $scope.supply = {
                         'userID': userID,
+                        'sku': '',
                         'itemName': '',
                         'category': '',
+                        'unit': '',
                         'quantitySupplied': '',
                         'minimum': '',
                         'maximum': '',
-                        'expiryDate': ''
+                        'expiryDate': '',
+                        'monetaryValue': ''
                     };
 
                     $scope.$watch('expiryDate', function (newValue, oldValue) {

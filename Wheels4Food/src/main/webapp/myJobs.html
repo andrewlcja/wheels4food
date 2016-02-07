@@ -28,9 +28,9 @@
                         <div style="margin-top: 0.33em;">{{getObj(job, column)}}</div>
                     </td>
                     <td class="text-center">
-                        <div ng-show="job.status === 'Completed'"><button class="btn btn-default" style="cursor: default;">Completed</button></div>         
-                        <div ng-show="job.status === 'Accepted'"><button class="btn btn-success" style="cursor: default;">In Progress</button></div> 
-                        <div ng-show="job.status === 'Cancelled'"><button class="btn btn-danger" style="cursor: default;" tooltip-placement="top" tooltip="Job cancelled - {{job.demand.comments}}">Cancelled</button></div>
+                        <div ng-show="job.status === 'Completed'"><button class="btn btn-default btn-block" style="cursor: default;">Completed</button></div>         
+                        <div ng-show="job.status === 'Accepted'"><button class="btn btn-success btn-block" style="cursor: default;">In Progress</button></div> 
+                        <div ng-show="job.status === 'Cancelled'"><button class="btn btn-danger btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Job cancelled - {{job.demand.comments}}">Cancelled</button></div>
                     </td>
                     <td class="text-center">
                         <div style="margin-top:0.33em;">

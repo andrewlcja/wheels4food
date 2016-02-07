@@ -4,6 +4,10 @@
             <div class="row">
                 <form name="supplyForm" novalidate>
                     <div class="col-sm-5">
+                        <div class="col-sm-9" style="padding-top: 25px;"> 
+                            <h4><b>Stock Keeping Unit (SKU)</b></h4>
+                            <input ng-model="supply.sku" class="form-control" name="sku" type="text"/>
+                        </div>
                         <div class="col-sm-9" style="padding-top: 25px;" ng-class="{'error-input': supplyForm.itemName.$touched && supplyForm.itemName.$invalid}"> 
                             <h4><b>Item Name</b></h4>
                             <input ng-model="supply.itemName" class="form-control" name="itemName" type="text" required/>
@@ -20,6 +24,13 @@
                                 <option value="Toiletries">Toiletries</option>
                                 <option value="Miscellaneous">Miscellaneous</option>
                             </select>
+                        </div>
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.unit.$touched && supplyForm.unit.$invalid}"> 
+                            <h4><b>Unit of Measurement</b></h4>
+                            <input ng-model="supply.unit" class="form-control" name="unit" type="text" required/>
+                            <div class="error-message" ng-messages="supplyForm.unit.$error" ng-show="supplyForm.unit.$touched">
+                                <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            </div>
                         </div>
                         <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.quantitySupplied.$touched && supplyForm.quantitySupplied.$invalid}"> 
                             <h4><b>Quantity Supplied</b></h4>
@@ -59,7 +70,15 @@
                                 <div style="margin-top: 5px;" ng-message="ecustomMax">Please enter a number more than or equals to {{supply.minimum}}.</div>
                                 <div style="margin-top: 5px;" ng-message="ecustomMax2">This quantity must be either equals to {{supply.quantitySupplied}} or less than equals to {{supply.quantitySupplied - supply.minimum}}.</div>
                             </div>
-                        </div>    
+                        </div>                      
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.monetaryValue.$touched && supplyForm.monetaryValue.$invalid}"> 
+                            <h4><b>Monetary Value ($ per unit)</b></h4>
+                            <input ng-model="supply.monetaryValue" class="form-control" name="monetaryValue" type="number" required/>
+                            <div class="error-message" ng-messages="supplyForm.monetaryValue.$error" ng-show="supplyForm.monetaryValue.$touched">
+                                <div style="margin-top: 5px;" ng-message="required">This field is required.</div>                        
+                                <div style="margin-top: 5px;" ng-message="number">Please enter a number only.</div>
+                            </div>
+                        </div>
                         <div class="col-md-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.expiryDate.$touched && supplyForm.expiryDate.$invalid}">
                             <h4><b>Expiry Date (dd/mm/yyyy)</b></h4>
                             <p class="input-group">
@@ -80,7 +99,7 @@
                     </div>
                 </form>
             </div>
-            <div class="row" style="padding-top: 30px;">
+            <div class="row" style="padding-top: 30px; padding-bottom: 20px;">
                 <div class="col-sm-offset-10 col-sm-2">
                     <button ng-click="update()" class="btn btn-primary" ng-disabled="supplyForm.$invalid">Update</button>
                     <button ui-sref="Inventory.Supply" class="btn btn-default">Back</button>

@@ -55,6 +55,9 @@ public class PendingRegistration implements Serializable {
 
     @Column(name = "licenseNumber")
     private String licenseNumber;
+    
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "role")
     private String role;
@@ -62,7 +65,7 @@ public class PendingRegistration implements Serializable {
     public PendingRegistration() {
     }
 
-    public PendingRegistration(String username, String hashedPassword, String salt, String organizationName, String email, String address, String postalCode, String pocName, String pocNumber, String licenseNumber, String role) {
+    public PendingRegistration(String username, String hashedPassword, String salt, String organizationName, String email, String address, String postalCode, String pocName, String pocNumber, String licenseNumber, String description, String role) {
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.salt = salt;
@@ -73,6 +76,7 @@ public class PendingRegistration implements Serializable {
         this.pocName = pocName;
         this.pocNumber = pocNumber;
         this.licenseNumber = licenseNumber;
+        this.description = description;
         this.role = role;
     }
 
@@ -118,6 +122,10 @@ public class PendingRegistration implements Serializable {
 
     public String getLicenseNumber() {
         return licenseNumber;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getRole() {
