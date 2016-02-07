@@ -2,8 +2,8 @@
     'use strict';
     angular
             .module('Wheels4Food.Principal')
-            .controller('LoginCtrl', ['$scope', '$state', '$http', 'api', 'localStorageService', '$timeout',
-                function ($scope, $state, $http, api, localStorageService, $timeout) {
+            .controller('LoginCtrl', ['$scope', '$state', '$http', 'api', 'localStorageService', '$timeout', 'ngDialog',
+                function ($scope, $state, $http, api, localStorageService, $timeout, ngDialog) {
                     $scope.$parent.isLoggedIn = false;
                     $scope.signInText = 'Sign In';
                     $scope.isLogging = false;
@@ -42,9 +42,17 @@
                                     $scope.$parent.isLoggedIn = true;
                                 } else {
                                     $scope.signInText = 'Sign In';
-
-                                    $scope.error = response.data.error;
-                                    $scope.loginFailed = true;
+                                    
+                                    if (response.data.error === 'Account suspended') {
+                                        ngDialog.openConfirm({
+                                            template: '/Wheels4Food/resources/ngTemplates/accountSuspendedPrompt.html',
+                                            className: 'ngdialog-theme-default dialog-generic',
+                                            scope: $scope
+                                        });
+                                    } else {
+                                        $scope.error = response.data.error;
+                                        $scope.loginFailed = true;
+                                    }
                                 }
                             }, 800);
                         }, function (error) {

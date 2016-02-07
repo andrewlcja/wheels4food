@@ -2,13 +2,10 @@
     'use strict';
     angular
             .module('Wheels4Food.UserManagement')
-            .controller('UserManagementCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
+            .controller('UserManagementCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams) {
                     var authData = localStorageService.get('authorizationData');
-                    
-                    if (authData.role !== 'Admin') {
-                        $state.go('Home');
-                    }
+                    var role = authData.role;
                     
                     $scope.loggedInUsername = authData.username;
                     
@@ -28,15 +25,7 @@
 
                     //retrieve details
                     $scope.getObj = function (component, column) {
-                        var columnPath = column.split(".");
-                        var obj = component;
-                        for (var y = 0; y < columnPath.length; y++) {
-                            if (!obj[columnPath[y]]) {
-                                return '';
-                            }
-                            obj = obj[columnPath[y]];
-                        }
-                        return obj;
+                        return component[column];
                     };
 
                     $scope.view = function (user) {
@@ -46,6 +35,50 @@
                             template: '/Wheels4Food/resources/ngTemplates/viewUserDetails.html',
                             className: 'ngdialog-theme-default dialog-generic',
                             scope: $scope
+                        });
+                    };
+                    
+                    $scope.suspend = function (user) {
+                        $scope.currentUser = user;
+                        
+                        ngDialog.openConfirm({
+                            template: '/Wheels4Food/resources/ngTemplates/suspendUserPrompt.html',
+                            className: 'ngdialog-theme-default dialog-generic',
+                            scope: $scope
+                        }).then(function () {
+                            $http({
+                                url: api.endpoint + 'SuspendUserRequest/' + user.id,
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then(function (response) {
+                                if (response.data.isSuspended) {
+                                    $state.go($state.current, $stateParams, {reload: true, inherit: false});
+                                }
+                            });
+                        });
+                    };
+                    
+                    $scope.activate = function (user) {
+                        $scope.currentUser = user;
+                        
+                        ngDialog.openConfirm({
+                            template: '/Wheels4Food/resources/ngTemplates/activateUserPrompt.html',
+                            className: 'ngdialog-theme-default dialog-generic',
+                            scope: $scope
+                        }).then(function () {
+                            $http({
+                                url: api.endpoint + 'ActivateUserRequest/' + user.id,
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then(function (response) {
+                                if (response.data.isActivated) {
+                                    $state.go($state.current, $stateParams, {reload: true, inherit: false});
+                                }
+                            });
                         });
                     };
 
@@ -71,12 +104,20 @@
                             });
                         });
                     };
+                    
+                    var request = 'GetUserListRequest';
+                    if (authData.username === 'ffth') {
+                        request = 'GetUserListByRoleRequest/VWO';
+                    } else if (role === 'VWO') {
+                        request = 'GetVolunteerListByOrganizationRequest/' + authData.organizationName;
+                    }
+                    
 
                     //set up user table columns
-                    $scope.tableColumns = ['username', 'organizationName', 'role'];
+                    $scope.tableColumns = ['username', 'organizationName', 'role', 'demeritPoints', 'status'];
 
                     var indexPromise = $http({
-                        url: api.endpoint + 'GetUserListRequest',
+                        url: api.endpoint + request,
                         method: 'GET'
                     });
 

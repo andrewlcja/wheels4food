@@ -6,9 +6,11 @@
 package controller;
 
 import java.util.List;
+import model.ActivateUserResponse;
 import model.ChangePasswordRequest;
 import model.ChangePasswordResponse;
 import model.DeleteUserResponse;
+import model.SuspendUserResponse;
 import model.UpdateUserResponse;
 import model.User;
 import model.UserLoginRequest;
@@ -60,6 +62,20 @@ public class UserController {
         return userList;
     }
     
+    @RequestMapping(value = "/GetVolunteerListByOrganizationRequest/{organizationName}", method = RequestMethod.GET)
+    public @ResponseBody List<User> getVolunteerListByOrganizationRequest(@PathVariable("organizationName") String organizationName) {
+
+        List<User> userList = null;
+        try {
+            userList = userService.getVolunteerListByOrganizationRequest(organizationName);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return userList;
+    }
+    
     @RequestMapping(value = "/GetUserByUsernameRequest/{username}", method = RequestMethod.GET)
     public @ResponseBody User getUserByUsernameRequest(@PathVariable("username") String username) {
 
@@ -82,6 +98,16 @@ public class UserController {
     @RequestMapping(value = "/DeleteUserRequest/{id}", method = RequestMethod.DELETE)
     public @ResponseBody DeleteUserResponse deleteUserRequest(@PathVariable("id") String id) {
         return userService.deleteUserRequest(id);
+    }
+    
+    @RequestMapping(value = "/SuspendUserRequest/{id}", method = RequestMethod.PUT)
+    public @ResponseBody SuspendUserResponse suspendUserRequest(@PathVariable("id") String id) {
+        return userService.suspendUserRequest(id);
+    }
+    
+    @RequestMapping(value = "/ActivateUserRequest/{id}", method = RequestMethod.PUT)
+    public @ResponseBody ActivateUserResponse activateUserRequest(@PathVariable("id") String id) {
+        return userService.activateUserRequest(id);
     }
     
     @RequestMapping(value = "/UpdateUserRequest", method = RequestMethod.PUT)

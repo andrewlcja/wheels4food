@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.ActivateUserResponse;
 import model.ChangePasswordRequest;
 import model.ChangePasswordResponse;
 import model.DeleteUserResponse;
 import model.Supply;
+import model.SuspendUserResponse;
 import model.UpdateUserResponse;
 import model.User;
 import model.UserLoginRequest;
@@ -30,7 +32,7 @@ public class UserService {
 
     @Autowired
     UserDAO userDAO;
-    
+
     @Autowired
     SupplyDAO supplyDAO;
 
@@ -42,6 +44,10 @@ public class UserService {
         return userDAO.getUserListByRole(role);
     }
     
+    public List<User> getVolunteerListByOrganizationRequest(String organizationName) throws Exception {
+        return userDAO.getVolunteerListByOrganization(organizationName);
+    }
+
     public User getUserByUsernameRequest(String username) throws Exception {
         return userDAO.getUser(username);
     }
@@ -68,6 +74,10 @@ public class UserService {
 
             if (!HashUtility.verify(password, user.getHashedPassword(), user.getSalt())) {
                 return new UserLoginResponse(false, "Invalid username / password");
+            }
+            
+            if (user.getStatus().equals("Inactive")) {
+                return new UserLoginResponse(false, "Account suspended");
             }
 
             return new UserLoginResponse(true, user);
@@ -99,6 +109,58 @@ public class UserService {
             return new DeleteUserResponse(false, errorList);
         }
     }
+    
+    public SuspendUserResponse suspendUserRequest(String idString) {
+        ArrayList<String> errorList = new ArrayList<String>();
+
+        if (idString.equals("")) {
+            errorList.add("Id cannot be blank");
+            return new SuspendUserResponse(false, errorList);
+        }
+
+        try {
+            int id = Integer.parseInt(idString);
+
+            try {
+                User user = userDAO.getUserById(id);
+                user.setStatus("Inactive");
+                userDAO.updateUser(user);
+                return new SuspendUserResponse(true, null);
+            } catch (Exception e) {
+                errorList.add(e.getMessage());
+                return new SuspendUserResponse(false, errorList);
+            }
+        } catch (NumberFormatException e) {
+            errorList.add("Id must be an integer");
+            return new SuspendUserResponse(false, errorList);
+        }
+    }
+    
+    public ActivateUserResponse activateUserRequest(String idString) {
+        ArrayList<String> errorList = new ArrayList<String>();
+
+        if (idString.equals("")) {
+            errorList.add("Id cannot be blank");
+            return new ActivateUserResponse(false, errorList);
+        }
+
+        try {
+            int id = Integer.parseInt(idString);
+
+            try {
+                User user = userDAO.getUserById(id);
+                user.setStatus("Active");
+                userDAO.updateUser(user);
+                return new ActivateUserResponse(true, null);
+            } catch (Exception e) {
+                errorList.add(e.getMessage());
+                return new ActivateUserResponse(false, errorList);
+            }
+        } catch (NumberFormatException e) {
+            errorList.add("Id must be an integer");
+            return new ActivateUserResponse(false, errorList);
+        }
+    }
 
     public UpdateUserResponse updateUserRequest(User user) {
         String username = user.getUsername().trim();
@@ -109,6 +171,7 @@ public class UserService {
         String pocName = user.getPocName().trim();
         String pocNumber = user.getPocNumber().trim();
         String licenseNumber = user.getLicenseNumber().trim();
+        String description = user.getDescription().trim();
         String role = user.getRole().trim();
 
         ArrayList<String> errorList = new ArrayList<String>();
@@ -135,15 +198,27 @@ public class UserService {
         }
 
         if (pocName.equals("")) {
-            errorList.add("Point of Contact Name cannot be blank");
+            if (role.equals("Volunteer")) {
+                errorList.add("Full Name cannot be blank");
+            } else {
+                errorList.add("Point of Contact Name cannot be blank");
+            }
         }
 
         if (pocNumber.equals("")) {
-            errorList.add("Point of Contact Number cannot be blank");
+            if (role.equals("Volunteer")) {
+                errorList.add("Mobile Number cannot be blank");
+            } else {
+                errorList.add("Point of Contact Number cannot be blank");
+            }
         }
 
         if (licenseNumber.equals("")) {
             errorList.add("License Number cannot be blank");
+        }
+
+        if (description.equals("")) {
+            errorList.add("Organization Description cannot be blank");
         }
 
         if (role.equals("")) {
@@ -168,6 +243,10 @@ public class UserService {
             } else if (!email.equals(oldUser.getEmail())) {
                 if (userDAO.getUserByEmail(email) != null) {
                     errorList.add("Email already exists");
+                }
+            } else if (role.equals("Volunteer") && !pocNumber.equals(oldUser.getPocNumber())) {
+                if (userDAO.getUserByMobileNumber(pocNumber) != null) {
+                    errorList.add("Mobile Number already exists");
                 }
             }
 

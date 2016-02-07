@@ -2,8 +2,8 @@
     'use strict';
     angular
             .module('Wheels4Food.PendingApprovals')
-            .controller('PendingApprovalsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
+            .controller('PendingApprovalsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams) {
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
 
@@ -59,7 +59,7 @@
 
                     var validApproval = function (pendingApproval, index, comment) {
                         var finalIndex = $scope.pendingApprovalList.indexOf(pendingApproval);
-                        
+
                         if (pendingApproval.preferredSchedule === 'NA') {
                             $scope.currentPendingApproval = pendingApproval;
 
@@ -82,6 +82,7 @@
                                 }).then(function (response) {
                                     if (response.data.isCreated) {
                                         $scope.pendingApprovalList.splice(finalIndex, 1);
+                                        $state.go($state.current, $stateParams, {reload: true, inherit: false});
                                     }
                                 });
                             });
@@ -169,6 +170,7 @@
                                 }).then(function (response) {
                                     if (response.data.isCreated) {
                                         $scope.pendingApprovalList.splice(finalIndex, 1);
+                                        $state.go($state.current, $stateParams, {reload: true, inherit: false});
                                     }
                                 });
                             });
@@ -276,7 +278,7 @@
 
                     $scope.reject = function (pendingApproval, index) {
                         var finalIndex = $scope.pendingApprovalList.indexOf(pendingApproval);
-                        
+
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/rejectRequestPrompt.html',
                             className: 'ngdialog-theme-default dialog-generic',
@@ -294,6 +296,7 @@
                             }).then(function (response) {
                                 if (response.data.isRejected) {
                                     $scope.pendingApprovalList.splice(finalIndex, 1);
+                                    $state.go($state.current, $stateParams, {reload: true, inherit: false});
                                 }
                             });
                         });

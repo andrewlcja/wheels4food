@@ -52,6 +52,7 @@ public class PendingRegistrationService {
         String pocName = request.getPocName().trim();
         String pocNumber = request.getPocNumber().trim();
         String licenseNumber = request.getLicenseNumber().trim();
+        String description = request.getDescription().trim();
         String role = request.getRole().trim();
 
         ArrayList<String> errorList = new ArrayList<String>();
@@ -95,6 +96,10 @@ public class PendingRegistrationService {
 
         if (licenseNumber.equals("")) {
             errorList.add("License Number cannot be blank");
+        }
+        
+        if (description.equals("")) {
+            errorList.add("Organization Description cannot be blank");
         }
 
         if (role.equals("")) {
@@ -146,7 +151,7 @@ public class PendingRegistrationService {
             String hashedPassword = credentials[0];
             String salt = credentials[1];
 
-            pendingRegistrationDAO.createPendingRegistration(new PendingRegistration(username, hashedPassword, salt, organizationName, email, address, postalCodeStr, pocName, pocNumber, licenseNumber, role));
+            pendingRegistrationDAO.createPendingRegistration(new PendingRegistration(username, hashedPassword, salt, organizationName, email, address, postalCodeStr, pocName, pocNumber, licenseNumber, description, role));
             return new CreatePendingRegistrationResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -165,6 +170,7 @@ public class PendingRegistrationService {
         String pocName = request.getPocName().trim();
         String pocNumber = request.getPocNumber().trim();
         String licenseNumber = "NA";
+        String description = "NA";
         String role = request.getRole().trim();
 
         ArrayList<String> errorList = new ArrayList<String>();
@@ -191,11 +197,11 @@ public class PendingRegistrationService {
         }
 
         if (pocName.equals("")) {
-            errorList.add("Point of Contact Name cannot be blank");
+            errorList.add("Full Name cannot be blank");
         }
 
         if (pocNumber.equals("")) {
-            errorList.add("Point of Contact Number cannot be blank");
+            errorList.add("Mobile Number cannot be blank");
         }
 
         if (role.equals("")) {
@@ -222,6 +228,10 @@ public class PendingRegistrationService {
             } else if (userDAO.getUserByEmail(email) != null) {
                 errorList.add("Email already exists");
             }
+            
+            if (userDAO.getUserByMobileNumber(pocNumber) != null) {
+                errorList.add("Mobile number already exists");
+            }
 
             if (!errorList.isEmpty()) {
                 return new CreatePendingRegistrationResponse(false, errorList);
@@ -232,7 +242,7 @@ public class PendingRegistrationService {
             String hashedPassword = credentials[0];
             String salt = credentials[1];
 
-            pendingRegistrationDAO.createPendingRegistration(new PendingRegistration(username, hashedPassword, salt, organizationName, email, address, postalCodeStr, pocName, pocNumber, licenseNumber, role));
+            pendingRegistrationDAO.createPendingRegistration(new PendingRegistration(username, hashedPassword, salt, organizationName, email, address, postalCodeStr, pocName, pocNumber, licenseNumber, description, role));
             return new CreatePendingRegistrationResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -309,9 +319,10 @@ public class PendingRegistrationService {
                 String pocName = pendingRegistration.getPocName();
                 String pocNumber = pendingRegistration.getPocNumber();
                 String licenseNumber = pendingRegistration.getLicenseNumber();
+                String description = pendingRegistration.getDescription();
                 String role = pendingRegistration.getRole();
 
-                User user = new User(username, password, salt, organizationName, email, address, postalCode, pocName, pocNumber, licenseNumber, role);
+                User user = new User(username, password, salt, organizationName, email, address, postalCode, pocName, pocNumber, licenseNumber, description, role, 0, "Active");
 
                 pendingRegistrationDAO.approvePendingRegistration(user);
                 pendingRegistrationDAO.deletePendingRegistration(id);

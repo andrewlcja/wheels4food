@@ -468,7 +468,7 @@
                     }, 1000);
 
                     //cgBusy configuration
-                    $scope.delay = 1;
+                    $scope.delay = 0;
                     $scope.minDuration = 820;
                     $scope.message = 'Please Wait...';
                     $scope.backdrop = true;

@@ -43,6 +43,17 @@ public class UserDAO {
         session.close();
         return userList;
     }
+    
+    public List<User> getVolunteerListByOrganization(String organizationName) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<User> userList = session.createCriteria(User.class)
+                .add(Restrictions.eq("role", "Volunteer"))
+                .add(Restrictions.eq("organizationName", organizationName)).list();
+        tx.commit();
+        session.close();
+        return userList;
+    }
 
     public User getUser(String username) throws Exception {
         session = sessionFactory.openSession();
@@ -83,6 +94,18 @@ public class UserDAO {
         tx = session.beginTransaction();
         User user = (User) session.createCriteria(User.class)
                 .add(Restrictions.eq("email", email))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return user;
+    }
+    
+    public User getUserByMobileNumber(String number) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        User user = (User) session.createCriteria(User.class)
+                .add(Restrictions.eq("pocNumber", number))
+                .add(Restrictions.eq("role", "Volunteer"))
                 .uniqueResult();
         tx.commit();
         session.close();
