@@ -63,6 +63,20 @@ public class JobDAO {
         return jobList;
     }
     
+    public List<Job> getJobListBySupplierId(int supplierID) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Job> jobList = session.createCriteria(Job.class)
+                .createAlias("demand.supply.user", "supplier")
+                .createAlias("demand.user", "requester")
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.eq("supplier.id", supplierID))
+                        .add(Restrictions.eq("requester.id", supplierID))).list();
+        tx.commit();
+        session.close();
+        return jobList;
+    }
+    
     public Job getJobByDemandId(int demandID) {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();

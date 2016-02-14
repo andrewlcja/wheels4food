@@ -37,12 +37,15 @@ public class SupplyService {
 
     public CreateSupplyResponse createSupplyRequest(CreateSupplyRequest request) {
         int userID = request.getUserID();
+        String sku = request.getSku().trim();
         String itemName = request.getItemName().trim();
         String category = request.getCategory().trim();
+        String unit = request.getUnit().trim();
         String quantitySuppliedStr = request.getQuantitySupplied().trim();
         String minimumStr = request.getMinimum().trim();
         String maximumStr = request.getMaximum().trim();
         String expiryDate = request.getExpiryDate().trim();
+        String monetaryValueStr = request.getMonetaryValue().trim();
 
         ArrayList<String> errorList = new ArrayList<String>();
 
@@ -50,13 +53,17 @@ public class SupplyService {
         if (userID <= 0) {
             errorList.add("Invalid user id");
         }
-
+        
         if (itemName.equals("")) {
             errorList.add("Item Name cannot be blank");
         }
 
         if (category.equals("")) {
             errorList.add("Category cannot be blank");
+        }
+        
+        if (unit.equals("")) {
+            errorList.add("Unit of Measurement cannot be blank");
         }
 
         if (quantitySuppliedStr.equals("")) {
@@ -73,6 +80,10 @@ public class SupplyService {
 
         if (expiryDate.equals("")) {
             errorList.add("Expiry Date cannot be blank");
+        }
+        
+        if (monetaryValueStr.equals("")) {
+            errorList.add("Monetary Value cannot be blank");
         }
 
         //check if the errorlist is empty
@@ -112,6 +123,17 @@ public class SupplyService {
             }
         } catch (NumberFormatException e) {
             errorList.add("Maximum Request Quantity must be an integer");
+        }
+        
+        float monetaryValue = 0;
+        try {
+            monetaryValue = Float.parseFloat(monetaryValueStr);
+
+            if (maximum <= 0) {
+                errorList.add("Monetary Value must be more than 0");
+            }
+        } catch (NumberFormatException e) {
+            errorList.add("Monetary Value must be an number");
         }
 
         //check if the errorlist is empty
@@ -167,7 +189,7 @@ public class SupplyService {
                 return new CreateSupplyResponse(false, errorList);
             }
 
-            supplyDAO.createSupply(new Supply(user, itemName, category, quantitySupplied, minimum, maximum, maximum, expiryDate, datePosted));
+            supplyDAO.createSupply(new Supply(user, sku, itemName, category, unit, quantitySupplied, minimum, maximum, maximum, expiryDate, monetaryValue, datePosted));
             return new CreateSupplyResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -176,22 +198,28 @@ public class SupplyService {
     }
 
     public UpdateSupplyResponse updateSupplyRequest(Supply supply) {
+        String sku = supply.getSku().trim();
         String itemName = supply.getItemName().trim();
         String category = supply.getCategory().trim();
+        String unit = supply.getUnit().trim();
         int quantitySupplied = supply.getQuantitySupplied();
         int minimum = supply.getMinimum();
         int maximum = supply.getMaximum();
         String expiryDate = supply.getExpiryDate().trim();
+        float monetaryValue = supply.getMonetaryValue();
 
         ArrayList<String> errorList = new ArrayList<String>();
-
-        //validations
+        
         if (itemName.equals("")) {
             errorList.add("Item Name cannot be blank");
         }
 
         if (category.equals("")) {
             errorList.add("Category cannot be blank");
+        }
+        
+        if (unit.equals("")) {
+            errorList.add("Unit of Measurement cannot be blank");
         }
 
         if (quantitySupplied <= 0) {
@@ -208,6 +236,10 @@ public class SupplyService {
 
         if (expiryDate.equals("")) {
             errorList.add("Expiry Date cannot be blank");
+        }
+        
+        if (monetaryValue < 0) {
+            errorList.add("Monetary Value must be more than equals to 0");
         }
 
         //check if the errorlist is empty

@@ -20,12 +20,13 @@ public class CreatePendingRegistrationRequest {
     private String pocName;
     private String pocNumber;
     private String licenseNumber;
+    private String description;
     private String role;
 
     public CreatePendingRegistrationRequest() {
     }
 
-    public CreatePendingRegistrationRequest(String username, String password, String confirmPassword, String organizationName, String email, String address, String postalCode, String pocName, String pocNumber, String licenseNumber, String role) {
+    public CreatePendingRegistrationRequest(String username, String password, String confirmPassword, String organizationName, String email, String address, String postalCode, String pocName, String pocNumber, String licenseNumber, String description, String role) {
         this.username = username;
         this.password = password;
         this.confirmPassword = confirmPassword;
@@ -36,6 +37,7 @@ public class CreatePendingRegistrationRequest {
         this.pocName = pocName;
         this.pocNumber = pocNumber;
         this.licenseNumber = licenseNumber;
+        this.description = description;
         this.role = role;
     }
 
@@ -77,6 +79,10 @@ public class CreatePendingRegistrationRequest {
 
     public String getLicenseNumber() {
         return licenseNumber;
+    }
+
+    public String getDescription() {
+        return description;
     }
     
     public String getRole() {

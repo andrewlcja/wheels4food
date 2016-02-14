@@ -21,6 +21,7 @@ import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.GetDemandBreakdownResponse;
 import model.GetUnavailableTimeslotsByDeliveryDateRequest;
 import model.RejectDemandRequest;
 import model.RejectDemandResponse;
@@ -304,6 +305,10 @@ public class DemandService {
 
             if (quantityDemanded <= quantitySupplied) {
                 supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
+                
+                if (supply.getMaximum() < supply.getQuantitySupplied()) {
+                    supply.setMaximum(supply.getQuantitySupplied());
+                }
             } else {
                 if (comments.equals("")) {
                     errorList.add("Comments cannot be blank");
@@ -382,6 +387,10 @@ public class DemandService {
     public List<Demand> getPendingDemandListBySupplierIdRequest(int supplierID) throws Exception {
         return demandDAO.getPendingDemandListBySupplierId(supplierID);
     }
+    
+    public List<Demand> getCompletedDemandListBySupplierIdRequest(int supplierID) throws Exception {
+        return demandDAO.getCompletedDemandListBySupplierId(supplierID);
+    }
 
     public List<String> getUnavailableTimeslotsByDeliveryDateRequest(GetUnavailableTimeslotsByDeliveryDateRequest request) throws Exception {
         List<Demand> demandList = demandDAO.getDemandListByDeliveryDate(request.getSupplierID(), request.getDeliveryDate());
@@ -397,5 +406,31 @@ public class DemandService {
 
     public Demand getDemandByIdRequest(int id) throws Exception {
         return demandDAO.getDemandById(id);
+    }
+    
+    public GetDemandBreakdownResponse getDemandBreakdownRequest(int id) throws Exception {
+        List<Demand> demandList = demandDAO.getDemandListBySupplierOrRequesterId(id);
+        
+        int pending = 0;
+        int approved = 0;
+        int rejected = 0;
+        
+        for (Demand demand : demandList) {
+            String status = demand.getStatus();
+            
+            switch (status) {
+                case "Pending":
+                    pending++;
+                    break;
+                case "Rejected":
+                    rejected++;
+                    break;
+                default:
+                    approved++;
+                    break;
+            }
+        }
+        
+        return new GetDemandBreakdownResponse(pending, approved, rejected);
     }
 }

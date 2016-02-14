@@ -155,6 +155,28 @@ body {
     -webkit-border-radius: 15px;
 }
 
+.register-panel-2 {
+    background: #283a44;
+    padding: 15px 10px;
+    min-height: 660px;
+    height: 100%;
+    color: #fff;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
+.register-panel-3 {
+    background: #283a44;
+    padding: 15px 10px;
+    min-height: 410px;
+    height: 100%;
+    color: #fff;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
 .register-vwo-panel {
     background: #e1846e;
     padding: 50px 20px;
@@ -264,6 +286,14 @@ body {
 
 .ngdialog.dialog-generic-2 .ngdialog-content{
     width : 600px;
+    height: auto;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+.ngdialog.dialog-generic-3 .ngdialog-content{
+    width : 900px;
     height: auto;
     padding-top: 5px;
     padding-left: 30px;

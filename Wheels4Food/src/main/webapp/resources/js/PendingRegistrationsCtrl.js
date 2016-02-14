@@ -53,8 +53,8 @@
                             });
                         } else {
                             ngDialog.openConfirm({
-                                template: '/Wheels4Food/resources/ngTemplates/viewRegistrationDetails.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                template: '/Wheels4Food/resources/ngTemplates/viewVWORegistrationDetails.html',
+                                className: 'ngdialog-theme-default dialog-generic-3',
                                 scope: $scope
                             });
                         }
@@ -109,10 +109,12 @@
                     $scope.tableColumns = ['username', 'organizationName', 'role'];
 
                     var request = '';
-                    if (authData.role === 'Admin') {
+                    if (authData.username === 'ffth') {
                         request = 'GetPendingRegistrationListByRoleRequest/VWO';
                     } else if (authData.role === 'VWO') {
                         request = 'GetVolunteerPendingRegistrationListByOrganizationRequest/' + authData.organizationName;
+                    } else if (authData.role === 'Admin') {
+                        request = 'GetPendingRegistrationListRequest';
                     }
 
                     var indexPromise = $http({

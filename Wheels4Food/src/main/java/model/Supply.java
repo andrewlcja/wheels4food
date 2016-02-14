@@ -33,12 +33,18 @@ public class Supply implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(name = "userID")
     private User user;
+    
+    @Column(name = "sku")
+    private String sku;
 
     @Column(name = "itemName")
     private String itemName;
     
     @Column(name = "category")
     private String category;
+    
+    @Column(name = "unit")
+    private String unit;
 
     @Column(name = "quantitySupplied")
     private int quantitySupplied;
@@ -54,6 +60,9 @@ public class Supply implements Serializable {
 
     @Column(name = "expiryDate")
     private String expiryDate;
+    
+    @Column(name = "monetaryValue")
+    private float monetaryValue;
 
     @Column(name = "datePosted")
     private String datePosted;
@@ -61,15 +70,18 @@ public class Supply implements Serializable {
     public Supply() {
     }
 
-    public Supply(User user, String itemName, String category, int quantitySupplied, int minimum, int maximum, int initialMaximum, String expiryDate, String datePosted) {
+    public Supply(User user, String sku, String itemName, String category, String unit, int quantitySupplied, int minimum, int maximum, int initialMaximum, String expiryDate, float monetaryValue, String datePosted) {
         this.user = user;
+        this.sku = sku;
         this.itemName = itemName;
         this.category = category;
+        this.unit = unit;
         this.quantitySupplied = quantitySupplied;        
         this.minimum = minimum;
         this.maximum = maximum;
         this.initialMaximum = initialMaximum;
         this.expiryDate = expiryDate;
+        this.monetaryValue = monetaryValue;
         this.datePosted = datePosted;
     }
 
@@ -81,6 +93,10 @@ public class Supply implements Serializable {
         return user;
     }
 
+    public String getSku() {
+        return sku;
+    }
+
     public String getItemName() {
         return itemName;
     }
@@ -89,6 +105,10 @@ public class Supply implements Serializable {
         return category;
     }
 
+    public String getUnit() {
+        return unit;
+    }
+    
     public int getQuantitySupplied() {
         return quantitySupplied;
     }
@@ -107,6 +127,10 @@ public class Supply implements Serializable {
 
     public String getExpiryDate() {
         return expiryDate;
+    }
+
+    public float getMonetaryValue() {
+        return monetaryValue;
     }
 
     public String getDatePosted() {

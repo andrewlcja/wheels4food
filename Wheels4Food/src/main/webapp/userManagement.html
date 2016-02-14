@@ -16,8 +16,10 @@
                 <tr class="header-row">
                     <th class="text-center">Username</th>
                     <th class="text-center">Organization Name</th>
-                    <th class="text-center">Role</th>
-                    <th class="text-center">Actions</th>
+                    <th class="text-center" style="width: 13%">Role</th>
+                    <th class="text-center" style="width: 13%">Demerit Points</th>
+                    <th class="text-center" style="width: 10%">Status</th>
+                    <th class="text-center" style="width: 15%">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +30,9 @@
                     <td class="text-center">
                         <div style="margin-top:0.33em;">
                             <span class="action-item fa fa-eye fa-lg" ng-click="view(user)" tooltip-placement="top" tooltip="View"></span>
-                            <span ng-hide="user.username == loggedInUsername" class="action-item fa fa-trash fa-lg" ng-click="delete(user, $index)" tooltip-placement="top" tooltip="Delete"></span>
+                            <span ng-hide="user.username === loggedInUsername || user.status !== 'Inactive'" class="action-item fa fa-plus-circle fa-lg" ng-click="activate(user)" tooltip-placement="top" tooltip="Activate"></span>
+                            <span ng-hide="user.username === loggedInUsername || user.status !== 'Active'" class="action-item fa fa-minus-circle fa-lg" ng-click="suspend(user)" tooltip-placement="top" tooltip="Suspend"></span>
+                            <span ng-hide="user.username === loggedInUsername" class="action-item fa fa-trash fa-lg" ng-click="delete(user, $index)" tooltip-placement="top" tooltip="Delete"></span>
                         </div>
                     </td>
                 </tr>

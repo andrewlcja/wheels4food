@@ -10,6 +10,7 @@ import model.CompleteSelfCollectionByDemandIdResponse;
 import model.CreateSelfCollectionRequest;
 import model.CreateSelfCollectionResponse;
 import model.Demand;
+import model.GetSelfCollectionBreakdownBySupplierIdResponse;
 import model.SelfCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,6 +49,20 @@ public class SelfCollectionController {
         }
 
         return selfCollection;
+    }
+    
+    @RequestMapping(value = "/GetSelfCollectionBreakdownBySupplierIdRequest/{supplierID}", method = RequestMethod.GET)
+    public @ResponseBody
+    GetSelfCollectionBreakdownBySupplierIdResponse getSelfCollectionBreakdownBySupplierIdRequest(@PathVariable("supplierID") int supplierID) {
+        GetSelfCollectionBreakdownBySupplierIdResponse response = null;
+        
+        try {
+            response = selfCollectionService.getSelfCollectionBreakdownBySupplierIdRequest(supplierID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return response;
     }
     
     @RequestMapping(value = "/CancelSelfCollectionByDemandIdRequest", method = RequestMethod.PUT)

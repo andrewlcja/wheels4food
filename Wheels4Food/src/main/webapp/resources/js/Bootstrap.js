@@ -11,6 +11,7 @@
                 'LocalStorageModule',
                 'angularUtils.directives.dirPagination',
                 'cgBusy',
+                'chart.js',
                 
                 //modules
                 'Wheels4Food.Principal',

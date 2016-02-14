@@ -12,6 +12,7 @@ import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.GetDemandBreakdownResponse;
 import model.GetUnavailableTimeslotsByDeliveryDateRequest;
 import model.RejectDemandRequest;
 import model.RejectDemandResponse;
@@ -89,6 +90,20 @@ public class DemandController {
         return demandList;
     }
     
+    @RequestMapping(value = "/GetCompletedDemandListBySupplierIdRequest/{supplierID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Demand> getCompletedDemandListBySupplierIdRequest(@PathVariable("supplierID") int supplierID) {
+        List<Demand> demandList = null;
+
+        try {
+            demandList = demandService.getCompletedDemandListBySupplierIdRequest(supplierID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandList;
+    }
+    
     @RequestMapping(value = "/GetUnavailableTimeslotsByDeliveryDateRequest", method = RequestMethod.POST)
     public @ResponseBody
     List<String> getUnavailableTimeslotsByDeliveryDateRequest(@RequestBody GetUnavailableTimeslotsByDeliveryDateRequest request) {
@@ -131,5 +146,19 @@ public class DemandController {
         }
         
         return demand;
+    }
+    
+    @RequestMapping(value = "/GetDemandBreakdownRequest/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    GetDemandBreakdownResponse getDemandBreakdownRequest(@PathVariable("id") int id) {
+        GetDemandBreakdownResponse response = null;
+        
+        try {
+            response = demandService.getDemandBreakdownRequest(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return response;
     }
 }

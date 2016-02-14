@@ -251,7 +251,7 @@
                     link: function ($scope, $element, $attrs, ngModel) {
                         ngModel.$validators.ecustomQuantitySupplied3 = function (modelValue) {
                             //true or false based on custom dir validation
-                            if (modelValue && $scope.supply.maximum && $scope.supply.minimum && modelValue < $scope.supply.minimum + $scope.supply.maximum) {
+                            if (modelValue && $scope.supply.maximum && $scope.supply.minimum && (modelValue !== $scope.supply.maximum && modelValue < $scope.supply.minimum + $scope.supply.maximum)) {
                                 return false;
                             }
 

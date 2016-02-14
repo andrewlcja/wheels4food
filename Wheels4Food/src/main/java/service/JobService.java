@@ -24,6 +24,7 @@ import model.ConfirmJobResponse;
 import model.CreateJobRequest;
 import model.CreateJobResponse;
 import model.Demand;
+import model.GetJobBreakdownBySupplierIdResponse;
 import model.Job;
 import model.Supply;
 import model.User;
@@ -259,11 +260,27 @@ public class JobService {
         } else {
             supply.setMaximum(newQuantityRemaining - minimum);
         }
-
+        
+        //update demerit points to responsible party
+        User deductUser = null;
+        
+        if (comments.contains("Requesting")) {
+            deductUser = demand.getUser();        
+        } else if (comments.contains("Supplying")) {
+            deductUser = demand.getSupply().getUser();
+        } else if (comments.contains("Volunteer")) {
+            deductUser = job.getUser();
+        }
+        
+        if (deductUser != null) {
+            deductUser.setDemeritPoints(deductUser.getDemeritPoints() + 1);
+        }
+        
         try {
             jobDAO.updateJob(job);
             demandDAO.updateDemand(demand);
             supplyDAO.updateSupply(supply);
+            userDAO.updateUser(deductUser);
             return new CancelJobByDemandIdResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -293,6 +310,36 @@ public class JobService {
             errorList.add(e.getMessage());
             return new CompleteJobByDemandIdResponse(false, errorList);
         }
+    }
+    
+    public GetJobBreakdownBySupplierIdResponse getJobBreakdownBySupplierIdRequest(int supplierID) throws Exception {
+        List<Job> jobList = jobDAO.getJobListBySupplierId(supplierID);
+        
+        int pending = 0;
+        int accepted = 0;
+        int cancelled = 0;
+        int completed = 0;
+        
+        for (Job job : jobList) {
+            String status = job.getDemand().getStatus();
+            
+            switch (status) {
+                case "Job Created":
+                    pending++;
+                    break;
+                case "Job Accepted":
+                    accepted++;
+                    break;
+                case "Job Cancelled":
+                    cancelled++;
+                    break;
+                case "Job Completed":
+                    completed++;
+                    break;
+            }
+        }
+        
+        return new GetJobBreakdownBySupplierIdResponse(pending, accepted, cancelled, completed);
     }
 
     public List<Job> getJobListRequest() throws Exception {
