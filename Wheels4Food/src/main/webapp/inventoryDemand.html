@@ -11,39 +11,30 @@
         <thead>
             <tr class="header-row">
                 <th class="text-center" width="30%" style="cursor: pointer" ng-click="sort('itemName')">
-                    Item Name
-                    <span ng-show="sortType == 'itemName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'itemName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    Supplying Organization
                 </th>
-                <th class="text-center" width="10%" style="cursor: pointer" ng-click="sort('category')">
-                    Category
+                <th class="text-center" style="cursor: pointer" ng-click="sort('category')">
+                    Requested Item(s)
                     <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                     <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                </th>
-                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('quantityDemanded')">
-                    Quantity Demanded
-                    <span ng-show="sortType == 'quantityDemanded' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'quantityDemanded' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                </th>
-                <th class="text-center" width="13%" style="cursor: pointer" ng-click="sort('expiryDate')">
-                    Expiry Date
-                    <span ng-show="sortType == 'expiryDate' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'expiryDate' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                 </th>
                 <th class="text-center" width="17%" style="cursor: pointer" ng-click="sort('status')">
                     Status
                     <span ng-show="sortType == 'status' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                     <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                 </th>
-                <th class="text-center">Actions</th>
+                <th class="text-center" width="17%">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | orderBy:sortBy:sortReverse | itemsPerPage:pageSize" current-page="currentPage">
-                <td ng-repeat="column in tableColumns" style="text-align:center">
+            <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
+                <td ng-repeat="column in tableColumns" style="text-align:center; vertical-align: middle;">
                     <div style="margin-top: 0.33em;"><i ng-show="column === 'quantityDemanded' && demand.status === 'Approved' && demand.comments" class="fa fa-exclamation-triangle" style="color: sandybrown" tooltip-placement="top" tooltip="Quantity Reduced - {{demand.comments}}"></i> {{getObj(demand, column)}}</div>
                 </td>
-                <td class="text-center">
+                <td style="text-align:center; vertical-align: middle;">
+                    <div style="margin-top: 0.33em;" ng-repeat="demandItem in demandItemList" ng-show="demandItem.demand.id === demand.id">{{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}</div>
+                </td>
+                <td class="text-center" style="vertical-align: middle;">
                     <div ng-show="demand.status === 'Pending'"><button class="btn btn-default btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Request submitted - Awaiting supplier's approval">Pending</button></div>
                     <div ng-show="demand.status === 'Rejected'"><button class="btn btn-danger btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Request rejected - {{demand.comments}}">Rejected</button></div>
                     <div ng-show="demand.status === 'Job Created'"><button class="btn btn-primary btn-block" ng-click="viewJob(demand)" tooltip-placement="top" tooltip="Job Created - Click to view job details.">Job Created</button></div>                    
@@ -54,8 +45,8 @@
                     <div ng-show="demand.status === 'Self Collection Cancelled'"><button class="btn btn-danger btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Self Collection cancelled - {{demand.comments}}">Self Collection Cancelled</button></div>
                     <div ng-show="demand.status === 'Self Collection Completed'"><button class="btn btn-default btn-block" style="cursor: default;">Self Collection Completed</button></div> 
                 </td>
-                <td class="text-center">
-                    <div style="margin-top:0.33em;">
+                <td class="text-center" style="vertical-align: middle;">
+                    <div>
                         <span ng-show="demand.status === 'Pending'" class="action-item fa fa-eye fa-lg" ng-click="view(demand)" tooltip-placement="top" tooltip="View"></span>
                         <span ng-show="demand.status === 'Job Accepted' || demand.status === 'Self Collection Created'" class="action-item fa fa-check fa-lg" ng-click="complete(demand)" tooltip-placement="top" tooltip="Complete"></span>
                         <span ng-hide="demand.status === 'Job Completed' || demand.status === 'Job Cancelled' || demand.status === 'Self Collection Completed' || demand.status === 'Self Collection Cancelled' || demand.status === 'Rejected'" class="action-item fa fa-times fa-lg" ng-click="cancel(demand)" tooltip-placement="top" tooltip="Cancel"></span>
@@ -63,7 +54,7 @@
                 </td>
             </tr>
             <tr ng-if="!(demandList | filter:proccessedSearchFilter).length">
-                <td colspan="{{tableColumns.length + 2}}" class="text-center">
+                <td colspan="{{tableColumns.length + 3}}" class="text-center">
                     <h5>No results found</h5>
                 </td>
             </tr>

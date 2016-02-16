@@ -2,20 +2,16 @@
     <h3><b>Are you sure you want to approve this Self Collection Request?</b></h3>
     <table>
         <tr>
-            <th>Item Name</th>
-            <td class="dialog-padding">{{currentPendingApproval.supply.itemName}}</td>
-        </tr>
-        <tr>
             <th>Requesting Organization</th>
             <td class="dialog-padding">{{currentPendingApproval.user.organizationName}}</td>
         </tr>
         <tr>
-            <th>Quantity Remaining</th>
-            <td class="dialog-padding">{{currentPendingApproval.supply.quantitySupplied}}</td>
-        </tr>
-        <tr>
-            <th>Quantity Requested</th>
-            <td class="dialog-padding">{{currentPendingApproval.quantityDemanded}}</td>
+            <th>Requested Item(s)</th>
+            <td class="dialog-padding">
+                <div ng-repeat="demandItem in currentDemandItemList">
+                    {{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}
+                </div>
+            </td>
         </tr>
     </table>
     <div class="ngdialog-buttons" style="padding-top: 20px;">

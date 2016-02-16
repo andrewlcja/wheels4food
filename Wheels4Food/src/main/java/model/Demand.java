@@ -33,12 +33,9 @@ public class Demand implements Serializable {
     private User user;
     
     @ManyToOne(optional = false)
-    @JoinColumn(name = "supplyID")
-    private Supply supply;
-    
-    @Column(name = "quantityDemanded")
-    private int quantityDemanded;
-    
+    @JoinColumn(name = "supplierID")
+    private User supplier;
+        
     @Column(name = "dateRequested")
     private String dateRequested;
     
@@ -60,10 +57,9 @@ public class Demand implements Serializable {
     public Demand() {
     }
 
-    public Demand(User user, Supply supply, int quantityDemanded, String dateRequested, String preferredDeliveryDate, String preferredTimeslot, String preferredSchedule, String status, String comments) {
+    public Demand(User user, User supplier, String dateRequested, String preferredDeliveryDate, String preferredTimeslot, String preferredSchedule, String status, String comments) {
         this.user = user;
-        this.supply = supply;
-        this.quantityDemanded = quantityDemanded;
+        this.supplier = supplier;
         this.dateRequested = dateRequested;
         this.preferredDeliveryDate = preferredDeliveryDate;
         this.preferredTimeslot = preferredTimeslot;
@@ -80,12 +76,8 @@ public class Demand implements Serializable {
         return user;
     }
 
-    public Supply getSupply() {
-        return supply;
-    }
-
-    public int getQuantityDemanded() {
-        return quantityDemanded;
+    public User getSupplier() {
+        return supplier;
     }
 
     public String getDateRequested() {
@@ -118,9 +110,5 @@ public class Demand implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public void setQuantityDemanded(int quantityDemanded) {
-        this.quantityDemanded = quantityDemanded;
     }
 }

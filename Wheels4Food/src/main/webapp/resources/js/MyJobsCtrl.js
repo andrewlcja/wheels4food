@@ -42,6 +42,13 @@
 
                     $scope.view = function (job) {
                         $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + job.demand.id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.currentDemandItemList = response.data;
+                        });
+                        
+                        $http({
                             url: api.endpoint + 'GetJobByIdRequest/' + job.id,
                             method: 'GET',
                             headers: {
@@ -59,7 +66,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['demand.supply.itemName', 'demand.supply.user.organizationName', 'demand.user.organizationName', 'demand.quantityDemanded'];
+                    $scope.tableColumns = ['demand.supplier.organizationName', 'demand.user.organizationName'];
 
 
                     var indexPromise = $http({
@@ -68,25 +75,39 @@
                     });
 
                     $timeout(function () {
-                        indexPromise.then(function (response) {
-                            $scope.jobList = response.data;
-                            $scope.currentPage = 1;
-                            $scope.pageSize = 10;
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListRequest',
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.demandItemList = response.data;
+                            
+                            indexPromise.then(function (response) {
+                                $scope.jobList = response.data;
+                                $scope.currentPage = 1;
+                                $scope.pageSize = 10;
 
-                            $scope.$watch('searchFilter', function () {
-                                $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['demand.supply.itemName']);
+                                $scope.$watch('searchFilter', function () {
+                                    $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['demand.supply.itemName']);
+                                });
                             });
                         });
                     }, 1000);
 
                     $scope.cancel = function (job) {
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + job.demand.id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.currentDemandItemList = response.data;
+                        });
+                        
                         $scope.currentJob = job;
 
                         job.demand.comments = '';
 
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobVolunteerPrompt.html',
-                            className: 'ngdialog-theme-default dialog-generic',
+                            className: 'ngdialog-theme-default dialog-generic-2',
                             scope: $scope
                         }).then(function () {
                             ngDialog.openConfirm({

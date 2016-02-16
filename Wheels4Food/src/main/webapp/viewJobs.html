@@ -13,28 +13,30 @@
     <table style="table-layout: fixed;" class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
         <thead>
             <tr class="header-row">
-                <th class="text-center">Item Name</th>
+                <th class="text-center">Item(s)</th>
                 <th class="text-center" width="20%">Supplier</th>
-                <th class="text-center" width="20%">Receiver</th>
-                <th class="text-center" width="7%">Quantity</th>
+                <th class="text-center" width="20%">Receiver</th>                
                 <th class="text-center" width="13%">Expiry Date</th>
                 <th class="text-center" width="13%">Actions</th>
             </tr>
         </thead>
         <tbody>
             <tr dir-paginate="job in jobList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
-                <td ng-repeat="column in tableColumns" style="text-align:center">
-                    <div style="margin-top: 0.33em;">{{getObj(job, column)}}</div>
-                </td>
-                <td class="text-center">
-                    <div style="margin-top:0.33em;">
+                <td style="text-align:center; vertical-align: middle;">
+                    <div ng-repeat="demandItem in demandItemList" ng-show="demandItem.demand.id === job.demand.id">{{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}</div>
+                </td>                
+                <td ng-repeat="column in tableColumns" style="text-align:center; vertical-align: middle;">
+                    <div>{{getObj(job, column)}}</div>
+                </td>                
+                <td class="text-center" style="vertical-align: middle;">
+                    <div>
                         <span class="action-item fa fa-eye fa-lg" ng-click="view(job)" tooltip-placement="top" tooltip="View"></span>
                         <span class="action-item fa fa-check fa-lg" ng-click="goToAccept(job.id)" tooltip-placement="top" tooltip="Accept"></span>
                     </div>
                 </td>
             </tr>
             <tr ng-if="!(jobList | filter:proccessedSearchFilter).length">
-                <td colspan="{{tableColumns.length + 1}}" class="text-center">
+                <td colspan="{{tableColumns.length + 2}}" class="text-center">
                     <h5>No results found</h5>
                 </td>
             </tr>

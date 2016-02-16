@@ -12,10 +12,12 @@ import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.DemandItem;
 import model.GetDemandBreakdownResponse;
 import model.GetUnavailableTimeslotsByDeliveryDateRequest;
 import model.RejectDemandRequest;
 import model.RejectDemandResponse;
+import model.UpdateDemandRequest;
 import model.UpdateDemandResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -104,6 +106,61 @@ public class DemandController {
         return demandList;
     }
     
+    @RequestMapping(value = "/GetDemandItemListByDemandIdRequest/{demandID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<DemandItem> getDemandItemListByDemandIdRequest(@PathVariable("demandID") int demandID) {
+        List<DemandItem> demandItemList = null;
+
+        try {
+            demandItemList = demandService.getDemandItemListByDemandIdRequest(demandID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandItemList;
+    }
+    
+    @RequestMapping(value = "/GetDemandItemListBySupplierIdRequest/{supplierID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<DemandItem> getDemandItemListBySupplierIdRequest(@PathVariable("supplierID") int supplierID) {
+        List<DemandItem> demandItemList = null;
+
+        try {
+            demandItemList = demandService.getDemandItemListBySupplierIdRequest(supplierID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandItemList;
+    }
+    
+    @RequestMapping(value = "/GetDemandItemListByRequesterIdRequest/{requesterID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<DemandItem> getDemandItemListByRequesterIdRequest(@PathVariable("requesterID") int requesterID) {
+        List<DemandItem> demandItemList = null;
+
+        try {
+            demandItemList = demandService.getDemandItemListByRequesterIdRequest(requesterID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandItemList;
+    }
+    @RequestMapping(value = "/GetDemandItemListRequest", method = RequestMethod.GET)
+    public @ResponseBody
+    List<DemandItem> getDemandItemListRequest() {
+        List<DemandItem> demandItemList = null;
+
+        try {
+            demandItemList = demandService.getDemandItemListRequest();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandItemList;
+    }
+        
     @RequestMapping(value = "/GetUnavailableTimeslotsByDeliveryDateRequest", method = RequestMethod.POST)
     public @ResponseBody
     List<String> getUnavailableTimeslotsByDeliveryDateRequest(@RequestBody GetUnavailableTimeslotsByDeliveryDateRequest request) {
@@ -120,8 +177,8 @@ public class DemandController {
     
     @RequestMapping(value = "/UpdateDemandRequest", method = RequestMethod.PUT)
     public @ResponseBody
-    UpdateDemandResponse updateDemandRequest(@RequestBody Demand demand) {
-        return demandService.updateDemandRequest(demand);
+    UpdateDemandResponse updateDemandRequest(@RequestBody UpdateDemandRequest request) {
+        return demandService.updateDemandRequest(request);
     }
     
     @RequestMapping(value = "/ApproveDemandRequest/{id}", method = RequestMethod.PUT)

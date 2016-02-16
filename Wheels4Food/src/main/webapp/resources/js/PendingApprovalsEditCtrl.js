@@ -20,61 +20,68 @@
                     });
 
                     $timeout(function () {
-                        indexPromise.then(function (response) {
-                            $scope.demand = response.data;
-                            $scope.showDemand = true;
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + $stateParams.Id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.demandItemList = response.data;
 
-                            if ($scope.demand.preferredSchedule === 'NA') {
-                                var parts = $scope.demand.preferredDeliveryDate.split("/");
-                                $scope.deliveryDate = new Date(parseInt(parts[2], 10),
-                                        parseInt(parts[1], 10) - 1,
-                                        parseInt(parts[0], 10));
+                            indexPromise.then(function (response) {
+                                $scope.demand = response.data;
+                                $scope.showDemand = true;
 
-                                $scope.timeslot = $scope.demand.preferredTimeslot;
-                            } else {
-                                $scope.scheduleAMList = [];
-                                $scope.schedulePMList = [];
-                                $scope.scheduleCount = 0;
+                                if ($scope.demand.preferredSchedule === 'NA') {
+                                    var parts = $scope.demand.preferredDeliveryDate.split("/");
+                                    $scope.deliveryDate = new Date(parseInt(parts[2], 10),
+                                            parseInt(parts[1], 10) - 1,
+                                            parseInt(parts[0], 10));
 
-                                for (var i = 0; i < $scope.demand.preferredSchedule.length; i++) {
-                                    var value = $scope.demand.preferredSchedule.charAt(i);
+                                    $scope.timeslot = $scope.demand.preferredTimeslot;
+                                } else {
+                                    $scope.scheduleAMList = [];
+                                    $scope.schedulePMList = [];
+                                    $scope.scheduleCount = 0;
 
-                                    if (i % 2 === 0) {
-                                        if (value === '0') {
-                                            $scope.scheduleAMList.push({'value': false});
+                                    for (var i = 0; i < $scope.demand.preferredSchedule.length; i++) {
+                                        var value = $scope.demand.preferredSchedule.charAt(i);
+
+                                        if (i % 2 === 0) {
+                                            if (value === '0') {
+                                                $scope.scheduleAMList.push({'value': false});
+                                            } else {
+                                                $scope.scheduleAMList.push({'value': true});
+                                                $scope.scheduleCount++;
+                                            }
                                         } else {
-                                            $scope.scheduleAMList.push({'value': true});
-                                            $scope.scheduleCount++;
-                                        }
-                                    } else {
-                                        if (value === '0') {
-                                            $scope.schedulePMList.push({'value': false});
-                                        } else {
-                                            $scope.schedulePMList.push({'value': true});
-                                            $scope.scheduleCount++;
+                                            if (value === '0') {
+                                                $scope.schedulePMList.push({'value': false});
+                                            } else {
+                                                $scope.schedulePMList.push({'value': true});
+                                                $scope.scheduleCount++;
+                                            }
                                         }
                                     }
-                                }
 
-                                var parts = $scope.demand.dateRequested.split("/");
-                                var requestDate = new Date(parseInt(parts[2], 10),
-                                        parseInt(parts[1], 10) - 1,
-                                        parseInt(parts[0], 10));
+                                    var parts = $scope.demand.dateRequested.split("/");
+                                    var requestDate = new Date(parseInt(parts[2], 10),
+                                            parseInt(parts[1], 10) - 1,
+                                            parseInt(parts[0], 10));
 
-                                requestDate.setDate(requestDate.getDate() + 3);
-                                $scope.dates = [];
+                                    requestDate.setDate(requestDate.getDate() + 3);
+                                    $scope.dates = [];
 
-                                for (var i = 0; i < 10; i++) {
-                                    if (requestDate.getDay() !== 0 && requestDate.getDay() !== 6) {
-                                        $scope.dates.push({'value': new Date(requestDate)});
-                                    } else {
-                                        i--;
+                                    for (var i = 0; i < 10; i++) {
+                                        if (requestDate.getDay() !== 0 && requestDate.getDay() !== 6) {
+                                            $scope.dates.push({'value': new Date(requestDate)});
+                                        } else {
+                                            i--;
+                                        }
+
+
+                                        requestDate.setDate(requestDate.getDate() + 1);
                                     }
-
-
-                                    requestDate.setDate(requestDate.getDate() + 1);
                                 }
-                            }
+                            });
                         });
                     }, 1000);
 
@@ -122,6 +129,10 @@
                             });
                         }
                     });
+                    
+                    $scope.removeDemandItem = function (demandItem) {
+                        $scope.demandItemList.splice($scope.demandItemList.indexOf(demandItem), 1);
+                    };
 
                     $scope.update = function () {
                         if ($scope.demand.preferredSchedule !== 'NA') {
@@ -139,9 +150,9 @@
                                 } else {
                                     combinedSchedule += '0';
                                 }
-                            }   
-                            
-                           $scope.demand.preferredSchedule = combinedSchedule;
+                            }
+
+                            $scope.demand.preferredSchedule = combinedSchedule;
                         }
 
                         ngDialog.openConfirm({
@@ -152,7 +163,10 @@
                             $http({
                                 url: api.endpoint + 'UpdateDemandRequest',
                                 method: 'PUT',
-                                data: $scope.demand,
+                                data: {
+                                    'demand': $scope.demand,
+                                    'demandItemList': $scope.demandItemList
+                                },
                                 headers: {
                                     'Content-Type': 'application/json',
                                 }

@@ -27,6 +27,7 @@
                 <value>model.PendingRegistration</value>
                 <value>model.Supply</value>
                 <value>model.Demand</value>
+                <value>model.DemandItem</value>
                 <value>model.Job</value>
                 <value>model.SelfCollection</value>
             </list>

@@ -19,6 +19,7 @@ import model.CompleteSelfCollectionByDemandIdResponse;
 import model.CreateSelfCollectionRequest;
 import model.CreateSelfCollectionResponse;
 import model.Demand;
+import model.DemandItem;
 import model.GetSelfCollectionBreakdownBySupplierIdResponse;
 import model.Job;
 import model.SelfCollection;
@@ -82,14 +83,23 @@ public class SelfCollectionService {
         }
 
         try {
-            Supply supply = demand.getSupply();
-            int quantitySupplied = supply.getQuantitySupplied();
-            int quantityDemanded = demand.getQuantityDemanded();
-            supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
-            
+            List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
+
+            for (DemandItem demandItem : demandItemList) {
+                Supply supply = demandItem.getSupply();
+                int quantitySupplied = supply.getQuantitySupplied();
+                int quantityDemanded = demandItem.getQuantityDemanded();
+
+                supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
+
+                if (supply.getMaximum() < supply.getQuantitySupplied()) {
+                    supply.setMaximum(supply.getQuantitySupplied());
+                }
+
+                supplyDAO.updateSupply(supply);
+            }
+
             demand.setStatus("Self Collection Created");
-            
-            supplyDAO.updateSupply(supply);
             demandDAO.updateDemand(demand);
 
             selfCollectionDAO.createSelfCollection(new SelfCollection(demand, deliveryDateStr, timeslot, "Active"));
@@ -99,7 +109,7 @@ public class SelfCollectionService {
             return new CreateSelfCollectionResponse(false, errorList);
         }
     }
-    
+
     public SelfCollection getSelfCollectionByDemandIdRequest(int demandID) throws Exception {
         return selfCollectionDAO.getSelfCollectionByDemandId(demandID);
     }
@@ -126,40 +136,45 @@ public class SelfCollectionService {
         selfCollection.setStatus("Cancelled");
 
         demand.setStatus("Self Collection Cancelled");
-        
-        Supply supply = demand.getSupply();
-
-        //add back the quantity demanded
-        int newQuantityRemaining = supply.getQuantitySupplied() + demand.getQuantityDemanded();
-        supply.setQuantitySupplied(newQuantityRemaining);
-
-        //check initial maximum limit
-        int initialMaximum = supply.getInitialMaximum();
-        int minimum = supply.getMinimum();
-
-        if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
-            supply.setMaximum(initialMaximum);
-        } else {
-            supply.setMaximum(newQuantityRemaining - minimum);
-        }
-        
-        //update demerit points to responsible party
-        User deductUser = null;
-        
-        if (comments.contains("Requesting")) {
-            deductUser = demand.getUser();        
-        } else if (comments.contains("Supplying")) {
-            deductUser = demand.getSupply().getUser();
-        }
-        
-        if (deductUser != null) {
-            deductUser.setDemeritPoints(deductUser.getDemeritPoints() + 1);
-        }
 
         try {
+            List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demandID);
+            
+            for (DemandItem demandItem : demandItemList) {
+                Supply supply = demandItem.getSupply();
+
+                //add back the quantity demanded
+                int newQuantityRemaining = supply.getQuantitySupplied() + demandItem.getQuantityDemanded();
+                supply.setQuantitySupplied(newQuantityRemaining);
+
+                //check initial maximum limit
+                int initialMaximum = supply.getInitialMaximum();
+                int minimum = supply.getMinimum();
+
+                if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
+                    supply.setMaximum(initialMaximum);
+                } else {
+                    supply.setMaximum(newQuantityRemaining - minimum);
+                }
+
+                supplyDAO.updateSupply(supply);
+            }
+
+            //update demerit points to responsible party
+            User deductUser = null;
+
+            if (comments.contains("Requesting")) {
+                deductUser = demand.getUser();
+            } else if (comments.contains("Supplying")) {
+                deductUser = demandItemList.get(0).getSupply().getUser();
+            }
+
+            if (deductUser != null) {
+                deductUser.setDemeritPoints(deductUser.getDemeritPoints() + 1);
+            }
+
             selfCollectionDAO.updateSelfCollection(selfCollection);
             demandDAO.updateDemand(demand);
-            supplyDAO.updateSupply(supply);
             userDAO.updateUser(deductUser);
             return new CancelSelfCollectionByDemandIdResponse(true, null);
         } catch (Exception e) {
@@ -167,7 +182,7 @@ public class SelfCollectionService {
             return new CancelSelfCollectionByDemandIdResponse(false, errorList);
         }
     }
-    
+
     public CompleteSelfCollectionByDemandIdResponse completeSelfCollectionByDemandIdRequest(int demandID) {
         ArrayList<String> errorList = new ArrayList<String>();
 
@@ -191,17 +206,17 @@ public class SelfCollectionService {
             return new CompleteSelfCollectionByDemandIdResponse(false, errorList);
         }
     }
-    
+
     public GetSelfCollectionBreakdownBySupplierIdResponse getSelfCollectionBreakdownBySupplierIdRequest(int supplierID) throws Exception {
         List<SelfCollection> selfCollectionList = selfCollectionDAO.getSelfCollectionListBySupplierId(supplierID);
-        
+
         int pending = 0;
         int cancelled = 0;
         int completed = 0;
-        
+
         for (SelfCollection selfCollection : selfCollectionList) {
             String status = selfCollection.getDemand().getStatus();
-            
+
             switch (status) {
                 case "Self Collection Created":
                     pending++;
@@ -214,7 +229,7 @@ public class SelfCollectionService {
                     break;
             }
         }
-        
+
         return new GetSelfCollectionBreakdownBySupplierIdResponse(pending, cancelled, completed);
     }
 }

@@ -77,7 +77,7 @@ public class SelfCollectionDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<SelfCollection> selfCollectionList = session.createCriteria(SelfCollection.class)
-                .createAlias("demand.supply.user", "supplier")
+                .createAlias("demand.supplier", "supplier")
                 .createAlias("demand.user", "requester")
                 .add(Restrictions.disjunction()
                         .add(Restrictions.eq("supplier.id", supplierID))

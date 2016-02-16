@@ -14,42 +14,35 @@
         <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <thead>
                 <tr class="header-row">
-                    <th class="text-center" width="30%" style="cursor: pointer" ng-click="sort('itemName')">
-                        Item Name
-                        <span ng-show="sortType == 'itemName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                        <span ng-show="sortType == 'itemName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                    </th>
-                    <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('organizationName')">
-                        Requester
+                    <th class="text-center" width="25%" style="cursor: pointer" ng-click="sort('organizationName')">
+                        Requesting Organization
                         <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                         <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                     </th>
-                    <th class="text-center" width="14%" style="cursor: pointer" ng-click="sort('quantitySupplied')">
-                        Quantity Remaining
-                        <span ng-show="sortType == 'quantitySupplied' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                        <span ng-show="sortType == 'quantitySupplied' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                    </th>
-                    <th class="text-center" width="14%" style="cursor: pointer" ng-click="sort('quantityDemanded')">
-                        Quantity Requested
-                        <span ng-show="sortType == 'quantityDemanded' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                        <span ng-show="sortType == 'quantityDemanded' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                    </th>                 
+                    <th class="text-center" style="cursor: pointer" ng-click="sort('category')">
+                        Requested Item(s)
+                        <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>              
                     <th class="text-center" width="12%">
                         Type
                     </th>
-                    <th class="text-center">Actions</th>
+                    <th class="text-center" width="15%">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr dir-paginate="pendingApproval in pendingApprovalList | filter: proccessedSearchFilter | orderBy:sortBy:sortReverse | itemsPerPage:pageSize" current-page="currentPage" ng-class="{'highlight-row': pendingApproval.quantityDemanded > pendingApproval.supply.quantitySupplied}">
-                    <td ng-repeat="column in tableColumns" style="text-align:center">
+                <tr dir-paginate="pendingApproval in pendingApprovalList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage" ng-class="{'highlight-row': pendingApproval.quantityDemanded > pendingApproval.supply.quantitySupplied}">
+                    <td ng-repeat="column in tableColumns" style="text-align:center; vertical-align: middle;">
                         <div style="margin-top: 0.33em;">{{getObj(pendingApproval, column)}}</div>
                     </td>
-                    <td style="text-align:center">
+                    <td style="text-align:center; vertical-align: middle;">
+                        <div style="margin-top: 0.33em;" ng-repeat="demandItem in demandItemList" ng-show="demandItem.demand.id === pendingApproval.id">{{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}} <b style="color: darkblue;">(Amount Left: {{demandItem.supply.quantitySupplied}})</b></div>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
                         <div style="margin-top:0.33em;" ng-show="pendingApproval.preferredSchedule === 'NA'">Self Collection</div>
                         <div style="margin-top:0.33em;" ng-show="pendingApproval.preferredSchedule !== 'NA'">Volunteer</div>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center" style="vertical-align: middle;">
                         <div style="margin-top:0.33em;">
                             <span class="action-item fa fa-eye fa-lg" ng-click="view(pendingApproval)" tooltip-placement="top" tooltip="View Details"></span>
                             <span class="action-item fa fa-edit fa-lg" ng-click="edit(pendingApproval.id)" tooltip-placement="top" tooltip="Edit Request"></span>
@@ -59,7 +52,7 @@
                     </td>
                 </tr>
                 <tr ng-if="!(pendingApprovalList | filter:proccessedSearchFilter).length">
-                    <td colspan="{{tableColumns.length + 2}}" class="text-center">
+                    <td colspan="{{tableColumns.length + 3}}" class="text-center">
                         <h5>No results found</h5>
                     </td>
                 </tr>

@@ -24,6 +24,7 @@ import model.ConfirmJobResponse;
 import model.CreateJobRequest;
 import model.CreateJobResponse;
 import model.Demand;
+import model.DemandItem;
 import model.GetJobBreakdownBySupplierIdResponse;
 import model.Job;
 import model.Supply;
@@ -73,25 +74,23 @@ public class JobService {
 
         demand.setStatus("Job Created");
 
-        Supply supply = demand.getSupply();
-        int quantitySupplied = supply.getQuantitySupplied();
-        int quantityDemanded = demand.getQuantityDemanded();
+        try {
+            List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
 
-        if (quantityDemanded <= quantitySupplied) {
-            supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
-        } else {
-            if (comments.equals("")) {
-                errorList.add("Comments cannot be blank");
-                return new CreateJobResponse(false, errorList);
+            for (DemandItem demandItem : demandItemList) {
+                Supply supply = demandItem.getSupply();
+                int quantitySupplied = supply.getQuantitySupplied();
+                int quantityDemanded = demandItem.getQuantityDemanded();
+
+                supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
+
+                if (supply.getMaximum() < supply.getQuantitySupplied()) {
+                    supply.setMaximum(supply.getQuantitySupplied());
+                }
+
+                supplyDAO.updateSupply(supply);
             }
 
-            demand.setQuantityDemanded(quantitySupplied);
-            demand.setComments(comments);
-            supply.setQuantitySupplied(0);
-        }
-
-        try {
-            supplyDAO.updateSupply(supply);
             demandDAO.updateDemand(demand);
 
             //generate expiry date (2 weeks)
@@ -244,42 +243,47 @@ public class JobService {
         job.setStatus("Cancelled");
 
         demand.setStatus("Job Cancelled");
-        
-        Supply supply = demand.getSupply();
 
-        //add back the quantity demanded
-        int newQuantityRemaining = supply.getQuantitySupplied() + demand.getQuantityDemanded();
-        supply.setQuantitySupplied(newQuantityRemaining);
-
-        //check initial maximum limit
-        int initialMaximum = supply.getInitialMaximum();
-        int minimum = supply.getMinimum();
-
-        if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
-            supply.setMaximum(initialMaximum);
-        } else {
-            supply.setMaximum(newQuantityRemaining - minimum);
-        }
-        
-        //update demerit points to responsible party
-        User deductUser = null;
-        
-        if (comments.contains("Requesting")) {
-            deductUser = demand.getUser();        
-        } else if (comments.contains("Supplying")) {
-            deductUser = demand.getSupply().getUser();
-        } else if (comments.contains("Volunteer")) {
-            deductUser = job.getUser();
-        }
-        
-        if (deductUser != null) {
-            deductUser.setDemeritPoints(deductUser.getDemeritPoints() + 1);
-        }
-        
         try {
+            List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demandID);
+
+            for (DemandItem demandItem : demandItemList) {
+                Supply supply = demandItem.getSupply();
+
+                //add back the quantity demanded
+                int newQuantityRemaining = supply.getQuantitySupplied() + demandItem.getQuantityDemanded();
+                supply.setQuantitySupplied(newQuantityRemaining);
+
+                //check initial maximum limit
+                int initialMaximum = supply.getInitialMaximum();
+                int minimum = supply.getMinimum();
+
+                if (initialMaximum + minimum <= newQuantityRemaining || initialMaximum == newQuantityRemaining) {
+                    supply.setMaximum(initialMaximum);
+                } else {
+                    supply.setMaximum(newQuantityRemaining - minimum);
+                }
+
+                supplyDAO.updateSupply(supply);
+            }
+
+            //update demerit points to responsible party
+            User deductUser = null;
+
+            if (comments.contains("Requesting")) {
+                deductUser = demand.getUser();
+            } else if (comments.contains("Supplying")) {
+                deductUser = demandItemList.get(0).getSupply().getUser();
+            } else if (comments.contains("Volunteer")) {
+                deductUser = job.getUser();
+            }
+
+            if (deductUser != null) {
+                deductUser.setDemeritPoints(deductUser.getDemeritPoints() + 1);
+            }
+
             jobDAO.updateJob(job);
             demandDAO.updateDemand(demand);
-            supplyDAO.updateSupply(supply);
             userDAO.updateUser(deductUser);
             return new CancelJobByDemandIdResponse(true, null);
         } catch (Exception e) {
@@ -311,18 +315,18 @@ public class JobService {
             return new CompleteJobByDemandIdResponse(false, errorList);
         }
     }
-    
+
     public GetJobBreakdownBySupplierIdResponse getJobBreakdownBySupplierIdRequest(int supplierID) throws Exception {
         List<Job> jobList = jobDAO.getJobListBySupplierId(supplierID);
-        
+
         int pending = 0;
         int accepted = 0;
         int cancelled = 0;
         int completed = 0;
-        
+
         for (Job job : jobList) {
             String status = job.getDemand().getStatus();
-            
+
             switch (status) {
                 case "Job Created":
                     pending++;
@@ -338,7 +342,7 @@ public class JobService {
                     break;
             }
         }
-        
+
         return new GetJobBreakdownBySupplierIdResponse(pending, accepted, cancelled, completed);
     }
 
