@@ -1,39 +1,21 @@
 <div class="container">
     <div class="page-header">
         <h1 style="color: #003366;">Edit Request</h1>
-    </div>
+    </div>    
     <div cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
         <div ng-show="showDemand">
             <form name="editForm" novalidate>
                 <div class="row">
-                    <div class="col-sm-4">
-                        <div class="col-sm-9"> 
-                            <h4><b>Item Name</b></h4>
-                            <p>{{demand.supply.itemName}}</p>               
-                        </div>    
+                    <div class="col-sm-4">  
                         <div class="col-sm-9"> 
                             <h4><b>Requesting Organization</b></h4>
                             <p>{{demand.user.organizationName}}</p>               
                         </div>   
                         <div class="col-sm-9"> 
-                            <h4><b>Quantity Remaining</b></h4>
-                            <p>{{demand.supply.quantitySupplied}}</p>               
-                        </div>                        
-                    </div> 
-                    <div class="col-sm-4">
-                        <div class="col-sm-9"> 
-                            <h4><b>Minimum Request Quantity</b></h4>                            
-                            <p>{{demand.supply.minimum}}</p>                              
-                        </div>
-                        <div class="col-sm-9"> 
-                            <h4><b>Maximum Request Quantity</b></h4>                             
-                            <p>{{demand.supply.maximum}}</p>                              
-                        </div>
-                        <div class="col-sm-9"> 
                             <h4><b>Date Requested</b></h4>                             
                             <p>{{demand.dateRequested}}</p>                              
-                        </div>
-                    </div>
+                        </div>                     
+                    </div> 
                 </div>
                 <div class="row" style="padding-top: 15px;">
                     <div class="col-sm-12">
@@ -42,20 +24,42 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="col-sm-9"  ng-class="{'error-input': editForm.quantityRequested.$touched && editForm.quantityRequested.$invalid}"> 
-                            <h4><b>Quantity Requested</b></h4>
-                            <input ng-model="demand.quantityDemanded" name="quantityRequested" class="form-control" type="number" min="{{demand.supply.minimum}}" max="{{demand.supply.maximum}}" required custom-number/>
-                            <div class="error-message" ng-messages="editForm.quantityRequested.$error" ng-show="editForm.quantityRequested.$touched">
-                                <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                                <div style="margin-top: 5px;" ng-message="number">Please enter a whole number only.</div>
-                                <div style="margin-top: 5px;" ng-message="customNumber">Please enter a whole number only.</div>
-                                <div style="margin-top: 5px;" ng-message="min">Please enter a number greater than or equals to {{demand.supply.minimum}}.</div>
-                                <div style="margin-top: 5px;" ng-message="max">Please enter a number lesser than or equals to {{demand.supply.maximum}}.</div>
-                            </div>
-                        </div>                      
-                    </div> 
+                <div ng-form="outerForm">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr class="header-row">
+                                <th class="text-center" width="35%">Item Name</th>
+                                <th class="text-center">Minimum Request Quantity</th>
+                                <th class="text-center">Maximum Request Quantity</th>                
+                                <th class="text-center" width="12%">Request Amount</th>
+                                <th class="text-center" width="12%">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="demandItem in demandItemList">
+                                <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.itemName}}</div></td>
+                                <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.minimum}}</div></td>
+                                <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.maximum}}</div></td>
+                                <td style="text-align:center">
+                                    <div ng-form="requestForm">
+                                        <div ng-class="{'error-input': requestForm.quantityDemanded.$touched && requestForm.quantityDemanded.$invalid}">
+                                            <input class="form-control" name="quantityDemanded" type="number" ng-model="demandItem.quantityDemanded" min="{{demandItem.minimum}}" max="{{demandItem.maximum}}" style="text-align: center;" required custom-number/>                            
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="text-align:center"><button class="btn btn-danger" ng-disabled="demandItemList.length === 1;" ng-class="{'cursor-disabled': demandItemList.length === 1}" ng-click="removeDemandItem(demandItem)">Remove</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="error-message" ng-messages="outerForm.$error">
+                        <div ng-message="required">The fields above are required.</div>
+                    </div>
+                    <div class="error-message" ng-messages="outerForm.$error">
+                        <div ng-message="number">Please enter whole numbers only.</div>
+                        <div ng-message="customNumber">Please enter whole numbers only.</div>
+                        <div ng-message="min">Please enter numbers between Minimum and Maximum Request Quantity.</div>
+                        <div ng-message="max">Please enter numbers between Minimum and Maximum Request Quantity.</div>
+                    </div>
                 </div>
                 <div class="row" ng-if="demand.preferredSchedule === 'NA'">
                     <div class="col-sm-4">
@@ -70,7 +74,7 @@
                             <div class="error-message" ng-messages="editForm.deliveryDate.$error" ng-show="editForm.deliveryDate.$touched">
                                 <div style="margin-top: 5px;" ng-message="customDate">This field is required.</div>
                                 <div style="margin-top: 5px;" ng-message="date">Please enter a valid date in 'dd/mm/yyyy' format.</div>
-                                
+
                             </div>
                         </div>
                         <div class="col-sm-9" style="padding-top: 15px;"> 

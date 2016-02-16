@@ -5,27 +5,21 @@
     <div ng-show="showJob">
         <div class="row">
             <div class="col-sm-4">
-                <div class="col-sm-9" style="padding-top: 25px;"> 
-                    <h4><b>Item Name</b></h4>
-                    <p>{{job.demand.supply.itemName}}</p>               
-                </div>   
-                <div class="col-sm-9" style="padding-top: 25px;"> 
+                <div class="col-sm-9" style="padding-top: 15px;"> 
                     <h4><b>Supplying Organization</b></h4>
-                    <p>{{job.demand.supply.user.organizationName}}</p>               
+                    <p>{{job.demand.supplier.organizationName}}</p>               
                 </div> 
-                <div class="col-sm-9" style="padding-top: 25px;"> 
+                <div class="col-sm-9" style="padding-top: 10px;"> 
                     <h4><b>Receiving Organization</b></h4>
                     <p>{{job.demand.user.organizationName}}</p>               
                 </div> 
-            </div>
-            <div class="col-sm-4">
-                <div class="col-sm-9" style="padding-top: 25px;"> 
-                    <h4><b>Quantity</b></h4>
-                    <p>{{job.demand.quantityDemanded}}</p>               
-                </div>   
-                <div class="col-sm-9" style="padding-top: 25px;"> 
+                <div class="col-sm-9" style="padding-top: 10px;"> 
                     <h4><b>Job Expiry Date</b></h4>
                     <p>{{job.expiryDate}}</p>               
+                </div> 
+                <div class="col-sm-9" style="padding-top: 10px;"> 
+                    <h4><b>Item(s)</b></h4>
+                    <p ng-repeat="demandItem in demandItemList">{{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}</p>               
                 </div> 
             </div>
         </div>

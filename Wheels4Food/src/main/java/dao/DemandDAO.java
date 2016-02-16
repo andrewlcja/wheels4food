@@ -7,6 +7,7 @@ package dao;
 
 import java.util.List;
 import model.Demand;
+import model.DemandItem;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -25,10 +26,19 @@ public class DemandDAO {
     Session session = null;
     Transaction tx = null;
 
-    public void createDemand(Demand demand) throws Exception {
+    public Demand createDemand(Demand demand) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         session.save(demand);
+        tx.commit();
+        session.close();
+        return demand;
+    }
+    
+    public void createDemandItem(DemandItem demandItem) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        session.save(demandItem);
         tx.commit();
         session.close();
     }
@@ -37,6 +47,14 @@ public class DemandDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         session.update(demand);
+        tx.commit();
+        session.close();
+    }
+    
+    public void updateDemandItem(DemandItem demandItem) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        session.update(demandItem);
         tx.commit();
         session.close();
     }
@@ -49,6 +67,15 @@ public class DemandDAO {
         tx.commit();
         session.close();
     }
+    
+    public void deleteDemandItem(int id) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        DemandItem demandItem = (DemandItem) session.load(DemandItem.class, id);
+        session.delete(demandItem);
+        tx.commit();
+        session.close();
+    }
 
     public List<Demand> retrieveAll() throws Exception {
         session = sessionFactory.openSession();
@@ -57,6 +84,15 @@ public class DemandDAO {
         tx.commit();
         session.close();
         return demandList;
+    }
+    
+    public List<DemandItem> getDemandItemList() throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<DemandItem> demandItemList = session.createCriteria(DemandItem.class).list();
+        tx.commit();
+        session.close();
+        return demandItemList;
     }
 
     public List<Demand> getDemandListByUserId(int userID) throws Exception {
@@ -68,12 +104,43 @@ public class DemandDAO {
         session.close();
         return demandList;
     }
+    
+    public List<DemandItem> getDemandItemListByDemandId(int demandID) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<DemandItem> demandItemList = session.createCriteria(DemandItem.class)
+                .add(Restrictions.eq("demand.id", demandID)).list();
+        tx.commit();
+        session.close();
+        return demandItemList;
+    }
+    
+    public List<DemandItem> getDemandItemListByRequesterId(int requesterID) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<DemandItem> demandItemList = session.createCriteria(DemandItem.class)
+                .createAlias("demand.user", "requester")
+                .add(Restrictions.eq("requester.id", requesterID)).list();
+        tx.commit();
+        session.close();
+        return demandItemList;
+    }
+    
+    public List<DemandItem> getDemandItemListBySupplierId(int supplierID) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<DemandItem> demandItemList = session.createCriteria(DemandItem.class)
+                .createAlias("demand.supplier", "supplier")
+                .add(Restrictions.eq("supplier.id", supplierID)).list();
+        tx.commit();
+        session.close();
+        return demandItemList;
+    }
 
     public List<Demand> getDemandListByDeliveryDate(int supplierID, String deliveryDate) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Demand> demandList = session.createCriteria(Demand.class)
-                .createAlias("supply.user", "supplier")
                 .add(Restrictions.eq("supplier.id", supplierID))
                 .add(Restrictions.eq("preferredDeliveryDate", deliveryDate))
                 .add(Restrictions.disjunction()
@@ -99,7 +166,6 @@ public class DemandDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Demand> demandList = session.createCriteria(Demand.class)
-                .createAlias("supply.user", "supplier")
                 .add(Restrictions.eq("supplier.id", supplierID))
                 .add(Restrictions.eq("status", "Pending")).list();
         tx.commit();
@@ -111,7 +177,6 @@ public class DemandDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Demand> demandList = session.createCriteria(Demand.class)
-                .createAlias("supply.user", "supplier")
                 .add(Restrictions.eq("supplier.id", supplierID))
                 .add(Restrictions.disjunction()
                         .add(Restrictions.eq("status", "Job Completed"))
@@ -125,7 +190,6 @@ public class DemandDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Demand> demandList = session.createCriteria(Demand.class)
-                .createAlias("supply.user", "supplier")
                 .add(Restrictions.disjunction()
                         .add(Restrictions.eq("supplier.id", id))
                         .add(Restrictions.eq("user.id", id))).list();

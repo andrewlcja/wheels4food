@@ -71,52 +71,59 @@
                     $timeout(function () {
                         indexPromise.then(function (response) {
                             $scope.job = response.data;
-                            $scope.showJob = true;
 
-                            var parts = $scope.job.expiryDate.split("/");
-                            var expiryDate = new Date(parseInt(parts[2], 10),
-                                    parseInt(parts[1], 10) - 1,
-                                    parseInt(parts[0], 10));
+                            $http({
+                                url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + $scope.job.demand.id,
+                                method: 'GET'
+                            }).then(function (response) {
+                                $scope.demandItemList = response.data;
+                                $scope.showJob = true;
 
-                            $scope.dates = [];
+                                var parts = $scope.job.expiryDate.split("/");
+                                var expiryDate = new Date(parseInt(parts[2], 10),
+                                        parseInt(parts[1], 10) - 1,
+                                        parseInt(parts[0], 10));
 
-                            for (var i = 0; i < 10; i++) {
-                                if (expiryDate.getDay() !== 0 && expiryDate.getDay() !== 6) {
-                                    $scope.dates.unshift({'value': new Date(expiryDate)});
-                                } else {
-                                    i--;
+                                $scope.dates = [];
+
+                                for (var i = 0; i < 10; i++) {
+                                    if (expiryDate.getDay() !== 0 && expiryDate.getDay() !== 6) {
+                                        $scope.dates.unshift({'value': new Date(expiryDate)});
+                                    } else {
+                                        i--;
+                                    }
+
+                                    expiryDate.setDate(expiryDate.getDate() - 1);
                                 }
 
-                                expiryDate.setDate(expiryDate.getDate() - 1);
-                            }
+                                $scope.scheduleAMList = [];
+                                $scope.schedulePMList = [];
+                                $scope.disabledAMList = [];
+                                $scope.disabledPMList = [];
+                                $scope.scheduleCount = 0;
 
-                            $scope.scheduleAMList = [];
-                            $scope.schedulePMList = [];
-                            $scope.disabledAMList = [];
-                            $scope.disabledPMList = [];
-                            $scope.scheduleCount = 0;
+                                for (var i = 0; i < $scope.job.schedule.length; i++) {
+                                    var value = $scope.job.schedule.charAt(i);
 
-                            for (var i = 0; i < $scope.job.schedule.length; i++) {
-                                var value = $scope.job.schedule.charAt(i);
-
-                                if (i % 2 === 0) {
-                                    if (value === '0') {
-                                        $scope.scheduleAMList.push({'value': false});
-                                        $scope.disabledAMList.push(i / 2);
+                                    if (i % 2 === 0) {
+                                        if (value === '0') {
+                                            $scope.scheduleAMList.push({'value': false});
+                                            $scope.disabledAMList.push(i / 2);
+                                        } else {
+                                            $scope.scheduleAMList.push({'value': true});
+                                            $scope.scheduleCount++;
+                                        }
                                     } else {
-                                        $scope.scheduleAMList.push({'value': true});
-                                        $scope.scheduleCount++;
-                                    }
-                                } else {
-                                    if (value === '0') {
-                                        $scope.schedulePMList.push({'value': false});
-                                        $scope.disabledPMList.push(Math.floor(i / 2));
-                                    } else {
-                                        $scope.schedulePMList.push({'value': true});
-                                        $scope.scheduleCount++;
+                                        if (value === '0') {
+                                            $scope.schedulePMList.push({'value': false});
+                                            $scope.disabledPMList.push(Math.floor(i / 2));
+                                        } else {
+                                            $scope.schedulePMList.push({'value': true});
+                                            $scope.scheduleCount++;
+                                        }
                                     }
                                 }
-                            }
+                            });
                         });
                     }, 1000);
 

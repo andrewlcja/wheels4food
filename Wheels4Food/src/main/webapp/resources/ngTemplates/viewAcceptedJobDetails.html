@@ -3,26 +3,36 @@
     <table>
         <tr>
             <th>Supplying Organization</th>
-            <td class="dialog-padding">{{currentJob.demand.supply.user.organizationName}}</td>
+            <td class="dialog-padding">{{currentJob.demand.supplier.organizationName}}</td>
             <th style="padding-left: 40px;">Receiving Organization</th>
             <td class="dialog-padding">{{currentJob.demand.user.organizationName}}</td>
         </tr>
         <tr>
             <th>Point of Contact Name</th>
-            <td class="dialog-padding">{{currentJob.demand.supply.user.pocName}}</td>
+            <td class="dialog-padding">{{currentJob.demand.supplier.pocName}}</td>
             <th style="padding-left: 40px;">Point of Contact Name</th>
             <td class="dialog-padding">{{currentJob.demand.user.pocName}}</td>
         </tr>
         <tr>
             <th>Point of Contact Number</th>
-            <td class="dialog-padding">{{currentJob.demand.supply.user.pocNumber}}</td>
+            <td class="dialog-padding">{{currentJob.demand.supplier.pocNumber}}</td>
             <th style="padding-left: 40px;">Point of Contact Number</th>
             <td class="dialog-padding">{{currentJob.demand.user.pocNumber}}</td>
         </tr>
+        <tr>
+            <th>Address</th>
+            <td class="dialog-padding">{{currentJob.demand.supplier.address}}</td>
+            <th style="padding-left: 40px;">Address</th>
+            <td class="dialog-padding">{{currentJob.demand.user.address}}</td>
+        </tr>
         <tr><td><br/></td></tr>        
         <tr>
-            <th>Quantity</th>
-            <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
+            <th>Requested Item(s)</th>
+            <td class="dialog-padding">
+                <div ng-repeat="demandItem in currentDemandItemList">
+                    {{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}
+                </div>
+            </td>
         </tr>
         <tr>
             <th>Delivery Date</th>

@@ -51,13 +51,24 @@
                         if (input === null || input === undefined) {
                             proccessed = {};
                         } else {
-                            proccessed['itemName'] = input;
+                            proccessed = {
+                                'user': {
+                                    organizationName: input
+                                }
+                            };
                         }
 
                         return proccessed;
                     };
 
                     var validApproval = function (pendingApproval, index, comment) {
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + pendingApproval.id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.currentDemandItemList = response.data;
+                        });
+                        
                         var finalIndex = $scope.pendingApprovalList.indexOf(pendingApproval);
 
                         if (pendingApproval.preferredSchedule === 'NA') {
@@ -65,7 +76,7 @@
 
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/approveSelfCollectionPrompt.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                className: 'ngdialog-theme-default dialog-generic-2',
                                 scope: $scope
                             }).then(function () {
                                 $http({
@@ -194,10 +205,17 @@
                     $scope.view = function (pendingApproval) {
                         $scope.currentPendingApproval = pendingApproval;
 
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + pendingApproval.id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.currentDemandItemList = response.data;
+                        });
+
                         if (pendingApproval.preferredSchedule === 'NA') {
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/viewSelfCollectionRequest.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                className: 'ngdialog-theme-default dialog-generic-2',
                                 scope: $scope
                             });
                         } else {
@@ -262,18 +280,7 @@
 
                     $scope.approve = function (pendingApproval, index) {
                         $scope.currentPendingApproval = pendingApproval;
-
-                        if (pendingApproval.quantityDemanded <= pendingApproval.supply.quantitySupplied) {
-                            validApproval(pendingApproval, index, '');
-                        } else if (pendingApproval.supply.quantitySupplied > 0) {
-                            ngDialog.openConfirm({
-                                template: '/Wheels4Food/resources/ngTemplates/approveRequestPartialPrompt.html',
-                                className: 'ngdialog-theme-default dialog-approve-request',
-                                scope: $scope
-                            }).then(function (reason) {
-                                validApproval(pendingApproval, index, reason);
-                            });
-                        }
+                        validApproval(pendingApproval, index, '');
                     };
 
                     $scope.reject = function (pendingApproval, index) {
@@ -303,7 +310,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['supply.itemName', 'user.organizationName', 'supply.quantitySupplied', 'quantityDemanded'];
+                    $scope.tableColumns = ['user.organizationName'];
 
 
                     var indexPromise = $http({
@@ -312,13 +319,20 @@
                     });
 
                     $timeout(function () {
-                        indexPromise.then(function (response) {
-                            $scope.pendingApprovalList = response.data;
-                            $scope.currentPage = 1;
-                            $scope.pageSize = 10;
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListBySupplierIdRequest/' + userID,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.demandItemList = response.data;
 
-                            $scope.$watch('searchFilter', function () {
-                                $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['itemName']);
+                            indexPromise.then(function (response) {
+                                $scope.pendingApprovalList = response.data;
+                                $scope.currentPage = 1;
+                                $scope.pageSize = 10;
+
+                                $scope.$watch('searchFilter', function () {
+                                    $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['itemName']);
+                                });
                             });
                         });
                     }, 1000);

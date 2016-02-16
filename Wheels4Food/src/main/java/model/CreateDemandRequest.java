@@ -12,8 +12,8 @@ package model;
 public class CreateDemandRequest {
 
     private int userID;
-    private int supplyID;
-    private String quantityDemanded;
+    private String supplyIDValues;
+    private String quantityDemandedValues;
     private String preferredDeliveryDate;
     private String preferredTimeslot;
     private String preferredSchedule;   
@@ -21,10 +21,10 @@ public class CreateDemandRequest {
     public CreateDemandRequest() {
     }
 
-    public CreateDemandRequest(int userID, int supplyID, String quantityDemanded, String preferredDeliveryDate, String preferredTimeslot, String preferredSchedule) {
+    public CreateDemandRequest(int userID, String supplyIDValues, String quantityDemandedValues, String preferredDeliveryDate, String preferredTimeslot, String preferredSchedule) {
         this.userID = userID;
-        this.supplyID = supplyID;
-        this.quantityDemanded = quantityDemanded;
+        this.supplyIDValues = supplyIDValues;
+        this.quantityDemandedValues = quantityDemandedValues;
         this.preferredDeliveryDate = preferredDeliveryDate;
         this.preferredTimeslot = preferredTimeslot;
         this.preferredSchedule = preferredSchedule;
@@ -34,12 +34,12 @@ public class CreateDemandRequest {
         return userID;
     }
 
-    public int getSupplyID() {
-        return supplyID;
+    public String getSupplyIDValues() {
+        return supplyIDValues;
     }
 
-    public String getQuantityDemanded() {
-        return quantityDemanded;
+    public String getQuantityDemandedValues() {
+        return quantityDemandedValues;
     }
 
     public String getPreferredDeliveryDate() {
