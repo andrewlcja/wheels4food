@@ -2,24 +2,20 @@
     <h3><b>Are you sure you want to cancel this job?</b></h3>
     <table>
         <tr>
-            <th>Item Name</th>
-            <td class="dialog-padding">{{currentJob.demand.supply.itemName}}</td>
-        </tr>
-        <tr>
-            <th>Category</th>
-            <td class="dialog-padding">{{currentJob.demand.supply.category}}</td>
-        </tr>
-        <tr>
             <th>Supplying Organization</th>
-            <td class="dialog-padding">{{currentJob.demand.supply.user.organizationName}}</td>
+            <td class="dialog-padding">{{currentJob.demand.supplier.organizationName}}</td>
         </tr>
         <tr>
             <th>Requesting Organization</th>
             <td class="dialog-padding">{{currentJob.demand.user.organizationName}}</td>
         </tr>
         <tr>
-            <th>Quantity Demanded</th>
-            <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
+            <th>Requested Item(s)</th>
+            <td class="dialog-padding">
+                <div ng-repeat="demandItem in currentDemandItemList">
+                    {{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}
+                </div>
+            </td>
         </tr>
         <tr>
             <th>Status</th>

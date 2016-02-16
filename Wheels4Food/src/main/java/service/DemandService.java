@@ -21,11 +21,13 @@ import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
+import model.DemandItem;
 import model.GetDemandBreakdownResponse;
 import model.GetUnavailableTimeslotsByDeliveryDateRequest;
 import model.RejectDemandRequest;
 import model.RejectDemandResponse;
 import model.Supply;
+import model.UpdateDemandRequest;
 import model.UpdateDemandResponse;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +50,23 @@ public class DemandService {
 
     public CreateDemandResponse createDemandRequest(CreateDemandRequest request) {
         int userID = request.getUserID();
-        int supplyID = request.getSupplyID();
-        String quantityDemandedStr = request.getQuantityDemanded().trim();
+        
+        String[] supplyIDValues = new String[1];
+        String supplyIDValuesStr = request.getSupplyIDValues().trim();
+        if (supplyIDValuesStr.contains(",")) {
+            supplyIDValues = supplyIDValuesStr.split(",");
+        } else {
+            supplyIDValues[0] = supplyIDValuesStr;
+        }
+                
+        String[] quantityDemandedValues = new String[1];
+        String quantityDemandedValuesStr = request.getQuantityDemandedValues().trim();
+        if (quantityDemandedValuesStr.contains(",")) {
+            quantityDemandedValues = quantityDemandedValuesStr.split(",");
+        } else {
+            quantityDemandedValues[0] = quantityDemandedValuesStr;
+        }
+        
         String preferredDeliveryDateStr = request.getPreferredDeliveryDate();
         String preferredTimeslot = request.getPreferredTimeslot();
         String preferredSchedule = request.getPreferredSchedule();
@@ -61,12 +78,11 @@ public class DemandService {
             errorList.add("Invalid user id");
         }
 
-        if (supplyID <= 0) {
-            errorList.add("Invalid supply id");
-        }
-
-        if (quantityDemandedStr.equals("")) {
-            errorList.add("Quantity requested cannot be blank.");
+        for (String quantityDemandedValue : quantityDemandedValues) {
+            if (quantityDemandedValue.equals("")) {
+                errorList.add("All Quantity Requested fields cannot be blank.");
+                break;
+            }
         }
 
         if (preferredDeliveryDateStr.equals("")) {
@@ -87,10 +103,22 @@ public class DemandService {
         }
 
         try {
-            int quantityDemanded = Integer.parseInt(quantityDemandedStr);
+            int[] quantityDemandedIntValues = new int[quantityDemandedValues.length];
 
-            if (quantityDemanded <= 0) {
-                errorList.add("Quantity requested must be more than 0");
+            //check for valid quantity demanded values
+            for (int i = 0; i < quantityDemandedIntValues.length; i++) {
+                try {
+                    int quantityDemanded = Integer.parseInt(quantityDemandedValues[i]);
+
+                    if (quantityDemanded <= 0) {
+                        errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
+                        return new CreateDemandResponse(false, errorList);
+                    }
+                    quantityDemandedIntValues[i] = quantityDemanded;
+                } catch (NumberFormatException ex) {
+                    errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
+                    return new CreateDemandResponse(false, errorList);
+                }
             }
 
             if (preferredSchedule.equals("NA")) {
@@ -125,31 +153,36 @@ public class DemandService {
                     errorList.add("Invalid user id");
                 }
 
-                Supply supply = supplyDAO.getSupplyById(supplyID);
-                if (supply == null) {
-                    errorList.add("Invalid supply id");
-                }
-
                 //check if the errorlist is empty
                 if (!errorList.isEmpty()) {
                     return new CreateDemandResponse(false, errorList);
                 }
 
-                //get min and max of supply
-                int minimum = supply.getMinimum();
-                int maximum = supply.getMaximum();
+                ArrayList<Supply> supplyList = new ArrayList<Supply>();
 
-                int quantitySupplied = supply.getQuantitySupplied();
+                for (int i = 0; i < supplyIDValues.length; i++) {
+                    Supply supply = supplyDAO.getSupplyById(Integer.parseInt(supplyIDValues[i]));
 
-                //check if quantity demanded is in the valid range
-                if ((quantitySupplied - minimum < minimum) && quantityDemanded != quantitySupplied) {
-                    errorList.add("Quantity requested must be equals to " + quantitySupplied);
-                } else if (quantitySupplied - minimum == minimum && quantityDemanded != quantitySupplied && quantityDemanded != minimum) {
-                    errorList.add("Quantity requested must be equals to " + minimum + " OR equals to " + maximum);
-                } else if ((minimum + maximum) > quantitySupplied && (quantitySupplied - quantityDemanded) < minimum && (quantitySupplied - quantityDemanded) != 0) {
-                    errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + (quantitySupplied - minimum) + " OR equals to " + quantitySupplied);
-                } else if (quantityDemanded > maximum || quantityDemanded < minimum) {
-                    errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + maximum);
+                    //get min and max of supply
+                    int minimum = supply.getMinimum();
+                    int maximum = supply.getMaximum();
+
+                    int quantitySupplied = supply.getQuantitySupplied();
+
+                    int quantityDemanded = quantityDemandedIntValues[i];
+
+                    //check if quantity demanded is in the valid range
+                    if ((quantitySupplied - minimum < minimum) && quantityDemanded != quantitySupplied) {
+                        errorList.add("Quantity requested for '" + supply.getItemName() + "' must be equals to " + quantitySupplied);
+                    } else if (quantitySupplied - minimum == minimum && quantityDemanded != quantitySupplied && quantityDemanded != minimum) {
+                        errorList.add("Quantity requested for '" + supply.getItemName() + "'  must be equals to " + minimum + " OR equals to " + maximum);
+                    } else if ((minimum + maximum) > quantitySupplied && (quantitySupplied - quantityDemanded) < minimum && (quantitySupplied - quantityDemanded) != 0) {
+                        errorList.add("Quantity requested for '" + supply.getItemName() + "'  must be more than equals to " + minimum + " and less than equals to " + (quantitySupplied - minimum) + " OR equals to " + quantitySupplied);
+                    } else if (quantityDemanded > maximum || quantityDemanded < minimum) {
+                        errorList.add("Quantity requested for '" + supply.getItemName() + "'  must be more than equals to " + minimum + " and less than equals to " + maximum);
+                    }
+                    
+                    supplyList.add(supply);
                 }
 
                 //check if the errorlist is empty
@@ -162,8 +195,20 @@ public class DemandService {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
                 String dateRequested = sdf.format(today);
+                
+                //get supplier
+                User supplier = supplyList.get(0).getUser();
 
-                demandDAO.createDemand(new Demand(user, supply, quantityDemanded, dateRequested, preferredDeliveryDateStr, preferredTimeslot, preferredSchedule, "Pending", ""));
+                Demand newDemand = demandDAO.createDemand(new Demand(user, supplier, dateRequested, preferredDeliveryDateStr, preferredTimeslot, preferredSchedule, "Pending", ""));
+
+                //create demanditems
+                for (int i = 0; i < supplyIDValues.length; i++) {
+                    Supply supply = supplyList.get(i);
+                    int quantityDemanded = quantityDemandedIntValues[i];
+
+                    demandDAO.createDemandItem(new DemandItem(newDemand, supply, quantityDemanded));
+                }
+
                 return new CreateDemandResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());
@@ -189,12 +234,15 @@ public class DemandService {
 
             try {
                 Demand demand = demandDAO.getDemandById(id);
-                Supply supply = demand.getSupply();
 
-                if (demand.getStatus().equals("Pending")) {
-                    supplyDAO.updateSupply(supply);
+                List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
+
+                //delete all the demanditems under this demand first
+                for (DemandItem demandItem : demandItemList) {
+                    demandDAO.deleteDemandItem(demandItem.getId());
                 }
 
+                //finally delete the demand itself
                 demandDAO.deleteDemand(id);
                 return new DeleteDemandResponse(true, null);
             } catch (Exception e) {
@@ -207,16 +255,39 @@ public class DemandService {
         }
     }
 
-    public UpdateDemandResponse updateDemandRequest(Demand demand) {
-        int quantityDemanded = demand.getQuantityDemanded();
+    public UpdateDemandResponse updateDemandRequest(UpdateDemandRequest request) {
+        Demand demand = request.getDemand();
+        List<DemandItem> demandItemList = request.getDemandItemList();
         String preferredDeliveryDateStr = demand.getPreferredDeliveryDate();
         String preferredTimeslot = demand.getPreferredTimeslot();
         String preferredSchedule = demand.getPreferredSchedule();
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        if (quantityDemanded <= 0) {
-            errorList.add("Quantity requested must be more than 0");
+        for (DemandItem demandItem : demandItemList) {
+            int quantityDemanded = demandItem.getQuantityDemanded();
+
+            if (quantityDemanded <= 0) {
+                errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
+                break;
+            }
+        }
+
+        if (preferredDeliveryDateStr.equals("")) {
+            errorList.add("Preferred Delivery Date cannot be blank.");
+        }
+
+        if (preferredTimeslot.equals("")) {
+            errorList.add("Preferred Timeslot requested cannot be blank.");
+        }
+
+        if (preferredSchedule.equals("")) {
+            errorList.add("Preferred Schedule cannot be blank.");
+        }
+
+        //check if the errorlist is empty
+        if (!errorList.isEmpty()) {
+            return new UpdateDemandResponse(false, errorList);
         }
 
         if (preferredSchedule.equals("NA")) {
@@ -246,28 +317,55 @@ public class DemandService {
         }
 
         try {
-            //get min and max of supply
-            int minimum = demand.getSupply().getMinimum();
-            int maximum = demand.getSupply().getMaximum();
+            for (DemandItem demandItem : demandItemList) {
+                Supply supply = demandItem.getSupply();
 
-            int quantitySupplied = demand.getSupply().getQuantitySupplied();
+                //get min and max of supply
+                int minimum = supply.getMinimum();
+                int maximum = supply.getMaximum();
 
-            //check if quantity demanded is in the valid range
-            if ((quantitySupplied - minimum < minimum) && quantityDemanded != quantitySupplied) {
-                errorList.add("Quantity requested must be equals to " + quantitySupplied);
-            } else if (quantitySupplied - minimum == minimum && quantityDemanded != quantitySupplied && quantityDemanded != minimum) {
-                errorList.add("Quantity requested must be equals to " + minimum + " OR equals to " + maximum);
-            } else if ((minimum + maximum) > quantitySupplied && (quantitySupplied - quantityDemanded) < minimum && (quantitySupplied - quantityDemanded) != 0) {
-                errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + (quantitySupplied - minimum) + " OR equals to " + quantitySupplied);
-            } else if (quantityDemanded > maximum || quantityDemanded < minimum) {
-                errorList.add("Quantity requested must be more than equals to " + minimum + " and less than equals to " + maximum);
+                int quantitySupplied = supply.getQuantitySupplied();
+
+                int quantityDemanded = demandItem.getQuantityDemanded();
+
+                //check if quantity demanded is in the valid range
+                if ((quantitySupplied - minimum < minimum) && quantityDemanded != quantitySupplied) {
+                    errorList.add("Quantity requested for '" + supply.getItemName() + "' must be equals to " + quantitySupplied);
+                } else if (quantitySupplied - minimum == minimum && quantityDemanded != quantitySupplied && quantityDemanded != minimum) {
+                    errorList.add("Quantity requested for '" + supply.getItemName() + "'  must be equals to " + minimum + " OR equals to " + maximum);
+                } else if ((minimum + maximum) > quantitySupplied && (quantitySupplied - quantityDemanded) < minimum && (quantitySupplied - quantityDemanded) != 0) {
+                    errorList.add("Quantity requested for '" + supply.getItemName() + "'  must be more than equals to " + minimum + " and less than equals to " + (quantitySupplied - minimum) + " OR equals to " + quantitySupplied);
+                } else if (quantityDemanded > maximum || quantityDemanded < minimum) {
+                    errorList.add("Quantity requested for '" + supply.getItemName() + "'  must be more than equals to " + minimum + " and less than equals to " + maximum);
+                }
             }
 
             //check if the errorlist is empty
             if (!errorList.isEmpty()) {
                 return new UpdateDemandResponse(false, errorList);
             }
+
+            //get the current list of demanditems
+            List<DemandItem> currentDemandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
+            ArrayList<Integer> currentDemandItemIDs = new ArrayList<Integer>();
             
+            for (DemandItem demandItem : currentDemandItemList) {
+                currentDemandItemIDs.add(demandItem.getId());
+            }
+            System.out.println(currentDemandItemIDs.size());
+            //update the demanditems first
+            for (DemandItem demandItem : demandItemList) {
+                //check whether demanditem has been removed
+                if (currentDemandItemIDs.contains(demandItem.getId())) {
+                    demandDAO.updateDemandItem(demandItem);
+                    currentDemandItemIDs.remove(new Integer(demandItem.getId()));
+                } 
+            }
+            
+            for (int id : currentDemandItemIDs) {
+                demandDAO.deleteDemandItem(id);
+            }
+
             demandDAO.updateDemand(demand);
             return new UpdateDemandResponse(true, null);
         } catch (Exception e) {
@@ -299,28 +397,28 @@ public class DemandService {
 
             demand.setStatus("Approved");
 
-            Supply supply = demand.getSupply();
-            int quantitySupplied = supply.getQuantitySupplied();
-            int quantityDemanded = demand.getQuantityDemanded();
-
-            if (quantityDemanded <= quantitySupplied) {
-                supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
-                
-                if (supply.getMaximum() < supply.getQuantitySupplied()) {
-                    supply.setMaximum(supply.getQuantitySupplied());
-                }
-            } else {
-                if (comments.equals("")) {
-                    errorList.add("Comments cannot be blank");
-                    return new ApproveDemandResponse(false, errorList);
-                }
-
-                demand.setComments(comments);
-                supply.setQuantitySupplied(0);
-            }
-
             try {
-                supplyDAO.updateSupply(supply);
+                List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(id);
+
+                for (DemandItem demandItem : demandItemList) {
+                    Supply supply = demandItem.getSupply();
+                    int quantitySupplied = supply.getQuantitySupplied();
+                    int quantityDemanded = demandItem.getQuantityDemanded();
+
+                    supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
+
+                    if (supply.getMaximum() < supply.getQuantitySupplied()) {
+                        supply.setMaximum(supply.getQuantitySupplied());
+                    }
+
+                    try {
+                        supplyDAO.updateSupply(supply);
+                    } catch (Exception e) {
+                        errorList.add(e.getMessage());
+                        return new ApproveDemandResponse(false, errorList);
+                    }
+                }
+
                 demandDAO.updateDemand(demand);
                 return new ApproveDemandResponse(true, null);
             } catch (Exception e) {
@@ -353,7 +451,6 @@ public class DemandService {
 
             Demand demand = demandDAO.getDemandById(id);
             String status = demand.getStatus();
-            Supply supply = demand.getSupply();
 
             if (!status.equals("Pending")) {
                 errorList.add("Status of request must be pending");
@@ -387,9 +484,25 @@ public class DemandService {
     public List<Demand> getPendingDemandListBySupplierIdRequest(int supplierID) throws Exception {
         return demandDAO.getPendingDemandListBySupplierId(supplierID);
     }
-    
+
     public List<Demand> getCompletedDemandListBySupplierIdRequest(int supplierID) throws Exception {
         return demandDAO.getCompletedDemandListBySupplierId(supplierID);
+    }
+    
+    public List<DemandItem> getDemandItemListRequest() throws Exception {
+        return demandDAO.getDemandItemList();
+    }
+    
+    public List<DemandItem> getDemandItemListByDemandIdRequest(int demandID) throws Exception {
+        return demandDAO.getDemandItemListByDemandId(demandID);
+    }
+    
+    public List<DemandItem> getDemandItemListByRequesterIdRequest(int requesterID) throws Exception {
+        return demandDAO.getDemandItemListByRequesterId(requesterID);
+    }
+    
+    public List<DemandItem> getDemandItemListBySupplierIdRequest(int supplierID) throws Exception {
+        return demandDAO.getDemandItemListBySupplierId(supplierID);
     }
 
     public List<String> getUnavailableTimeslotsByDeliveryDateRequest(GetUnavailableTimeslotsByDeliveryDateRequest request) throws Exception {
@@ -407,17 +520,17 @@ public class DemandService {
     public Demand getDemandByIdRequest(int id) throws Exception {
         return demandDAO.getDemandById(id);
     }
-    
+
     public GetDemandBreakdownResponse getDemandBreakdownRequest(int id) throws Exception {
         List<Demand> demandList = demandDAO.getDemandListBySupplierOrRequesterId(id);
-        
+
         int pending = 0;
         int approved = 0;
         int rejected = 0;
-        
+
         for (Demand demand : demandList) {
             String status = demand.getStatus();
-            
+
             switch (status) {
                 case "Pending":
                     pending++;
@@ -430,7 +543,7 @@ public class DemandService {
                     break;
             }
         }
-        
+
         return new GetDemandBreakdownResponse(pending, approved, rejected);
     }
 }

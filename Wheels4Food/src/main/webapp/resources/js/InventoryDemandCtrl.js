@@ -41,8 +41,8 @@
                             proccessed = {};
                         } else {
                             proccessed = {
-                                'supply': {
-                                    'itemName': input
+                                'supplier': {
+                                    organizationName: input
                                 }
                             };
                         }
@@ -66,9 +66,16 @@
                     $scope.view = function (demand) {
                         $scope.currentDemand = demand;
 
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + demand.id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.currentDemandItemList = response.data;
+                        });
+
                         ngDialog.openConfirm({
                             template: '/Wheels4Food/resources/ngTemplates/viewDemandDetails.html',
-                            className: 'ngdialog-theme-default dialog-generic',
+                            className: 'ngdialog-theme-default dialog-generic-2',
                             scope: $scope
                         });
                     };
@@ -197,6 +204,13 @@
 
                     $scope.viewSelfCollection = function (demand) {
                         $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + demand.id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.currentDemandItemList = response.data;
+                        });
+                        
+                        $http({
                             url: api.endpoint + 'GetSelfCollectionByDemandIdRequest/' + demand.id,
                             method: 'GET',
                             headers: {
@@ -207,13 +221,20 @@
 
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/viewSelfCollectionDetails.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                className: 'ngdialog-theme-default dialog-generic-2',
                                 scope: $scope
                             });
                         });
                     };
 
                     $scope.viewJob = function (demand) {
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + demand.id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.currentDemandItemList = response.data;
+                        });
+                        
                         $http({
                             url: api.endpoint + 'GetJobByDemandIdRequest/' + demand.id,
                             method: 'GET',
@@ -279,11 +300,18 @@
                     $scope.cancel = function (demand) {
                         $scope.currentDemand = demand;
                         var index = $scope.demandList.indexOf(demand);
+                        
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + demand.id,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.currentDemandItemList = response.data;
+                        });
 
                         if (demand.status === 'Pending') {
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/cancelDemandPrompt.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                className: 'ngdialog-theme-default dialog-generic-2',
                                 scope: $scope
                             }).then(function () {
                                 $http({
@@ -303,7 +331,7 @@
 
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobPrompt.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                className: 'ngdialog-theme-default dialog-generic-2',
                                 scope: $scope
                             }).then(function () {
                                 ngDialog.openConfirm({
@@ -368,7 +396,7 @@
 
                                 ngDialog.openConfirm({
                                     template: '/Wheels4Food/resources/ngTemplates/cancelSelfCollectionPrompt.html',
-                                    className: 'ngdialog-theme-default dialog-generic',
+                                    className: 'ngdialog-theme-default dialog-generic-2',
                                     scope: $scope
                                 }).then(function () {
                                     ngDialog.openConfirm({
@@ -432,7 +460,7 @@
                                         $state.go($state.current, $stateParams, {reload: true, inherit: false});
                                     }
                                 });
-                            });                            
+                            });
                         }
                     };
 
@@ -447,7 +475,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['supply.itemName', 'supply.category', 'quantityDemanded', 'supply.expiryDate'];
+                    $scope.tableColumns = ['supplier.organizationName'];
 
                     var indexPromise = $http({
                         url: api.endpoint + 'GetDemandListByUserIdRequest/' + userID,
@@ -455,20 +483,27 @@
                     });
 
                     $timeout(function () {
-                        indexPromise.then(function (response) {
-                            $scope.demandList = response.data;
-                            console.log(response);
-                            $scope.currentPage = 1;
-                            $scope.pageSize = 10;
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByRequesterIdRequest/' + userID,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.demandItemList = response.data;
 
-                            $scope.$watch('searchFilter', function () {
-                                $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['supply.itemName']);
+                            indexPromise.then(function (response) {
+                                $scope.demandList = response.data;
+                                console.log(response);
+                                $scope.currentPage = 1;
+                                $scope.pageSize = 10;
+
+                                $scope.$watch('searchFilter', function () {
+                                    $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['supply.itemName']);
+                                });
                             });
                         });
                     }, 1000);
 
                     //cgBusy configuration
-                    $scope.delay = 0;
+                    $scope.delay = 1;
                     $scope.minDuration = 820;
                     $scope.message = 'Please Wait...';
                     $scope.backdrop = true;

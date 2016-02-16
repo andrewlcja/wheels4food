@@ -1,64 +1,181 @@
-<div class="row" style="padding-top: 20px;">
-    <div class="col-sm-3 pull-left">
-        <div class="input-group">
-            <input type="text" ng-model="searchFilter" class="form-control" placeholder="Search..."/>
-            <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+<div ng-hide="showRequestPage">
+    <div class="row" style="padding-top: 20px;">
+        <div class="col-sm-3 pull-left">
+            <div class="input-group">
+                <input type="text" ng-model="searchFilter" class="form-control" placeholder="Search..."/>
+                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+            </div>
+        </div>    
+        <div class="col-sm-3 pull-right" style="padding-left: 5px;">
+            <button ng-show="requestSupplyList.length > 0" class="btn btn-success" ng-click="goToRequestPage()"><i class="fa fa-check"></i> Request for <b>{{requestSupplyList.length}}</b> item(s)</button>
+            <button ng-show="requestSupplyList.length > 0" class="btn btn-danger" ng-click="clearAll()"><i class="fa fa-times"></i> Clear All</button>
         </div>
-    </div>    
+    </div>
+    <div class="index-table" search-filter="searchFilter">
+        <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+            <thead>
+                <tr class="header-row">
+                    <th class="text-center" width="30%" style="cursor: pointer" ng-click="sort('itemName')">
+                        Item Name
+                        <span ng-show="sortType == 'itemName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'itemName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="10%" style="cursor: pointer" ng-click="sort('category')">
+                        Category
+                        <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('organizationName')">
+                        Organization Name
+                        <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('quantitySupplied')">
+                        Quantity Remaining
+                        <span ng-show="sortType == 'quantitySupplied' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'quantitySupplied' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('expiryDate')">
+                        Expiry Date
+                        <span ng-show="sortType == 'expiryDate' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'expiryDate' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center">Tick to request</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage" ng-hide="supply.quantityRemaining === 0">
+                    <td ng-repeat="column in tableColumns" style="text-align:center">
+                        <div style="margin-top: 0.65em;">{{getObj(supply, column)}}</div>
+                    </td>
+                    <td class="text-center">
+                        <div>
+                            <input ng-model="supply.checked" ng-click="toggleSupply(supply)" ng-disabled="supply.user.id === userID || (supplierName !== '' && supply.user.organizationName !== supplierName)" type="checkbox" style="height: 20px; width: 20px;"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="!(supplyList | filter:proccessedSearchFilter
+                            ).length">
+                    <td colspan="{{tableColumns.length + 1}}" class="text-center">
+                        <h5>No results found</h5>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <div style="text-align:center">
+            <dir-pagination-controls template-url="Wheels4Food/webjars/angular-utils-pagination/0.7.0/dirPagination.tpl.html"></dir-pagination-controls>
+        </div>
+    </div>
 </div>
-<div class="index-table" search-filter="searchFilter">
-    <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
-        <thead>
-            <tr class="header-row">
-                <th class="text-center" width="30%" style="cursor: pointer" ng-click="sort('itemName')">
-                    Item Name
-                    <span ng-show="sortType == 'itemName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'itemName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                </th>
-                <th class="text-center" width="10%" style="cursor: pointer" ng-click="sort('category')">
-                    Category
-                    <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                </th>
-                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('organizationName')">
-                    Organization Name
-                    <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                </th>
-                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('quantitySupplied')">
-                    Quantity Remaining
-                    <span ng-show="sortType == 'quantitySupplied' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'quantitySupplied' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                </th>
-                <th class="text-center" width="15%" style="cursor: pointer" ng-click="sort('expiryDate')">
-                    Expiry Date
-                    <span ng-show="sortType == 'expiryDate' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                    <span ng-show="sortType == 'expiryDate' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
-                </th>
-                <th class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage" ng-hide="supply.quantityRemaining === 0">
-                <td ng-repeat="column in tableColumns" style="text-align:center">
-                    <div style="margin-top: 0.65em;">{{getObj(supply, column)}}</div>
-                </td>
-                <td class="text-center">
-                    <div>
-                        <button ng-disabled="supply.user.id === userID" ng-click="request(supply.id)" ng-class="{'btn btn-default cursor-disabled': supply.user.id === userID, 'btn btn-success': supply.user.id !== userID}">Request</button>
+<div ng-show="showRequestPage" style="padding-top: 20px;">
+    <h3 style="color: #003366; padding-bottom: 5px;">Requesting {{requestSupplyList.length}} item(s) from <b>{{supplierName}}</b></h3>
+    <div ng-form="outerForm">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="header-row">
+                    <th class="text-center" width="35%">Item Name</th>
+                    <th class="text-center">Minimum Request Quantity</th>
+                    <th class="text-center">Maximum Request Quantity</th>                
+                    <th class="text-center" width="12%">Request Amount</th>
+                    <th class="text-center" width="12%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="requestSupply in requestSupplyList">
+                    <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.itemName}}</div></td>
+                    <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.minimum}}</div></td>
+                    <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.maximum}}</div></td>
+                    <td style="text-align:center">
+                        <div ng-form="requestForm">
+                            <div ng-class="{'error-input': requestForm.quantityDemanded.$touched && requestForm.quantityDemanded.$invalid}">
+                                <input class="form-control" name="quantityDemanded" type="number" ng-model="requestSupply.quantityDemanded" min="{{requestSupply.minimum}}" max="{{requestSupply.maximum}}" style="text-align: center;" required custom-number/>                            
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align:center"><button class="btn btn-danger" ng-disabled="requestSupplyList.length === 1;" ng-class="{'cursor-disabled': requestSupplyList.length === 1}" ng-click="removeSupply(requestSupply)">Remove</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="error-message" ng-messages="outerForm.$error">
+            <div ng-message="required">The fields above are required.</div>
+        </div>
+        <div class="error-message" ng-messages="outerForm.$error">
+            <div ng-message="number">Please enter whole numbers only.</div>
+            <div ng-message="customNumber">Please enter whole numbers only.</div>
+            <div ng-message="min">Please enter numbers between Minimum and Maximum Request Quantity.</div>
+            <div ng-message="max">Please enter numbers between Minimum and Maximum Request Quantity.</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="col-sm-9" style="padding-top: 20px;"> 
+                <h4><b>Delivery Type</b></h4>
+                <input type="radio" ng-model="deliveryType" value="selfCollect" ng-click="showSelfCollect()"/> Self Collect<br/>   
+                <input type="radio" ng-model="deliveryType" value="volunteer" ng-click="showVolunteer()"/> Through Volunteers  
+            </div>
+        </div>        
+    </div>
+    <form name="selfCollectForm" novalidate>
+        <div class="row" ng-show="selfCollectOptions">
+            <div class="col-sm-4">
+                <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': selfCollectForm.deliveryDate.$touched && selfCollectForm.deliveryDate.$invalid}"> 
+                    <h4><b>Delivery Date (dd/mm/yyyy)</b></h4>
+                    <p class="input-group">
+                        <input type="text" class="form-control" ng-click="open($event)" readonly style="background-color: white; cursor: default;" datepicker-popup="{{format}}" ng-model="deliveryDate" name="deliveryDate" min-date="minDate" is-open="opened" datepicker-options="dateOptions" ng-click="test()" date-disabled="disabled(date, mode)" close-text="Close" custom-date/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
+                        </span>
+                    </p>
+                    <div class="error-message" ng-messages="selfCollectForm.deliveryDate.$error" ng-show="selfCollectForm.deliveryDate.$touched">
+                        <div style="margin-top: 5px;" ng-message="customDate">This field is required.</div>
                     </div>
+                </div>
+                <div class="col-sm-9" style="padding-top: 20px;" ng-show="showTimeslots"> 
+                    <h4><b>Timeslot</b></h4>
+                    <div ng-show="unavailableTimeslots.length === 6">There are no available timeslots on this date, please choose another date!</div>
+                    <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('9AM-10AM') !== -1"><input type="radio" ng-model="timeslot" value="9AM-10AM"/> 9AM-10AM<br/></div>
+                    <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('10AM-11AM') !== -1"><input type="radio" ng-model="timeslot" value="10AM-11AM"/> 10AM-11AM<br/></div>
+                    <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('11AM-12PM') !== -1"><input type="radio" ng-model="timeslot" value="11AM-12PM"/> 11AM-12PM<br/></div>
+                    <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('2PM-3PM') !== -1"><input type="radio" ng-model="timeslot" value="2PM-3PM"/> 2PM-3PM<br/></div>
+                    <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('3PM-4PM') !== -1"><input type="radio" ng-model="timeslot" value="3PM-4PM"/> 3PM-4PM<br/></div>
+                    <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('4PM-5PM') !== -1"><input type="radio" ng-model="timeslot" value="4PM-5PM"/> 4PM-5PM</div>
+                    <div class="error-message" style="padding-top: 10px;" ng-show="!timeslot">Please select 1 timeslot.</div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row" ng-show="volunteerOptions">
+        <div class="col-sm-7">
+            <div class="col-sm-9" style="padding-top: 20px;"> 
+                <h4><b>Preferred Collection Timeslots</b></h4>
+            </div>
+        </div>
+        <table style="width: 100%; margin-top: 20px;">
+            <tr>
+                <th></th>
+                <th class="schedule-header" ng-repeat="date in dates">{{date.value| date: 'EEE'}}<br>{{date.value| date:'dd/MM/yyyy'}}</th>
+            </tr>
+            <tr>
+                <th class="schedule-header">9AM-12PM</th>
+                <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
+                    <input type="checkbox" class="schedule-checkbox" ng-model="scheduleAM.value" ng-click="selectSlot(scheduleAM.value)"/>
                 </td>
             </tr>
-            <tr ng-if="!(supplyList | filter:proccessedSearchFilter).length">
-                <td colspan="{{tableColumns.length + 1}}" class="text-center">
-                    <h5>No results found</h5>
+            <tr>
+                <th class="schedule-header">2PM-5PM</th>
+                <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
+                    <input type="checkbox" class="schedule-checkbox" ng-model="schedulePM.value" ng-click="selectSlot(schedulePM.value)"/>
                 </td>
             </tr>
-        </tbody>
-    </table>
-</div>
-<div>
-    <div style="text-align:center">
-        <dir-pagination-controls template-url="Wheels4Food/webjars/angular-utils-pagination/0.7.0/dirPagination.tpl.html"></dir-pagination-controls>
+        </table>
+        <div class="error-message" ng-show="scheduleCount < 5">Please select at least 5 timeslots.</div>
+    </div>
+    <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
+        <div class="col-sm-offset-10 col-sm-2" style="padding-left: 40px;">
+            <button ng-click="request()" class="btn btn-primary" ng-disabled="(!selfCollectOptions && !volunteerOptions) || outerForm.$invalid || (volunteerOptions && scheduleCount < 5) || (selfCollectOptions && selfCollectForm.$invalid) || (selfCollectOptions && !timeslot)">Request</button>
+            <button ng-click="back()" class="btn btn-default">Back</button>
+        </div>
     </div>
 </div>

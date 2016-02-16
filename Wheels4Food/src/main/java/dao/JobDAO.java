@@ -67,7 +67,7 @@ public class JobDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Job> jobList = session.createCriteria(Job.class)
-                .createAlias("demand.supply.user", "supplier")
+                .createAlias("demand.supplier", "supplier")
                 .createAlias("demand.user", "requester")
                 .add(Restrictions.disjunction()
                         .add(Restrictions.eq("supplier.id", supplierID))

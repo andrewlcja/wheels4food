@@ -2,24 +2,28 @@
     <h3><b>Self Collection Details</b></h3>
     <table>
         <tr>
-            <th>Item Name</th>
-            <td class="dialog-padding">{{currentSelfCollection.demand.supply.itemName}}</td>
-        </tr>
-        <tr>
-            <th>Category</th>
-            <td class="dialog-padding">{{currentSelfCollection.demand.supply.category}}</td>
-        </tr>
-        <tr>
             <th>Supplying Organization</th>
-            <td class="dialog-padding">{{currentSelfCollection.demand.supply.user.organizationName}}</td>
+            <td class="dialog-padding">{{currentSelfCollection.demand.supplier.organizationName}}</td>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <td class="dialog-padding">{{currentSelfCollection.demand.supplier.address}}</td>
         </tr>
         <tr>
             <th>Requesting Organization</th>
             <td class="dialog-padding">{{currentSelfCollection.demand.user.organizationName}}</td>
         </tr>
         <tr>
-            <th>Quantity Requested</th>
-            <td class="dialog-padding">{{currentSelfCollection.demand.quantityDemanded}}</td>
+            <th>Address</th>
+            <td class="dialog-padding">{{currentSelfCollection.demand.user.address}}</td>
+        </tr>
+        <tr>
+            <th>Requested Item(s)</th>
+            <td class="dialog-padding">
+                <div ng-repeat="demandItem in currentDemandItemList">
+                    {{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}
+                </div>
+            </td>
         </tr>
         <tr>
             <th>Delivery Date</th>
