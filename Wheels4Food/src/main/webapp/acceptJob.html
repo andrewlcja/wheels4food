@@ -4,78 +4,64 @@
 <div cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
     <div ng-show="showJob">
         <div class="row">
-            <div class="col-sm-4">
-                <div class="col-sm-9" style="padding-top: 15px;"> 
+            <div class="col-sm-6">
+                <div class="col-sm-9" style="padding-top: 5px;"> 
                     <h4><b>Supplying Organization</b></h4>
                     <p>{{job.demand.supplier.organizationName}}</p>               
                 </div> 
+                <div class="col-sm-9" style="padding-top: 5px;"> 
+                    <h4><b>Address</b></h4>
+                    <p>{{job.demand.supplier.address}}, S({{job.demand.supplier.postalCode}})</p>               
+                </div>
                 <div class="col-sm-9" style="padding-top: 10px;"> 
-                    <h4><b>Receiving Organization</b></h4>
-                    <p>{{job.demand.user.organizationName}}</p>               
+                    <h4><b>Item(s)</b></h4>
+                    <p ng-repeat="demandItem in demandItemList">{{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}</p>               
+                </div> 
+                <div class="col-sm-9" style="padding-top: 10px;"> 
+                    <h4><b>Delivery Date</b></h4>
+                    <p>{{job.deliveryDate}}</p>               
+                </div> 
+                <div class="col-sm-9" style="padding-top: 10px;"> 
+                    <h4><b>Timeslot</b></h4>
+                    <p>{{job.timeslot}}</p>               
                 </div> 
                 <div class="col-sm-9" style="padding-top: 10px;"> 
                     <h4><b>Job Expiry Date</b></h4>
                     <p>{{job.expiryDate}}</p>               
                 </div> 
+            </div>
+            <div class="col-sm-6">
                 <div class="col-sm-9" style="padding-top: 10px;"> 
-                    <h4><b>Item(s)</b></h4>
-                    <p ng-repeat="demandItem in demandItemList">{{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}</p>               
+                    <h4><b>Receiving Organization</b></h4>
+                    <p>{{job.demand.user.organizationName}}</p>               
                 </div> 
+                <div class="col-sm-9" style="padding-top: 5px;"> 
+                    <h4><b>Address</b></h4>
+                    <p>{{job.demand.user.address}}, S({{job.demand.user.postalCode}})</p>               
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="col-sm-9" style="padding-top: 25px;"> 
-                    <h4><b>Step 1: </b>Choose a timeslot (shaded in green) below</h4>
-                </div>   
-            </div>
-            <div style="padding-top: 80px;">
-                <table style="width: 100%;">
-                    <tr>
-                        <th></th>
-                        <th class="schedule-header" ng-repeat="date in dates">{{date.value | date: 'EEE'}}<br>{{date.value | date:'dd/MM/yyyy'}}</th>
-                    </tr>
-                    <tr>
-                        <th class="schedule-header">9AM-12PM</th>
-                        <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-click="accept($index, '9AM-12PM')" ng-class="{'schedule-checked-accept': scheduleAM.value, 'schedule-checked-accept-select': scheduleAM.selected && scheduleAM.value}" ng-mouseover="toggleSchedule(scheduleAM)" ng-mouseleave="toggleSchedule(scheduleAM)">
-                            <div ng-show="scheduleAM.value">Select</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="schedule-header">2PM-5PM</th>
-                        <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-click="accept($index, '2PM-5PM')" ng-class="{'schedule-checked-accept': schedulePM.value, 'schedule-checked-accept-select': schedulePM.selected && schedulePM.value}" ng-mouseover="toggleSchedule(schedulePM)" ng-mouseleave="toggleSchedule(schedulePM)">
-                            <div ng-show="schedulePM.value">Select</div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="col-sm-8" ng-show="showStep2">
+        </div><hr>
+        <div class="row">            
+            <div class="col-sm-12">
                 <form name="acceptForm" novalidate>
-                    <div class="col-sm-9" style="padding-top: 25px;"> 
-                        <h4><b>Step 2: </b>Choose collection time and delivery time</h4>
-                    </div>   
                     <div class="col-sm-9" style="padding-top: 10px;"> 
-                        <h4><b>Timeslot</b></h4>
-                        <p>{{deliveryDate}}, {{period}}</p>               
-                    </div>
-                    <div class="col-sm-9" style="padding-top: 10px;"> 
-                        <h4><b>Collection Time</b></h4>
-                        <timepicker ng-model="collectionTime" name="collectionTime" hour-step="1" minute-step="1" show-meridian="true" custom-time></timepicker>              
-                        <div class="error-message" ng-show="showCollectionTimeError">
-                            <div style="margin-top: 5px;">Please enter a time between {{period}}.</div>
+                        <h4><b>Time I can collect items at {{job.demand.supplier.organizationName}}</b></h4>
+                        <timepicker ng-model="collectionTime" name="collectionTime" hour-step="1" minute-step="1" show-meridian="true"></timepicker>              
+                        <div class="error-message" ng-show="collectionTime < minTime || collectionTime > maxTime">
+                            <div style="margin-top: 5px;">Please enter a time within {{job.timeslot}}.</div>
                         </div>
-                        <div class="error-message" ng-show="showCollectionTimeError2">
-                            <div style="margin-top: 5px;">Please enter a time before the delivery time.</div>
+                        <div class="error-message" ng-show="collectionTime >= deliveryTime">
+                            <div style="margin-top: 5px;">Please enter a time earlier then the Delivery Time.</div>
                         </div>
                     </div>
                     <div class="col-sm-9" style="padding-top: 10px;"> 
-                        <h4><b>Delivery Time</b></h4>
-                        <timepicker ng-model="deliveryTime" hour-step="1" minute-step="1" show-meridian="true" custom-time-2></timepicker>   
-                        <div class="error-message" ng-show="showDeliveryTimeError">
-                            <div style="margin-top: 5px;">Please enter a time between {{period}}.</div>
+                        <h4><b>Time I can deliver items to {{job.demand.user.organizationName}}</b></h4>
+                        <timepicker ng-model="deliveryTime" hour-step="1" minute-step="1" show-meridian="true"></timepicker>   
+                        <div class="error-message" ng-show="deliveryTime < minTime || deliveryTime > maxTime">
+                            <div style="margin-top: 5px;">Please enter a time within {{job.timeslot}}.</div>
                         </div>
-                        <div class="error-message" ng-show="showDeliveryTimeError2">
-                            <div style="margin-top: 5px;">Please enter a time after the collection time.</div>
+                        <div class="error-message" ng-show="collectionTime >= deliveryTime">
+                            <div style="margin-top: 5px;">Please enter a time later then the Collection Time.</div>
                         </div>
                     </div>
                 </form>                
@@ -83,7 +69,7 @@
         </div>
         <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
             <div class="col-sm-offset-10" style="padding-left: 62px;">
-                <button ng-click="submit()" class="btn btn-primary" ng-disabled="showCollectionTimeError || showDeliveryTimeError || showCollectionTimeError2 || showDeliveryTimeError2 || !showStep2">Submit</button>
+                <button ng-click="submit()" class="btn btn-primary" ng-disabled="collectionTime < minTime || collectionTime > maxTime || deliveryTime < minTime || deliveryTime > maxTime || collectionTime >= deliveryTime">Submit</button>
                 <button ui-sref="Jobs.View" class="btn btn-default">Back</button>
             </div>
         </div>

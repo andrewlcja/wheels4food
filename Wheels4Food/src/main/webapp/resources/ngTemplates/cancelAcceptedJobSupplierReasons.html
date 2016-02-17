@@ -1,7 +1,7 @@
 <div class="ngdialog-message">
     <h3><b>Please select a reason for cancellation</b></h3>
     <div>
-        <input type="radio" ng-model="currentDemand.comments" value="Supplying VWO, {{currentDemand.supply.user.organizationName}}, is unable to collect the items at the specified timing"/> I am unable to collect the items at the specified timing <br/>
+        <input type="radio" ng-model="currentDemand.comments" value="Supplying VWO, {{currentDemand.supplier.organizationName}}, is unable to collect the items at the specified timing"/> I am unable to collect the items at the specified timing <br/>
         <input type="radio" ng-model="currentDemand.comments" value="Volunteer did not delivered the items at the specified timing"/> Volunteer did not deliver the items at the specified timing
     </div>
     <div class="error-message" ng-show="currentDemand.comments === ''">Please select at 1 option.</div>

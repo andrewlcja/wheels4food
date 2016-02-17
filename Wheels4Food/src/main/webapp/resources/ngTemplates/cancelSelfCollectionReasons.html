@@ -2,7 +2,7 @@
     <h3><b>Please select a reason for cancellation</b></h3>
     <div>
         <input type="radio" ng-model="currentSelfCollection.demand.comments" value="Requesting VWO, {{currentSelfCollection.demand.user.organizationName}}, is unable to collect the items at the specified timing"/> I am unable to collect the items at the specified timing <br/>        
-        <input type="radio" ng-model="currentSelfCollection.demand.comments" value="Supplying VWO, {{currentSelfCollection.demand.supply.user.organizationName}}, did not show up at the specified timing"/> {{currentSelfCollection.demand.supply.user.organizationName}} did not show up at the specified timing
+        <input type="radio" ng-model="currentSelfCollection.demand.comments" value="Supplying VWO, {{currentSelfCollection.demand.supplier.organizationName}}, did not show up at the specified timing"/> {{currentSelfCollection.demand.supplier.organizationName}} did not show up at the specified timing
     </div>
     <div class="error-message" ng-show="currentSelfCollection.demand.comments === ''">Please select at 1 option.</div>
     <div class="col-sm-offset-8" style="padding-top: 20px; padding-left: 20px;">

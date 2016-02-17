@@ -2,18 +2,19 @@
     'use strict';
     angular
             .module('Wheels4Food.PendingApprovals')
-            .controller('PendingApprovalsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams) {
+            .controller('PendingApprovalsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams', '$filter',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams, $filter) {
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
 
-                    $scope.selectSlot = function (value) {
-                        if (value) {
-                            $scope.scheduleCount++;
-                        } else {
-                            $scope.scheduleCount--;
-                        }
+                    $scope.selectSlot = function (date, time) {
+                        $scope.selectedDate = $filter('date')(date, 'dd/MM/yyyy');
+                        $scope.selectedTimeslot = time;
                     };
+                    
+                    $scope.timeslot = {
+                        'choice': ''
+                    }
 
                     //default sort
                     $scope.sortType = 'itemName';
@@ -146,34 +147,18 @@
                             }
 
                             ngDialog.openConfirm({
-                                template: '/Wheels4Food/resources/ngTemplates/approveRequestPrompt.html',
+                                template: '/Wheels4Food/resources/ngTemplates/approveJobRequestPrompt.html',
                                 className: 'ngdialog-theme-default dialog-approve-request-2',
                                 scope: $scope
                             }).then(function () {
-                                var combinedSchedule = '';
-
-                                for (var i = 0; i < 10; i++) {
-                                    if ($scope.scheduleAMList[i].value) {
-                                        combinedSchedule += '1';
-                                    } else {
-                                        combinedSchedule += '0';
-                                    }
-
-                                    if ($scope.schedulePMList[i].value) {
-                                        combinedSchedule += '1';
-                                    } else {
-                                        combinedSchedule += '0';
-                                    }
-                                }
-
                                 $http({
                                     url: api.endpoint + 'CreateJobRequest',
                                     method: 'POST',
                                     data: {
                                         'demandID': pendingApproval.id,
-                                        'schedule': combinedSchedule,
-                                        'comments': comment,
-                                        'userID': pendingApproval.user.id
+                                        'userID': pendingApproval.user.id,
+                                        'deliveryDate': $scope.selectedDate,
+                                        'timeslot': $scope.selectedTimeslot
                                     },
                                     headers: {
                                         'Content-Type': 'application/json',

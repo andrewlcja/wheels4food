@@ -4,29 +4,32 @@
         <tr>
             <th>Volunteer Organization</th>
             <td class="dialog-padding">{{currentJob.user.organizationName}}</td>
-            <th style="padding-left: 40px;">Receiving Organization</th>
+            <th style="padding-left: 100px;">Receiving Organization</th>
             <td class="dialog-padding">{{currentJob.demand.user.organizationName}}</td>
         </tr>
         <tr>
             <th>Volunteer Name</th>
             <td class="dialog-padding">{{currentJob.user.pocName}}</td>
-            <th style="padding-left: 40px;">Point of Contact Name</th>
+            <th style="padding-left: 100px;">Point of Contact</th>
             <td class="dialog-padding">{{currentJob.demand.user.pocName}}</td>
         </tr>
         <tr>
-            <th>Volunteer Contact Number</th>
+            <th>Contact Number</th>
             <td class="dialog-padding">{{currentJob.user.pocNumber}}</td>
-            <th style="padding-left: 40px;">Point of Contact Number</th>
+            <th style="padding-left: 100px;">Contact Number</th>
             <td class="dialog-padding">{{currentJob.demand.user.pocNumber}}</td>
         </tr>
-        <tr><td><br/></td></tr>        
         <tr>
-            <th>Quantity</th>
-            <td class="dialog-padding">{{currentJob.demand.quantityDemanded}}</td>
+            <th style="vertical-align: top; padding-top: 20px;">Requested Item(s)</th>
+            <td class="dialog-padding" style="padding-top: 20px;">
+                <div ng-repeat="demandItem in currentDemandItemList">
+                    {{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}
+                </div>
+            </td>
         </tr>
         <tr>
-            <th>Delivery Date</th>
-            <td class="dialog-padding">{{currentJob.deliveryDate}}</td>
+            <th style="padding-top: 20px;">Delivery Date</th>
+            <td class="dialog-padding" style="padding-top: 20px;">{{currentJob.deliveryDate}}</td>
         </tr>
         <tr>
             <th>Collection Time</th>
@@ -35,6 +38,10 @@
         <tr>
             <th>Delivery Time</th>
             <td class="dialog-padding">{{currentJob.deliveryTime}}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td class="dialog-padding">{{currentJob.status}}</td>
         </tr>
     </table>    
     <div class="ngdialog-buttons" style="padding-top: 20px;">

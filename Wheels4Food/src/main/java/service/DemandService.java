@@ -142,8 +142,8 @@ public class DemandService {
                     errorList.add("Invalid Preferred Delivery Date");
                 }
             } else {
-                if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 5) {
-                    errorList.add("A minimum of 5 timeslots must be selected.");
+                if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 3) {
+                    errorList.add("A minimum of 3 timeslots must be selected.");
                 }
             }
 
@@ -487,6 +487,10 @@ public class DemandService {
 
     public List<Demand> getCompletedDemandListBySupplierIdRequest(int supplierID) throws Exception {
         return demandDAO.getCompletedDemandListBySupplierId(supplierID);
+    }
+    
+    public List<Demand> getApprovedDemandListBySupplierIdRequest(int supplierID) throws Exception {
+        return demandDAO.getApprovedDemandListBySupplierId(supplierID);
     }
     
     public List<DemandItem> getDemandItemListRequest() throws Exception {

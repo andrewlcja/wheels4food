@@ -66,7 +66,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['demand.supplier.organizationName', 'demand.user.organizationName'];
+                    $scope.tableColumns = ['deliveryDate', 'collectionTime', 'deliveryTime'];
 
 
                     var indexPromise = $http({

@@ -1,0 +1,68 @@
+<div class="container">
+    <div class="page-header">
+        <h1 style="color: #003366;">Approved Requests</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 pull-left">
+            <div class="input-group">
+                <input type="text" ng-model="searchFilter" class="form-control" placeholder="Search..."/>
+                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+            </div>
+        </div>    
+    </div>
+    <div class="index-table" search-filter="searchFilter">
+        <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+            <thead>
+                <tr class="header-row">
+                    <th class="text-center" width="25%" style="cursor: pointer" ng-click="sort('organizationName')">
+                        Requesting Organization
+                        <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" style="cursor: pointer" ng-click="sort('category')">
+                        Requested Item(s)
+                        <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>              
+                    <th class="text-center" width="18%">Status</th>
+                    <th class="text-center" width="15%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
+                    <td ng-repeat="column in tableColumns" style="text-align:center; vertical-align: middle;">
+                        <div>{{getObj(demand, column)}}</div>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <div ng-repeat="demandItem in demandItemList" ng-show="demandItem.demand.id === demand.id">{{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}} <b style="color: darkblue;">(Amount Left: {{demandItem.supply.quantitySupplied}})</b></div>
+                    </td>
+                    <td class="text-center" style="vertical-align: middle;">
+                        <div ng-show="demand.status === 'Job Created'"><button class="btn btn-primary btn-block" ng-click="viewJob(demand)" tooltip-placement="top" tooltip="Job Created - Click to view job details.">Job Created</button></div>                    
+                        <div ng-show="demand.status === 'Self Collection Created'"><button class="btn btn-primary btn-block" ng-click="viewSelfCollection(demand)" tooltip-placement="top" tooltip="Self Collection Created - Click to view more details.">Self Collection Created</button></div>
+                        <div ng-show="demand.status === 'Job Accepted'"><button class="btn btn-success btn-block" ng-click="viewAcceptedJob(demand)" tooltip-placement="top" tooltip="Job Accepted - Click to view job details.">Job Accepted</button></div>
+                        <div ng-show="demand.status === 'Job Completed'"><button class="btn btn-default btn-block" style="cursor: default;">Job Completed</button></div>                    
+                        <div ng-show="demand.status === 'Job Cancelled'"><button class="btn btn-danger btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Job cancelled - {{demand.comments}}">Job Cancelled</button></div>                    
+                        <div ng-show="demand.status === 'Self Collection Cancelled'"><button class="btn btn-danger btn-block" style="cursor: default;" tooltip-placement="top" tooltip="Self Collection cancelled - {{demand.comments}}">Self Collection Cancelled</button></div>
+                        <div ng-show="demand.status === 'Self Collection Completed'"><button class="btn btn-default btn-block" style="cursor: default;">Self Collection Completed</button></div>  
+                    </td>
+                    <td class="text-center" style="vertical-align: middle;">
+                        <div>
+                            <span ng-hide="demand.status === 'Job Completed' || demand.status === 'Job Cancelled' || demand.status === 'Self Collection Completed' || demand.status === 'Self Collection Cancelled'" class="action-item fa fa-eye fa-lg" ng-click="view(demand)" tooltip-placement="top" tooltip="View"></span>
+                            <span ng-show="demand.status === 'Self Collection Created' || demand.status === 'Job Created' || demand.status === 'Job Accepted'" class="action-item fa fa-times fa-lg" ng-click="cancel(demand)" tooltip-placement="top" tooltip="Cancel"></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="!(demandList | filter:proccessedSearchFilter).length">
+                    <td colspan="{{tableColumns.length + 3}}" class="text-center">
+                        <h5>No results found</h5>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <div style="text-align:center">
+            <dir-pagination-controls template-url="Wheels4Food/webjars/angular-utils-pagination/0.7.0/dirPagination.tpl.html"></dir-pagination-controls>
+        </div>
+    </div>
+</div>

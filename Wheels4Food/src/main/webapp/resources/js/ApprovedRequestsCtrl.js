@@ -1,67 +1,11 @@
 (function () {
     'use strict';
     angular
-            .module('Wheels4Food.Inventory')
-            .controller('InventoryDemandCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams) {
+            .module('Wheels4Food.ApprovedRequests')
+            .controller('ApprovedRequestsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams', '$filter',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams, $filter) {
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
-
-                    //default sort
-                    $scope.sortType = 'itemName';
-
-                    $scope.sort = function (sortType) {
-                        $scope.sortType = sortType;
-                        $scope.sortReverse = !$scope.sortReverse;
-                    };
-
-                    $scope.sortBy = function (demand) {
-                        if ($scope.sortType === 'organizationName') {
-                            return demand['user']['organizationName'];
-                        } else if ($scope.sortType === 'itemName') {
-                            return demand['supply']['itemName'];
-                        } else if ($scope.sortType === 'category') {
-                            return demand['supply']['category'];
-                        } else if ($scope.sortType === 'expiryDate') {
-                            if (supply.expiryDate === 'NA') {
-                                return new Date('1000', '01', '01')
-                            }
-
-                            var parts = demand.supply.expiryDate.split('/');
-                            var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
-                            return date;
-                        }
-                        return demand[$scope.sortType];
-                    };
-
-                    //setup searchFilter options
-                    var parseSplitArray = function (input, sequenceArray) {
-                        var proccessed = {};
-                        if (input === null || input === undefined) {
-                            proccessed = {};
-                        } else {
-                            proccessed = {
-                                'supplier': {
-                                    organizationName: input
-                                }
-                            };
-                        }
-
-                        return proccessed;
-                    };
-
-                    //retrieve details
-                    $scope.getObj = function (component, column) {
-                        var columnPath = column.split(".");
-                        var obj = component;
-                        for (var y = 0; y < columnPath.length; y++) {
-                            if (!obj[columnPath[y]]) {
-                                return '';
-                            }
-                            obj = obj[columnPath[y]];
-                        }
-                        return obj;
-                    };
 
                     $scope.view = function (demand) {
                         $http({
@@ -175,18 +119,10 @@
                         }
                     };
 
-                    $scope.selectSlot = function (value) {
-                        if (value) {
-                            $scope.scheduleCount++;
-                        } else {
-                            $scope.scheduleCount--;
-                        }
-                    };
-
                     $scope.cancel = function (demand) {
                         $scope.currentDemand = demand;
-                        var index = $scope.demandList.indexOf(demand);
-
+                        demand.comments = '';
+                        
                         $http({
                             url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + demand.id,
                             method: 'GET'
@@ -194,22 +130,39 @@
                             $scope.currentDemandItemList = response.data;
                         });
 
-                        if (demand.status === 'Pending' || demand.status === 'Rejected') {
-                            ngDialog.openConfirm({
-                                template: '/Wheels4Food/resources/ngTemplates/cancelDemandPrompt.html',
-                                className: 'ngdialog-theme-default dialog-generic-2',
-                                scope: $scope
-                            }).then(function () {
-                                $http({
-                                    url: api.endpoint + 'DeleteDemandRequest/' + demand.id,
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    }
-                                }).then(function (response) {
-                                    if (response.data.isDeleted) {
-                                        $scope.demandList.splice(index, 1);
-                                    }
+                        if (demand.status === 'Self Collection Created') {
+                            $http({
+                                url: api.endpoint + 'GetSelfCollectionByDemandIdRequest/' + demand.id,
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then(function (response) {
+                                $scope.currentSelfCollection = response.data;
+
+                                ngDialog.openConfirm({
+                                    template: '/Wheels4Food/resources/ngTemplates/cancelSelfCollectionPrompt.html',
+                                    className: 'ngdialog-theme-default dialog-generic-2',
+                                    scope: $scope
+                                }).then(function () {
+                                    ngDialog.openConfirm({
+                                        template: '/Wheels4Food/resources/ngTemplates/cancelSelfCollectionSupplierReasons.html',
+                                        className: 'ngdialog-theme-default dialog-generic-2',
+                                        scope: $scope
+                                    }).then(function () {
+                                        $http({
+                                            url: api.endpoint + 'CancelSelfCollectionByDemandIdRequest',
+                                            method: 'PUT',
+                                            data: $scope.currentSelfCollection.demand,
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            }
+                                        }).then(function (response) {
+                                            if (response.data.isCancelled) {
+                                                $state.go($state.current, $stateParams, {reload: true, inherit: false});
+                                            }
+                                        });
+                                    });
                                 });
                             });
                         } else if (demand.status === 'Job Created') {
@@ -221,8 +174,8 @@
                                 scope: $scope
                             }).then(function () {
                                 ngDialog.openConfirm({
-                                    template: '/Wheels4Food/resources/ngTemplates/cancelCreatedJobReasons.html',
-                                    className: 'ngdialog-theme-default dialog-generic',
+                                    template: '/Wheels4Food/resources/ngTemplates/cancelCreatedJobSupplierReasons.html',
+                                    className: 'ngdialog-theme-default dialog-generic-2',
                                     scope: $scope
                                 }).then(function (reason) {
                                     if (demand.comments === 'other') {
@@ -248,12 +201,12 @@
 
                             ngDialog.openConfirm({
                                 template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobPrompt.html',
-                                className: 'ngdialog-theme-default dialog-generic',
+                                className: 'ngdialog-theme-default dialog-generic-2',
                                 scope: $scope
                             }).then(function () {
                                 ngDialog.openConfirm({
-                                    template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobReasons.html',
-                                    className: 'ngdialog-theme-default dialog-generic',
+                                    template: '/Wheels4Food/resources/ngTemplates/cancelAcceptedJobSupplierReasons.html',
+                                    className: 'ngdialog-theme-default dialog-generic-2',
                                     scope: $scope
                                 }).then(function () {
                                     $http({
@@ -270,119 +223,63 @@
                                     });
                                 });
                             });
-                        } else if (demand.status === 'Self Collection Created') {
-                            $http({
-                                url: api.endpoint + 'GetSelfCollectionByDemandIdRequest/' + demand.id,
-                                method: 'GET',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                }
-                            }).then(function (response) {
-                                $scope.currentSelfCollection = response.data;
-
-                                ngDialog.openConfirm({
-                                    template: '/Wheels4Food/resources/ngTemplates/cancelSelfCollectionPrompt.html',
-                                    className: 'ngdialog-theme-default dialog-generic-2',
-                                    scope: $scope
-                                }).then(function () {
-                                    ngDialog.openConfirm({
-                                        template: '/Wheels4Food/resources/ngTemplates/cancelSelfCollectionReasons.html',
-                                        className: 'ngdialog-theme-default dialog-generic-2',
-                                        scope: $scope
-                                    }).then(function () {
-                                        $http({
-                                            url: api.endpoint + 'CancelSelfCollectionByDemandIdRequest',
-                                            method: 'PUT',
-                                            data: $scope.currentSelfCollection.demand,
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            }
-                                        }).then(function (response) {
-                                            if (response.data.isCancelled) {
-                                                $state.go($state.current, $stateParams, {reload: true, inherit: false});
-                                            }
-                                        });
-                                    });
-                                });
-                            });
                         }
                     };
 
-                    $scope.complete = function (demand) {
-                        $scope.currentDemand = demand;
+                    //setup searchFilter options
+                    var parseSplitArray = function (input, sequenceArray) {
+                        var proccessed = {};
 
-                        if (demand.status === 'Job Accepted') {
-                            ngDialog.openConfirm({
-                                template: '/Wheels4Food/resources/ngTemplates/completeJobPrompt.html',
-                                className: 'ngdialog-theme-default dialog-generic',
-                                scope: $scope
-                            }).then(function () {
-                                $http({
-                                    url: api.endpoint + 'CompleteJobByDemandIdRequest/' + demand.id,
-                                    method: 'PUT',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    }
-                                }).then(function (response) {
-                                    if (response.data.isCompleted) {
-                                        $state.go($state.current, $stateParams, {reload: true, inherit: false});
-                                    }
-                                });
-                            });
-                        } else if (demand.status === 'Self Collection Created') {
-                            ngDialog.openConfirm({
-                                template: '/Wheels4Food/resources/ngTemplates/completeSelfCollectionPrompt.html',
-                                className: 'ngdialog-theme-default dialog-generic',
-                                scope: $scope
-                            }).then(function () {
-                                $http({
-                                    url: api.endpoint + 'CompleteSelfCollectionByDemandIdRequest/' + demand.id,
-                                    method: 'PUT',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    }
-                                }).then(function (response) {
-                                    if (response.data.isCompleted) {
-                                        $state.go($state.current, $stateParams, {reload: true, inherit: false});
-                                    }
-                                });
-                            });
-                        }
-                    };
-
-                    //counts the days selected
-                    $scope.dayCount = 0;
-                    $scope.selectDay = function (day) {
-                        if (day) {
-                            $scope.dayCount++;
+                        if (input === null || input === undefined) {
+                            proccessed = {};
                         } else {
-                            $scope.dayCount--;
+                            proccessed = {
+                                'user': {
+                                    organizationName: input
+                                }
+                            };
                         }
+
+                        return proccessed;
+                    };
+
+                    //retrieve details
+                    $scope.getObj = function (component, column) {
+                        var columnPath = column.split(".");
+                        var obj = component;
+                        for (var y = 0; y < columnPath.length; y++) {
+                            if (!obj[columnPath[y]]) {
+                                return '';
+                            }
+                            obj = obj[columnPath[y]];
+                        }
+
+                        return obj;
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['supplier.organizationName'];
+                    $scope.tableColumns = ['user.organizationName'];
+
 
                     var indexPromise = $http({
-                        url: api.endpoint + 'GetDemandListByUserIdRequest/' + userID,
+                        url: api.endpoint + 'GetApprovedDemandListBySupplierIdRequest/' + userID,
                         method: 'GET'
                     });
 
                     $timeout(function () {
                         $http({
-                            url: api.endpoint + 'GetDemandItemListByRequesterIdRequest/' + userID,
+                            url: api.endpoint + 'GetDemandItemListBySupplierIdRequest/' + userID,
                             method: 'GET'
                         }).then(function (response) {
                             $scope.demandItemList = response.data;
 
                             indexPromise.then(function (response) {
                                 $scope.demandList = response.data;
-                                console.log(response);
                                 $scope.currentPage = 1;
                                 $scope.pageSize = 10;
 
                                 $scope.$watch('searchFilter', function () {
-                                    $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['supply.itemName']);
+                                    $scope.proccessedSearchFilter = parseSplitArray($scope.searchFilter, ['itemName']);
                                 });
                             });
                         });
@@ -390,7 +287,7 @@
 
                     //cgBusy configuration
                     $scope.delay = 1;
-                    $scope.minDuration = 820;
+                    $scope.minDuration = 900;
                     $scope.message = 'Please Wait...';
                     $scope.backdrop = true;
                     $scope.promise = [indexPromise];

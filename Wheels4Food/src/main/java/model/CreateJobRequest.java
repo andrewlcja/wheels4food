@@ -11,33 +11,34 @@ package model;
  */
 public class CreateJobRequest {
     private int demandID;
-    private String schedule;
-    private String comments;
     private int userID;
+    private String deliveryDate;
+    private String timeslot;
+    
 
     public CreateJobRequest() {
     }
 
-    public CreateJobRequest(int demandID, String schedule, String comments, int userID) {
+    public CreateJobRequest(int demandID, int userID, String deliveryDate, String timeslot) {
         this.demandID = demandID;
-        this.schedule = schedule;
-        this.comments = comments;
         this.userID = userID;
+        this.deliveryDate = deliveryDate;
+        this.timeslot = timeslot;
     }
 
     public int getDemandID() {
         return demandID;
     }
 
-    public String getSchedule() {
-        return schedule;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
     public int getUserID() {
         return userID;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public String getTimeslot() {
+        return timeslot;
     }
 }

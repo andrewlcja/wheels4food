@@ -32,15 +32,6 @@ public class Job implements Serializable {
     @JoinColumn(name = "demandID")
     private Demand demand;
     
-    @Column(name = "schedule")
-    private String schedule;
-    
-    @Column(name = "expiryDate")
-    private String expiryDate;
-    
-    @Column(name = "status")
-    private String status;
-    
     @ManyToOne(optional = false)
     @JoinColumn(name = "userID")
     private User user;
@@ -48,6 +39,15 @@ public class Job implements Serializable {
     @Column(name = "deliveryDate")
     private String deliveryDate;
     
+    @Column(name = "timeslot")
+    private String timeslot;
+    
+    @Column(name = "expiryDate")
+    private String expiryDate;
+    
+    @Column(name = "status")
+    private String status; 
+        
     @Column(name = "collectionTime")
     private String collectionTime;
     
@@ -57,13 +57,13 @@ public class Job implements Serializable {
     public Job() {        
     }
 
-    public Job(Demand demand, String schedule, String expiryDate, String status, User user, String deliveryDate, String collectionTime, String deliveryTime) {
+    public Job(Demand demand, User user, String deliveryDate, String timeslot, String expiryDate, String status, String collectionTime, String deliveryTime) {
         this.demand = demand;
-        this.schedule = schedule;
-        this.expiryDate = expiryDate;
-        this.status = status;
         this.user = user;
         this.deliveryDate = deliveryDate;
+        this.timeslot = timeslot;
+        this.expiryDate = expiryDate;
+        this.status = status;
         this.collectionTime = collectionTime;
         this.deliveryTime = deliveryTime;
     }
@@ -76,8 +76,16 @@ public class Job implements Serializable {
         return demand;
     }
 
-    public String getSchedule() {
-        return schedule;
+    public User getUser() {
+        return user;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public String getTimeslot() {
+        return timeslot;
     }
 
     public String getExpiryDate() {
@@ -88,14 +96,6 @@ public class Job implements Serializable {
         return status;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public String getDeliveryDate() {
-        return deliveryDate;
-    }
-
     public String getCollectionTime() {
         return collectionTime;
     }
@@ -103,7 +103,7 @@ public class Job implements Serializable {
     public String getDeliveryTime() {
         return deliveryTime;
     }
-
+   
     public void setStatus(String status) {
         this.status = status;
     }
