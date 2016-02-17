@@ -106,6 +106,20 @@ public class DemandController {
         return demandList;
     }
     
+    @RequestMapping(value = "/GetApprovedDemandListBySupplierIdRequest/{supplierID}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Demand> getApprovedDemandListBySupplierIdRequest(@PathVariable("supplierID") int supplierID) {
+        List<Demand> demandList = null;
+
+        try {
+            demandList = demandService.getApprovedDemandListBySupplierIdRequest(supplierID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return demandList;
+    }
+    
     @RequestMapping(value = "/GetDemandItemListByDemandIdRequest/{demandID}", method = RequestMethod.GET)
     public @ResponseBody
     List<DemandItem> getDemandItemListByDemandIdRequest(@PathVariable("demandID") int demandID) {

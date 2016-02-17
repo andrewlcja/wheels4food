@@ -47,7 +47,6 @@
                                 data: {
                                     'jobID': jobID,
                                     'userID': userID,
-                                    'deliveryDate': $scope.deliveryDate,
                                     'collectionTime': collectionTime,
                                     'deliveryTime': deliveryTime
                                 },
@@ -79,49 +78,31 @@
                                 $scope.demandItemList = response.data;
                                 $scope.showJob = true;
 
-                                var parts = $scope.job.expiryDate.split("/");
-                                var expiryDate = new Date(parseInt(parts[2], 10),
-                                        parseInt(parts[1], 10) - 1,
-                                        parseInt(parts[0], 10));
-
-                                $scope.dates = [];
-
-                                for (var i = 0; i < 10; i++) {
-                                    if (expiryDate.getDay() !== 0 && expiryDate.getDay() !== 6) {
-                                        $scope.dates.unshift({'value': new Date(expiryDate)});
-                                    } else {
-                                        i--;
-                                    }
-
-                                    expiryDate.setDate(expiryDate.getDate() - 1);
-                                }
-
-                                $scope.scheduleAMList = [];
-                                $scope.schedulePMList = [];
-                                $scope.disabledAMList = [];
-                                $scope.disabledPMList = [];
-                                $scope.scheduleCount = 0;
-
-                                for (var i = 0; i < $scope.job.schedule.length; i++) {
-                                    var value = $scope.job.schedule.charAt(i);
-
-                                    if (i % 2 === 0) {
-                                        if (value === '0') {
-                                            $scope.scheduleAMList.push({'value': false});
-                                            $scope.disabledAMList.push(i / 2);
-                                        } else {
-                                            $scope.scheduleAMList.push({'value': true});
-                                            $scope.scheduleCount++;
-                                        }
-                                    } else {
-                                        if (value === '0') {
-                                            $scope.schedulePMList.push({'value': false});
-                                            $scope.disabledPMList.push(Math.floor(i / 2));
-                                        } else {
-                                            $scope.schedulePMList.push({'value': true});
-                                            $scope.scheduleCount++;
-                                        }
-                                    }
+                                $scope.collectionTime = new Date();
+                                $scope.deliveryTime = new Date();
+                                $scope.minTime = new Date();
+                                $scope.maxTime = new Date();
+                                
+                                if ($scope.job.timeslot === '9AM-12PM') {
+                                    $scope.collectionTime.setHours(9);
+                                    $scope.collectionTime.setMinutes(0);
+                                    $scope.deliveryTime.setHours(12);
+                                    $scope.deliveryTime.setMinutes(0);
+                                    
+                                    $scope.minTime.setHours(9);
+                                    $scope.minTime.setMinutes(0);
+                                    $scope.maxTime.setHours(12);
+                                    $scope.maxTime.setMinutes(0);
+                                } else {
+                                    $scope.collectionTime.setHours(14);
+                                    $scope.collectionTime.setMinutes(0);
+                                    $scope.deliveryTime.setHours(17);
+                                    $scope.deliveryTime.setMinutes(0);
+                                    
+                                    $scope.minTime.setHours(14);
+                                    $scope.minTime.setMinutes(0);
+                                    $scope.maxTime.setHours(17);
+                                    $scope.maxTime.setMinutes(0);
                                 }
                             });
                         });

@@ -46,7 +46,7 @@
             <tbody>
                 <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage" ng-hide="supply.quantityRemaining === 0">
                     <td ng-repeat="column in tableColumns" style="text-align:center">
-                        <div style="margin-top: 0.65em;">{{getObj(supply, column)}}</div>
+                        <div style="margin-top: 0.45em;">{{getObj(supply, column)}}</div>
                     </td>
                     <td class="text-center">
                         <div>
@@ -54,8 +54,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr ng-if="!(supplyList | filter:proccessedSearchFilter
-                            ).length">
+                <tr ng-if="!(supplyList | filter:proccessedSearchFilter).length">
                     <td colspan="{{tableColumns.length + 1}}" class="text-center">
                         <h5>No results found</h5>
                     </td>
@@ -170,11 +169,11 @@
                 </td>
             </tr>
         </table>
-        <div class="error-message" ng-show="scheduleCount < 5">Please select at least 5 timeslots.</div>
+        <div class="error-message" ng-show="scheduleCount < 3">Please select at least 3 timeslots.</div>
     </div>
     <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
         <div class="col-sm-offset-10 col-sm-2" style="padding-left: 40px;">
-            <button ng-click="request()" class="btn btn-primary" ng-disabled="(!selfCollectOptions && !volunteerOptions) || outerForm.$invalid || (volunteerOptions && scheduleCount < 5) || (selfCollectOptions && selfCollectForm.$invalid) || (selfCollectOptions && !timeslot)">Request</button>
+            <button ng-click="request()" class="btn btn-primary" ng-disabled="(!selfCollectOptions && !volunteerOptions) || outerForm.$invalid || (volunteerOptions && scheduleCount < 3) || (selfCollectOptions && selfCollectForm.$invalid) || (selfCollectOptions && !timeslot)">Request</button>
             <button ng-click="back()" class="btn btn-default">Back</button>
         </div>
     </div>

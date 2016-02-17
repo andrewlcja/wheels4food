@@ -112,12 +112,12 @@
                             </td>
                         </tr>
                     </table>
-                    <div class="error-message" ng-show="scheduleCount < 5">Please select at least 5 timeslots.</div>
+                    <div class="error-message" ng-show="scheduleCount < 3">Please select at least 3 timeslots.</div>
                 </div>
             </form>
             <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
                 <div class="col-sm-offset-10 col-sm-2">
-                    <button ng-click="update()" class="btn btn-primary" ng-disabled="editForm.$invalid || (demand.preferredSchedule !== 'NA' && scheduleCount < 5)">Update</button>
+                    <button ng-click="update()" class="btn btn-primary" ng-disabled="editForm.$invalid || (demand.preferredSchedule !== 'NA' && scheduleCount < 3)">Update</button>
                     <button ui-sref="PendingApprovals" class="btn btn-default">Back</button>
                 </div>
             </div>

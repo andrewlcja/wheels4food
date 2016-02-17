@@ -10,6 +10,7 @@ import model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,7 +39,8 @@ public class UserDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<User> userList = session.createCriteria(User.class)
-                .add(Restrictions.eq("role", role)).list();
+                .add(Restrictions.eq("role", role))
+                .addOrder(Order.asc("organizationName")).list();
         tx.commit();
         session.close();
         return userList;

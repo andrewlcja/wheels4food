@@ -4,26 +4,30 @@
         <tr>
             <th>Supplying Organization</th>
             <td class="dialog-padding">{{currentJob.demand.supplier.organizationName}}</td>
-        </tr>
-        <tr>
-            <th>Address</th>
-            <td class="dialog-padding">{{currentJob.demand.supplier.address}}</td>
-        </tr>
-        <tr>
-            <th>Receiving Organization</th>
+            <th style="padding-left: 100px;">Receiving Organization</th>
             <td class="dialog-padding">{{currentJob.demand.user.organizationName}}</td>
         </tr>
         <tr>
             <th>Address</th>
-            <td class="dialog-padding">{{currentJob.demand.user.address}}</td>
+            <td class="dialog-padding">{{currentJob.demand.supplier.address}}, S({{currentJob.demand.supplier.postalCode}})</td>
+            <th style="padding-left: 100px;">Address</th>
+            <td class="dialog-padding">{{currentJob.demand.user.address}}, S({{currentJob.demand.user.postalCode}})</td>
         </tr>
         <tr>
-            <th>Requested Item(s)</th>
-            <td class="dialog-padding">
+            <th style="vertical-align: top; padding-top: 20px;">Requested Item(s)</th>
+            <td class="dialog-padding" style="padding-top: 20px;">
                 <div ng-repeat="demandItem in currentDemandItemList">
                     {{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}}
                 </div>
             </td>
+        </tr>
+        <tr>
+            <th style="padding-top: 20px;">Delivery Date</th>
+            <td class="dialog-padding" style="padding-top: 20px;">{{currentJob.deliveryDate}}</td>
+        </tr>
+        <tr>
+            <th>Timeslot</th>
+            <td class="dialog-padding">{{currentJob.timeslot}}</td>
         </tr>
         <tr>
             <th>Job Expiry Date</th>
@@ -33,30 +37,7 @@
             <th>Status</th>
             <td class="dialog-padding">{{currentJob.status}}</td>
         </tr>
-        <tr>
-            <th>Schedule</th>
-        </tr>
     </table>
-    <div>
-        <table style="width: 100%; margin-top: 20px;">
-            <tr>
-                <th></th>
-                <th class="schedule-header" ng-repeat="date in dates">{{date.value | date: 'EEE'}}<br>{{date.value | date:'dd/MM/yyyy'}}</th>
-            </tr>
-            <tr>
-                <th class="schedule-header">9AM-12PM</th>
-                <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
-                    <i class="fa fa-check fa-lg" ng-hide="disabledAMList.indexOf($index) !== -1"></i>
-                </td>
-            </tr>
-            <tr>
-                <th class="schedule-header">2PM-5PM</th>
-                <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
-                    <i class="fa fa-check fa-lg" ng-hide="disabledPMList.indexOf($index) !== -1"></i>
-                </td>
-            </tr>
-        </table>
-    </div>
     <div class="ngdialog-buttons" style="padding-top: 20px;">
         <button type="button" class="ngdialog-button ngdialog-button-default" ng-click="closeThisDialog()">Close</button>
     </div>

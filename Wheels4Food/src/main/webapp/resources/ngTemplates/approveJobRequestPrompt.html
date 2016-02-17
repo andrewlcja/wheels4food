@@ -14,7 +14,7 @@
             </td>
         </tr>
     </table><br/>
-    <div>Select your preferred timeslots for the pickup of the above items</b></div>
+    <div><b>Select your preferred timeslot for the pickup of the above items</b></div>
     <div>
         <table style="width: 100%; margin-top: 20px;">
             <tr>
@@ -24,20 +24,20 @@
             <tr>
                 <th class="schedule-header">9AM-12PM</th>
                 <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
-                    <input type="checkbox" class="schedule-checkbox" ng-hide="disabledAMList.indexOf($index) !== -1" ng-model="scheduleAM.value" ng-click="selectSlot(scheduleAM.value)"/>
+                    <input type="radio" class="schedule-checkbox" ng-hide="disabledAMList.indexOf($index) !== -1" ng-model="timeslot.choice" value="{{dates[$index].value + '|9AM-12PM'}}" ng-click="selectSlot(dates[$index].value, '9AM-12PM')"/>
                 </td>
             </tr>
             <tr>
                 <th class="schedule-header">2PM-5PM</th>
                 <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
-                    <input type="checkbox" class="schedule-checkbox" ng-hide="disabledPMList.indexOf($index) !== -1" ng-model="schedulePM.value" ng-click="selectSlot(schedulePM.value)"/>
+                    <input type="radio" class="schedule-checkbox" ng-hide="disabledPMList.indexOf($index) !== -1" ng-model="timeslot.choice" value="{{dates[$index].value + '2PM-5PM'}}"  ng-click="selectSlot(dates[$index].value, '2PM-5PM')"/>
                 </td>
             </tr>
         </table>
     </div>
-    <div class="error-message" ng-show="scheduleCount < 3">Please select at least 3 timeslots.</div>
+    <div class="error-message" ng-show="!selectedDate || !selectedTimeslot">Please select one timeslot.</div>
     <div class="col-sm-offset-10" style="padding-top: 20px; padding-left: 20px;">
         <button type="button" class="btn btn-default" ng-click="closeThisDialog()">CANCEL</button>
-        <button type="button" class="btn btn-primary" ng-click="confirm()" ng-disabled="scheduleCount < 3" ng-class="{'cursor-disabled': scheduleCount < 3}">CONFIRM</button>
+        <button type="button" class="btn btn-primary" ng-click="confirm()" ng-disabled="!selectedDate || !selectedTimeslot" ng-class="{'cursor-disabled': scheduleCount < 3}">CONFIRM</button>
     </div>
 </div>

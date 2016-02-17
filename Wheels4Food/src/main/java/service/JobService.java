@@ -20,7 +20,6 @@ import model.AcceptJobRequest;
 import model.AcceptJobResponse;
 import model.CancelJobByDemandIdResponse;
 import model.CompleteJobByDemandIdResponse;
-import model.ConfirmJobResponse;
 import model.CreateJobRequest;
 import model.CreateJobResponse;
 import model.Demand;
@@ -52,9 +51,9 @@ public class JobService {
 
     public CreateJobResponse createJobRequest(CreateJobRequest request) {
         int demandID = request.getDemandID();
-        String schedule = request.getSchedule();
-        String comments = request.getComments();
         int userID = request.getUserID();
+        String deliveryDateStr = request.getDeliveryDate().trim();
+        String timeslot = request.getTimeslot().trim();
 
         Demand demand = demandDAO.getDemandById(demandID);
 
@@ -67,8 +66,25 @@ public class JobService {
             return new CreateJobResponse(false, errorList);
         }
 
-        if (StringUtils.countOccurrencesOf(schedule, "1") < 3) {
-            errorList.add("A minimum of 3 timeslots must be selected.");
+        if (deliveryDateStr.equals("")) {
+            errorList.add("Delivery Date cannot be blank.");
+        }
+
+        if (timeslot.equals("")) {
+            errorList.add("Timeslot cannot be blank.");
+        }
+
+        if (!errorList.isEmpty()) {
+            return new CreateJobResponse(false, errorList);
+        }
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));;
+
+        try {
+            Date deliveryDate = sdf.parse(deliveryDateStr);
+        } catch (ParseException e) {
+            errorList.add("Invalid Delivery Date");
             return new CreateJobResponse(false, errorList);
         }
 
@@ -97,8 +113,6 @@ public class JobService {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DAY_OF_YEAR, 14);
             Date expiryDate = calendar.getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
             String expiryDateStr = sdf.format(expiryDate);
 
             User user = userDAO.getUserById(userID);
@@ -110,7 +124,7 @@ public class JobService {
                 return new CreateJobResponse(false, errorList);
             }
 
-            jobDAO.createJob(new Job(demand, schedule, expiryDateStr, "Active", user, "", "", ""));
+            jobDAO.createJob(new Job(demand, user, deliveryDateStr, timeslot, expiryDateStr, "Active", "", ""));
             return new CreateJobResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -118,36 +132,9 @@ public class JobService {
         }
     }
 
-    public ConfirmJobResponse confirmJobRequest(Job job) {
-        String schedule = job.getSchedule();
-
-        ArrayList<String> errorList = new ArrayList<String>();
-
-        if (StringUtils.countOccurrencesOf(schedule, "1") < 3) {
-            errorList.add("A minimum of 3 timeslots must be selected.");
-            return new ConfirmJobResponse(false, errorList);
-        }
-
-        try {
-            Demand demand = job.getDemand();
-            demand.setStatus("Job Created");
-
-            demandDAO.updateDemand(demand);
-
-            job.setStatus("Active");
-            jobDAO.updateJob(job);
-
-            return new ConfirmJobResponse(true, null);
-        } catch (Exception e) {
-            errorList.add(e.getMessage());
-            return new ConfirmJobResponse(false, errorList);
-        }
-    }
-
     public AcceptJobResponse acceptJobRequest(AcceptJobRequest request) {
         int jobID = request.getJobID();
         int userID = request.getUserID();
-        String deliveryDateStr = request.getDeliveryDate();
         String collectionTime = request.getCollectionTime();
         String deliveryTime = request.getDeliveryTime();
 
@@ -161,10 +148,6 @@ public class JobService {
             errorList.add("Invalid user id");
         }
 
-        if (deliveryDateStr.equals("")) {
-            errorList.add("Delivery Date cannot be blank.");
-        }
-
         if (collectionTime.equals("")) {
             errorList.add("Collection Time cannot be blank.");
         }
@@ -175,16 +158,6 @@ public class JobService {
 
         if (!errorList.isEmpty()) {
             return new AcceptJobResponse(false, errorList);
-        }
-
-        Date today = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
-
-        try {
-            Date deliveryDate = sdf.parse(deliveryDateStr);
-        } catch (ParseException e) {
-            errorList.add("Invalid Expiry Date");
         }
 
         if (!errorList.isEmpty()) {
@@ -202,7 +175,6 @@ public class JobService {
             }
 
             job.setUser(user);
-            job.setDeliveryDate(deliveryDateStr);
             job.setCollectionTime(collectionTime);
             job.setDeliveryTime(deliveryTime);
             job.setStatus("Accepted");

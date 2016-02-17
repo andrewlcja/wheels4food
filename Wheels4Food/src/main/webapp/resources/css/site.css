@@ -309,7 +309,7 @@ body {
 }
 
 .ngdialog.dialog-approve-request-3 .ngdialog-content{
-    width : 1250px;
+    width : 1100px;
     height: auto;
     padding-top: 5px;
     padding-left: 30px;
@@ -325,7 +325,7 @@ body {
 }
 
 .ngdialog.dialog-view-job .ngdialog-content {
-    width : 900px;
+    width : 1100px;
     height: auto;
     padding-top: 5px;
     padding-left: 30px;

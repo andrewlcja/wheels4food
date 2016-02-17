@@ -186,6 +186,24 @@ public class DemandDAO {
         return demandList;
     }
     
+    public List<Demand> getApprovedDemandListBySupplierId(int supplierID) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Demand> demandList = session.createCriteria(Demand.class)
+                .add(Restrictions.eq("supplier.id", supplierID))
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.eq("status", "Job Created"))
+                        .add(Restrictions.eq("status", "Job Accepted"))
+                        .add(Restrictions.eq("status", "Job Completed"))
+                        .add(Restrictions.eq("status", "Job Cancelled"))
+                        .add(Restrictions.eq("status", "Self Collection Created"))
+                        .add(Restrictions.eq("status", "Self Collection Completed"))
+                        .add(Restrictions.eq("status", "Self Collection Cancelled"))).list();
+        tx.commit();
+        session.close();
+        return demandList;
+    }
+    
     public List<Demand> getDemandListBySupplierOrRequesterId(int id) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();

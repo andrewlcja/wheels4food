@@ -12,17 +12,15 @@ package model;
 public class AcceptJobRequest {
     private int jobID;
     private int userID;
-    private String deliveryDate;
     private String collectionTime;
     private String deliveryTime;
 
     public AcceptJobRequest() {
     }
 
-    public AcceptJobRequest(int jobID, int userID, String deliveryDate, String collectionTime, String deliveryTime) {
+    public AcceptJobRequest(int jobID, int userID, String collectionTime, String deliveryTime) {
         this.jobID = jobID;
         this.userID = userID;
-        this.deliveryDate = deliveryDate;
         this.collectionTime = collectionTime;
         this.deliveryTime = deliveryTime;
     }
@@ -33,10 +31,6 @@ public class AcceptJobRequest {
     
     public int getUserID() {
         return userID;
-    }
-
-    public String getDeliveryDate() {
-        return deliveryDate;
     }
 
     public String getCollectionTime() {
