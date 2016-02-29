@@ -71,6 +71,20 @@ public class PendingRegistrationController {
         return pendingRegistrationList;
     }
     
+    @RequestMapping(value = "/GetPendingRegistrationListByOrganizationRequest/{organizationName}", method = RequestMethod.GET)
+    public @ResponseBody List<PendingRegistration> getPendingRegistrationListByOrganizationRequest(@PathVariable("organizationName") String organizationName) {
+
+        List<PendingRegistration> pendingRegistrationList = null;
+        try {
+            pendingRegistrationList = pendingRegistrationService.getPendingRegistrationListByOrganizationRequest(organizationName);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pendingRegistrationList;
+    }
+    
     @RequestMapping(value = "/CreatePendingRegistrationRequest", method = RequestMethod.POST)
     public @ResponseBody CreatePendingRegistrationResponse createPendingRegistrationRequest(@RequestBody CreatePendingRegistrationRequest request) {
         return pendingRegistrationService.createPendingRegistrationRequest(request);

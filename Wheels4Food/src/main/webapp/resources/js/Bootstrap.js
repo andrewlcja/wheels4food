@@ -12,6 +12,9 @@
                 'angularUtils.directives.dirPagination',
                 'cgBusy',
                 'chart.js',
+                'angular-perfect-scrollbar',
+                'angular-notification-icons',
+                'ngSanitize',
                 
                 //modules
                 'Wheels4Food.Principal',

@@ -5,7 +5,7 @@
             <p ng-show="role === 'VWO'">As a VWO, use the <a ui-sref="Marketplace.All" style="color: lightblue;">Marketplace</a> tab to request for items and the <a ui-sref="Inventory.Supply" style="color: lightblue;">My Inventory</a> tab to manage your Supply & Demand.</p>
             <p ng-show="role === 'VWO'">Use the <a ui-sref="PendingApprovals" style="color: lightblue;">Pending Approvals</a> tab to approve incoming requests and the <a ui-sref="PendingRegistrations" style="color: lightblue;">Pending Registrations</a> tab to approve volunteer registrations.</p>        
         </div>    -->
-    <div class="row" ng-show="role==='VWO'">
+    <div class="row" ng-show="role === 'Supplier' || role === 'Requester'">
         <div class="col-sm-4" cg-busy="{promise:promiseDemand,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <div class="panel panel-default">
                 <div class="panel-heading">Requests Status Breakdown</div>
@@ -43,7 +43,7 @@
             </div>
         </div>
     </div>
-    <div class="row" ng-show="role==='VWO'">
+    <div class="row" ng-show="role === 'Supplier' || role === 'Requester'">
         <div class="col-sm-4" cg-busy="{promise:promiseSupply,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <div class="panel panel-default">
                 <div class="panel-heading">Number of supplies created</div>

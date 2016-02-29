@@ -2,8 +2,10 @@
     'use strict';
     angular
             .module('Wheels4Food.Jobs')
-            .controller('ViewJobsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog',
-                function ($scope, $state, $http, api, $timeout, ngDialog) {
+            .controller('ViewJobsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService) {
+                    var authData = localStorageService.get('authorizationData');
+                    
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
@@ -71,7 +73,7 @@
 
 
                     var indexPromise = $http({
-                        url: api.endpoint + 'GetJobListRequest',
+                        url: api.endpoint + 'GetJobListByOrganizationNameRequest/' + authData.organizationName,
                         method: 'GET'
                     });
 

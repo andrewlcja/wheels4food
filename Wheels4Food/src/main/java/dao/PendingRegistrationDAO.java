@@ -108,6 +108,18 @@ public class PendingRegistrationDAO {
         return pendingRegistrationList;
     }
     
+    public List<PendingRegistration> getPendingRegistrationListByOrganization(String organizationName) {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<PendingRegistration> pendingRegistrationList = session.createCriteria(PendingRegistration.class)
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.eq("organizationName", organizationName))
+                        .add(Restrictions.eq("role", "Requester"))).list();
+        tx.commit();
+        session.close();
+        return pendingRegistrationList;
+    }
+    
     public void approvePendingRegistration(User user) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();        

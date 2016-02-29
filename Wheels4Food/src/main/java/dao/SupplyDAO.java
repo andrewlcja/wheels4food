@@ -56,7 +56,9 @@ public class SupplyDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Supply> supplyList = session.createCriteria(Supply.class)
-                .add(Restrictions.ne("quantitySupplied", 0)).list();
+                .createAlias("user", "supplier")
+                .add(Restrictions.ne("quantitySupplied", 0))
+                .add(Restrictions.eq("supplier.role", "Supplier")).list();
         tx.commit();
         session.close();
         return supplyList;
@@ -76,7 +78,10 @@ public class SupplyDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         List<Supply> supplyList = session.createCriteria(Supply.class)
-                .add(Restrictions.eq("category", category)).list();
+                .createAlias("user", "supplier")
+                .add(Restrictions.eq("category", category))
+                .add(Restrictions.ne("quantitySupplied", 0))
+                .add(Restrictions.eq("supplier.role", "Supplier")).list();
         tx.commit();
         session.close();
         return supplyList;
