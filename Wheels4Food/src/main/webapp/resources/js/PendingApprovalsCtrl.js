@@ -11,7 +11,7 @@
                         $scope.selectedDate = $filter('date')(date, 'dd/MM/yyyy');
                         $scope.selectedTimeslot = time;
                     };
-                    
+
                     $scope.timeslot = {
                         'choice': ''
                     }
@@ -69,7 +69,7 @@
                         }).then(function (response) {
                             $scope.currentDemandItemList = response.data;
                         });
-                        
+
                         var finalIndex = $scope.pendingApprovalList.indexOf(pendingApproval);
 
                         if (pendingApproval.preferredSchedule === 'NA') {
@@ -80,7 +80,7 @@
                                 className: 'ngdialog-theme-default dialog-generic-2',
                                 scope: $scope
                             }).then(function () {
-                                $http({
+                                indexPromise = $http({
                                     url: api.endpoint + 'CreateSelfCollectionRequest',
                                     method: 'POST',
                                     data: {
@@ -91,7 +91,11 @@
                                     headers: {
                                         'Content-Type': 'application/json',
                                     }
-                                }).then(function (response) {
+                                });
+
+                                $scope.promise = [indexPromise];
+
+                                indexPromise.then(function (response) {
                                     if (response.data.isCreated) {
                                         $scope.pendingApprovalList.splice(finalIndex, 1);
                                         $state.go($state.current, $stateParams, {reload: true, inherit: false});
@@ -151,7 +155,7 @@
                                 className: 'ngdialog-theme-default dialog-approve-request-2',
                                 scope: $scope
                             }).then(function () {
-                                $http({
+                                indexPromise = $http({
                                     url: api.endpoint + 'CreateJobRequest',
                                     method: 'POST',
                                     data: {
@@ -163,7 +167,11 @@
                                     headers: {
                                         'Content-Type': 'application/json',
                                     }
-                                }).then(function (response) {
+                                });
+
+                                $scope.promise = [indexPromise];
+
+                                indexPromise.then(function (response) {
                                     if (response.data.isCreated) {
                                         $scope.pendingApprovalList.splice(finalIndex, 1);
                                         $state.go($state.current, $stateParams, {reload: true, inherit: false});

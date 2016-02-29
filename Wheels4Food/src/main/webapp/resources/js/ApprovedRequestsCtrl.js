@@ -122,7 +122,7 @@
                     $scope.cancel = function (demand) {
                         $scope.currentDemand = demand;
                         demand.comments = '';
-                        
+
                         $http({
                             url: api.endpoint + 'GetDemandItemListByDemandIdRequest/' + demand.id,
                             method: 'GET'
@@ -241,6 +241,12 @@
                         }
 
                         return proccessed;
+                    };
+
+                    $scope.sortByDate = function (demand) {
+                        var parts = demand.dateRequested.split('/');
+                        var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
+                        return date;
                     };
 
                     //retrieve details

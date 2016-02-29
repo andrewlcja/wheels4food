@@ -77,6 +77,21 @@ public class JobDAO {
         return jobList;
     }
     
+    public List<Job> getJobListByOrganizationName(String organizationName) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<Job> jobList = session.createCriteria(Job.class)
+                .createAlias("demand.supplier", "supplier")
+                .createAlias("demand.user", "requester")
+                .add(Restrictions.eq("status", "Active"))
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.eq("supplier.organizationName", organizationName))
+                        .add(Restrictions.eq("requester.organizationName", organizationName))).list();
+        tx.commit();
+        session.close();
+        return jobList;
+    }
+    
     public Job getJobByDemandId(int demandID) {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();

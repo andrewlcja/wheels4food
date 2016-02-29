@@ -30,6 +30,7 @@
                 <value>model.DemandItem</value>
                 <value>model.Job</value>
                 <value>model.SelfCollection</value>
+                <value>model.Notification</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -60,4 +61,6 @@
     <bean id="jobService" class="service.JobService"></bean>   
     <bean id="selfCollectionDAO" class="dao.SelfCollectionDAO"></bean>
     <bean id="selfCollectionService" class="service.SelfCollectionService"></bean> 
+    <bean id="notificationDAO" class="dao.NotificationDAO"></bean>
+    <bean id="notificationService" class="service.NotificationService"></bean> 
 </beans>

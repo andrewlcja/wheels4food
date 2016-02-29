@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" collapse="navCollapsed">
             <ul class="nav navbar-nav">
                 <li ng-if="role !== 'Volunteer'" ng-class="{active: currentState.indexOf('Marketplace') !== -1}"><a ui-sref="Marketplace.All">Marketplace</a></li>
-                <li ng-if="role !== 'Volunteer'" ng-class="{active: currentState.indexOf('Inventory') !== -1}"><a ui-sref="Inventory.Supply">My Inventory</a></li>
+                <li ng-if="role !== 'Admin' && role !== 'Volunteer'" ng-class="{active: currentState.indexOf('Inventory') !== -1}" style="cursor:pointer;" ng-click="goToInventory()"><a>My Inventory</a></li>
                 <li ng-if="role !== 'Admin' && role !== 'Volunteer'" ng-class="{active: currentState.indexOf('PendingApprovals') !== -1}"><a ui-sref="PendingApprovals">Pending Approvals</a></li>
                 <li ng-if="role !== 'Admin' && role !== 'Volunteer'" ui-sref-active="active"><a ui-sref="ApprovedRequests">Approved Requests</a></li>
                 <li ng-if="role === 'Volunteer'" ui-sref-active="active"><a ui-sref="Jobs.View">View Jobs</a></li>
@@ -23,10 +23,26 @@
                 <li ng-if="role !== 'Volunteer'" ui-sref-active="active"><a ui-sref="PendingRegistrations">Pending Registrations</a></li>
                 <li ng-if="role !== 'Volunteer'" ui-sref-active="active"><a ui-sref="UserManagement">User Management</a></li>
             </ul>
-            
+
             <ul class="nav navbar-nav navbar-right" style="padding-right: 15px;">
                 <li dropdown>
-                    <a href="#" dropdown-toggle><i class="fa fa-lg fa-user" style="padding-right: 5px;"></i> {{username}} <b style="padding-left: 5px;" class="fa fa-lg fa-caret-down"></b></a>
+                    <a style="cursor:pointer;" dropdown-toggle>
+                        <notification-icon animation="bounce" count="notificationList.length">
+                            <i class="fa fa-bell fa-lg"></i>                            
+                        </notification-icon>
+                    </a>
+                    <ul class="dropdown-menu notification-panel">
+                        <div perfect-scrollbar class='notifications-wrapper'>
+                            <div class="notification-item" ng-show='notificationList.length === 0'>
+                                You have no new notifications.
+                            </div>
+                            <div class="notification-item" ng-repeat='notification in notificationList' ng-click='goToState(notification)' ng-bind-html="notification.message">
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li dropdown>
+                    <a style="cursor:pointer;" dropdown-toggle><i class="fa fa-lg fa-user" style="padding-right: 5px;"></i> {{username}} <b style="padding-left: 5px;" class="fa fa-lg fa-caret-down"></b></a>
                     <ul class="dropdown-menu">
                         <li><a ui-sref="Profile.View">My Profile</a></li>
                         <li><a ui-sref="ChangePassword">Change Password</a></li>

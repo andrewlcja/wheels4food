@@ -80,6 +80,20 @@ public class JobController {
         return jobList;
     }
     
+    @RequestMapping(value = "/GetJobListByOrganizationNameRequest/{organizationName}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Job> getJobListByOrganizationNameRequest(@PathVariable("organizationName") String organizationName) {
+        List<Job> jobList = null;
+
+        try {
+            jobList = jobService.getJobListByOrganizationNameRequest(organizationName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jobList;
+    }
+    
     @RequestMapping(value = "/GetJobBreakdownBySupplierIdRequest/{supplierID}", method = RequestMethod.GET)
     public @ResponseBody
     GetJobBreakdownBySupplierIdResponse getJobBreakdownBySupplierIdRequest(@PathVariable("supplierID") int supplierID) {
@@ -93,6 +107,7 @@ public class JobController {
         
         return response;
     }
+    
 
     @RequestMapping(value = "/GetJobByDemandIdRequest/{demandID}", method = RequestMethod.GET)
     public @ResponseBody

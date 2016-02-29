@@ -68,7 +68,7 @@
         </div>
     </div>
 </div>
-<div ng-show="showRequestPage" style="padding-top: 20px;">
+<div ng-show="showRequestPage" style="padding-top: 20px;" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
     <h3 style="color: #003366; padding-bottom: 5px;">Requesting {{requestSupplyList.length}} item(s) from <b>{{supplierName}}</b></h3>
     <div ng-form="outerForm">
         <table class="table table-bordered table-hover">
