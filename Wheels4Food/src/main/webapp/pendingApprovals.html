@@ -21,7 +21,13 @@
                     </th>
                     <th class="text-center">
                         Requested Item(s)
-                    </th>              
+                    </th>    
+                    <th class="text-center" width="7%">
+                        Remaining
+                    </th>
+                    <th class="text-center" width="7%">
+                        Requested
+                    </th>
                     <th class="text-center" width="12%">
                         Type
                     </th>
@@ -29,12 +35,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr dir-paginate="pendingApproval in pendingApprovalList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage" ng-class="{'highlight-row': pendingApproval.quantityDemanded > pendingApproval.supply.quantitySupplied}">
+                <tr dir-paginate="pendingApproval in pendingApprovalList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
                     <td ng-repeat="column in tableColumns" style="text-align:center; vertical-align: middle;">
                         <div>{{getObj(pendingApproval, column)}}</div>
                     </td>
                     <td style="text-align:center; vertical-align: middle;">
-                        <div ng-repeat="demandItem in demandItemList" ng-show="demandItem.demand.id === pendingApproval.id">{{demandItem.quantityDemanded}} x {{demandItem.supply.itemName}} <b style="color: darkblue;">(Amount Left: {{demandItem.supply.quantitySupplied}})</b></div>
+                        <div ng-repeat="demandItem in demandItemList" ng-show="demandItem.demand.id === pendingApproval.id">{{demandItem.supply.itemName}}</div>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <div ng-class="{'highlight-valid': demandItem.quantityDemanded <= demandItem.supply.quantitySupplied, 'highlight-invalid': demandItem.quantityDemanded > demandItem.supply.quantitySupplied}" ng-repeat="demandItem in demandItemList" ng-show="demandItem.demand.id === pendingApproval.id">{{demandItem.supply.quantitySupplied}}</div>
+                    </td>
+                    <td style="text-align:center; vertical-align: middle;">
+                        <div ng-class="{'highlight-valid': demandItem.quantityDemanded <= demandItem.supply.quantitySupplied, 'highlight-invalid': demandItem.quantityDemanded > demandItem.supply.quantitySupplied}" ng-repeat="demandItem in demandItemList" ng-show="demandItem.demand.id === pendingApproval.id">{{demandItem.quantityDemanded}}</div>
                     </td>
                     <td style="text-align:center; vertical-align: middle;">
                         <div ng-show="pendingApproval.preferredSchedule === 'NA'">Self Collection</div>
@@ -44,13 +56,13 @@
                         <div>
                             <span class="action-item fa fa-eye fa-lg" ng-click="view(pendingApproval)" tooltip-placement="top" tooltip="View Details"></span>
                             <span class="action-item fa fa-edit fa-lg" ng-click="edit(pendingApproval.id)" tooltip-placement="top" tooltip="Edit Request"></span>
-                            <span class="action-item fa fa-check fa-lg" ng-hide="pendingApproval.quantityDemanded > pendingApproval.supply.quantitySupplied" ng-click="approve(pendingApproval, $index)" tooltip-placement="top" tooltip="Approve"></span>
+                            <span class="action-item fa fa-check fa-lg" ng-show="checkValid(pendingApproval)" ng-click="approve(pendingApproval, $index)" tooltip-placement="top" tooltip="Approve"></span>
                             <span class="action-item fa fa-times fa-lg" ng-click="reject(pendingApproval, $index)" tooltip-placement="top" tooltip="Reject"></span>
                         </div>
                     </td>
                 </tr>
                 <tr ng-if="!(pendingApprovalList | filter:proccessedSearchFilter).length">
-                    <td colspan="{{tableColumns.length + 3}}" class="text-center">
+                    <td colspan="{{tableColumns.length + 5}}" class="text-center">
                         <h5>No results found</h5>
                     </td>
                 </tr>

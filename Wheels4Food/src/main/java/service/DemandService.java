@@ -149,7 +149,7 @@ public class DemandService {
                 try {
                     Date preferredDeliveryDate = sdf.parse(preferredDeliveryDateStr);
 
-                    if (today.compareTo(preferredDeliveryDate) >= 0 || (preferredDeliveryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24) <= 3) {
+                    if (today.compareTo(preferredDeliveryDate) >= 0 || (preferredDeliveryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24) < 3) {
                         errorList.add("Preferred Delivery Date must be a date at least 3 days after today");
                         return new CreateDemandResponse(false, errorList);
                     }

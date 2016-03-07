@@ -11,6 +11,7 @@ import model.Supply;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,8 @@ public class SupplyDAO {
         List<Supply> supplyList = session.createCriteria(Supply.class)
                 .createAlias("user", "supplier")
                 .add(Restrictions.ne("quantitySupplied", 0))
-                .add(Restrictions.eq("supplier.role", "Supplier")).list();
+                .add(Restrictions.eq("supplier.role", "Supplier"))
+                .addOrder(Order.asc("itemName")).list();
         tx.commit();
         session.close();
         return supplyList;
@@ -81,7 +83,8 @@ public class SupplyDAO {
                 .createAlias("user", "supplier")
                 .add(Restrictions.eq("category", category))
                 .add(Restrictions.ne("quantitySupplied", 0))
-                .add(Restrictions.eq("supplier.role", "Supplier")).list();
+                .add(Restrictions.eq("supplier.role", "Supplier"))
+                .addOrder(Order.asc("itemName")).list();
         tx.commit();
         session.close();
         return supplyList;

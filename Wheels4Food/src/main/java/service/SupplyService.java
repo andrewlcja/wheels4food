@@ -15,6 +15,7 @@ import model.CreateSupplyRequest;
 import model.CreateSupplyResponse;
 import model.DeleteSupplyResponse;
 import model.Demand;
+import model.DemandItem;
 import model.Supply;
 import model.UpdateSupplyResponse;
 import model.User;
@@ -309,8 +310,8 @@ public class SupplyService {
 
             try {
                 //check if there are any demand for this supply
-                List<Demand> demandList = demandDAO.getDemandListBySupplyId(id);
-                if (!demandList.isEmpty()) {
+                List<DemandItem> demandItemList = demandDAO.getDemandItemListBySupplyId(id);
+                if (!demandItemList.isEmpty()) {
                     errorList.add("There is existing demand for this item");
                     return new DeleteSupplyResponse(false, errorList);
                 }

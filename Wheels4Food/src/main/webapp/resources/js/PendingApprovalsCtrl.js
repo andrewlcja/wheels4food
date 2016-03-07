@@ -14,7 +14,7 @@
 
                     $scope.timeslot = {
                         'choice': ''
-                    }
+                    };
 
                     //default sort
                     $scope.sortType = 'itemName';
@@ -60,6 +60,18 @@
                         }
 
                         return proccessed;
+                    };
+                    
+                    $scope.checkValid = function(pendingApproval) {
+                        for (var i = 0; i < $scope.demandItemList.length; i++) {
+                            var demandItem = $scope.demandItemList[i];
+                            
+                            if (demandItem.demand.id === pendingApproval.id && demandItem.quantityDemanded > demandItem.supply.quantitySupplied) {
+                                return false;
+                            }
+                        }
+                        
+                        return true;
                     };
 
                     var validApproval = function (pendingApproval, index, comment) {

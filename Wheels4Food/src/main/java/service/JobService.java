@@ -116,7 +116,7 @@ public class JobService {
 
                 supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
 
-                if (supply.getMaximum() < supply.getQuantitySupplied()) {
+                if (supply.getMaximum() > supply.getQuantitySupplied()) {
                     supply.setMaximum(supply.getQuantitySupplied());
                 }
 

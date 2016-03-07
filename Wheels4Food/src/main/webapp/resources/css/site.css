@@ -490,3 +490,11 @@ body {
   font-weight: bolder;
   font-size: 1.2em;
 }
+
+.highlight-valid {
+    background-color: #e1f8e1;
+}
+
+.highlight-invalid {
+    background-color: #ffdada;
+}
