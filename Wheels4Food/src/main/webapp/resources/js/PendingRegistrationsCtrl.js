@@ -68,18 +68,24 @@
                             className: 'ngdialog-theme-default dialog-generic',
                             scope: $scope
                         }).then(function () {
-                            $http({
+                            indexPromise = $http({
                                 url: api.endpoint + 'ApprovePendingRegistrationRequest/' + pendingRegistration.id,
                                 method: 'PUT',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 }
-                            }).then(function (response) {
-                                console.log(response);
-                                if (response.data.isApproved) {
-                                    $scope.pendingRegistrationList.splice(($scope.currentPage - 1) * 10 + index, 1);
-                                }
                             });
+                            
+                            $scope.promise = [indexPromise];
+
+                            $timeout(function () {
+                                indexPromise.then(function (response) {
+                                    console.log(response);
+                                    if (response.data.isApproved) {
+                                        $scope.pendingRegistrationList.splice(($scope.currentPage - 1) * 10 + index, 1);
+                                    }
+                                });
+                            }, 1000);
                         });
                     };
 
@@ -109,12 +115,12 @@
                     $scope.tableColumns = ['username', 'organizationName', 'role'];
 
                     var request = '';
-                    if (authData.username === 'ffth') {
-                        request = 'GetPendingRegistrationListByRoleRequest/VWO';
-                    } else if (authData.role === 'VWO') {
+                    if (authData.role === 'Admin') {
+                        request = 'GetPendingRegistrationListByRoleRequest/Supplier';
+                    } else if (authData.role === 'Supplier') {
+                        request = 'GetPendingRegistrationListByOrganizationRequest/' + authData.organizationName;
+                    } else if (authData.role === 'Requester') {
                         request = 'GetVolunteerPendingRegistrationListByOrganizationRequest/' + authData.organizationName;
-                    } else if (authData.role === 'Admin') {
-                        request = 'GetPendingRegistrationListRequest';
                     }
 
                     var indexPromise = $http({

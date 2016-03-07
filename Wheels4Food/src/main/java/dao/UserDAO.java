@@ -10,6 +10,7 @@ import model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,17 +34,30 @@ public class UserDAO {
         session.close();
         return userList;
     }
-    
+
     public List<User> getUserListByRole(String role) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
-        List<User> userList = session.createCriteria(User.class)
-                .add(Restrictions.eq("role", role)).list();
+
+        List<User> userList = null;
+
+        if (role.equals("VWO")) {
+            userList = session.createCriteria(User.class)
+                    .addOrder(Order.asc("organizationName"))
+                    .add(Restrictions.disjunction()
+                            .add(Restrictions.eq("role", "Supplier"))
+                            .add(Restrictions.eq("role", "Requester"))).list();
+        } else {
+            userList = session.createCriteria(User.class)
+                    .add(Restrictions.eq("role", role))
+                    .addOrder(Order.asc("organizationName")).list();
+        }
+
         tx.commit();
         session.close();
         return userList;
     }
-    
+
     public List<User> getVolunteerListByOrganization(String organizationName) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -65,19 +79,19 @@ public class UserDAO {
         session.close();
         return user;
     }
-    
+
     public User getUserByOrganization(String organization) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         User user = (User) session.createCriteria(User.class)
                 .add(Restrictions.eq("organizationName", organization))
-                .add(Restrictions.eq("role", "VWO"))
+                .add(Restrictions.ne("role", "Volunteer"))
                 .uniqueResult();
         tx.commit();
         session.close();
         return user;
     }
-    
+
     public User getUserById(int id) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -88,7 +102,7 @@ public class UserDAO {
         session.close();
         return user;
     }
-    
+
     public User getUserByEmail(String email) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -99,7 +113,7 @@ public class UserDAO {
         session.close();
         return user;
     }
-    
+
     public User getUserByMobileNumber(String number) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -111,7 +125,7 @@ public class UserDAO {
         session.close();
         return user;
     }
-    
+
     public void deleteUser(int id) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -120,7 +134,7 @@ public class UserDAO {
         tx.commit();
         session.close();
     }
-    
+
     public void updateUser(User user) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
@@ -128,7 +142,7 @@ public class UserDAO {
         tx.commit();
         session.close();
     }
-    
+
     public void createUser(User user) throws Exception {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();

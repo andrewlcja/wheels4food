@@ -6,6 +6,7 @@
 package service;
 
 import dao.DemandDAO;
+import dao.NotificationDAO;
 import dao.SupplyDAO;
 import dao.UserDAO;
 import java.text.ParseException;
@@ -14,9 +15,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.TimeZone;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import model.ApproveDemandRequest;
 import model.ApproveDemandResponse;
+import model.ApprovePendingRegistrationResponse;
 import model.CreateDemandRequest;
 import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
@@ -24,6 +34,7 @@ import model.Demand;
 import model.DemandItem;
 import model.GetDemandBreakdownResponse;
 import model.GetUnavailableTimeslotsByDeliveryDateRequest;
+import model.Notification;
 import model.RejectDemandRequest;
 import model.RejectDemandResponse;
 import model.Supply;
@@ -32,6 +43,7 @@ import model.UpdateDemandResponse;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import utility.ConfigUtility;
 
 /**
  *
@@ -48,9 +60,12 @@ public class DemandService {
     @Autowired
     DemandDAO demandDAO;
 
+    @Autowired
+    NotificationDAO notificationDAO;
+
     public CreateDemandResponse createDemandRequest(CreateDemandRequest request) {
         int userID = request.getUserID();
-        
+
         String[] supplyIDValues = new String[1];
         String supplyIDValuesStr = request.getSupplyIDValues().trim();
         if (supplyIDValuesStr.contains(",")) {
@@ -58,7 +73,7 @@ public class DemandService {
         } else {
             supplyIDValues[0] = supplyIDValuesStr;
         }
-                
+
         String[] quantityDemandedValues = new String[1];
         String quantityDemandedValuesStr = request.getQuantityDemandedValues().trim();
         if (quantityDemandedValuesStr.contains(",")) {
@@ -66,7 +81,7 @@ public class DemandService {
         } else {
             quantityDemandedValues[0] = quantityDemandedValuesStr;
         }
-        
+
         String preferredDeliveryDateStr = request.getPreferredDeliveryDate();
         String preferredTimeslot = request.getPreferredTimeslot();
         String preferredSchedule = request.getPreferredSchedule();
@@ -142,8 +157,8 @@ public class DemandService {
                     errorList.add("Invalid Preferred Delivery Date");
                 }
             } else {
-                if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 5) {
-                    errorList.add("A minimum of 5 timeslots must be selected.");
+                if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 3) {
+                    errorList.add("A minimum of 3 timeslots must be selected.");
                 }
             }
 
@@ -181,7 +196,7 @@ public class DemandService {
                     } else if (quantityDemanded > maximum || quantityDemanded < minimum) {
                         errorList.add("Quantity requested for '" + supply.getItemName() + "'  must be more than equals to " + minimum + " and less than equals to " + maximum);
                     }
-                    
+
                     supplyList.add(supply);
                 }
 
@@ -195,11 +210,13 @@ public class DemandService {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
                 String dateRequested = sdf.format(today);
-                
+
                 //get supplier
                 User supplier = supplyList.get(0).getUser();
 
                 Demand newDemand = demandDAO.createDemand(new Demand(user, supplier, dateRequested, preferredDeliveryDateStr, preferredTimeslot, preferredSchedule, "Pending", ""));
+
+                String requestContent = "";
 
                 //create demanditems
                 for (int i = 0; i < supplyIDValues.length; i++) {
@@ -207,7 +224,60 @@ public class DemandService {
                     int quantityDemanded = quantityDemandedIntValues[i];
 
                     demandDAO.createDemandItem(new DemandItem(newDemand, supply, quantityDemanded));
+                    requestContent += "<tr><td style='text-align:center;'>" + supply.getItemName() + "</td><td style='text-align:center;'>" + quantityDemanded + "</td></tr>";
                 }
+
+                //get properties
+                ConfigUtility config = new ConfigUtility();
+                final String emailUsername = config.getProperty("email_username");
+                final String emailPassword = config.getProperty("email_password");
+
+                //send email
+                Properties props = new Properties();
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.socketFactory.port", "465");
+                props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.port", "465");
+
+                Session session = Session.getDefaultInstance(props,
+                        new javax.mail.Authenticator() {
+                            protected PasswordAuthentication getPasswordAuthentication() {
+                                return new PasswordAuthentication(emailUsername, emailPassword);
+                            }
+                        });
+
+                try {
+                    String recipient = supplier.getEmail();
+
+                    String body = "<div>\n"
+                            + "            <p>Dear " + supplier.getOrganizationName() + ",</p><br/>\n"
+                            + "            <p>You have a new request from <b>" + user.getOrganizationName() + "</b>. Here are the request details:</p>\n"
+                            + "            <table border='1'>"
+                            + "                <tr>"
+                            + "                    <th>Item Name</th>"
+                            + "                    <th>Quantity Requested</th>"
+                            + "                </tr>"
+                            + requestContent
+                            + "            </table>"
+                            + "            <p>Please login <a href='http://apps.greentransformationlab.com/Wheels4Food/Login'>here</a> to approve this request!</p><br/>\n"
+                            + "            <p>Regards,</p>\n"
+                            + "            <p>Wheels4Food Team</p>\n"
+                            + "        </div>";
+                    MimeMessage message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress(emailUsername));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+                    message.setSubject("Wheels4Food - New request from " + user.getOrganizationName());
+                    message.setText(body, "UTF-8", "html");
+
+                    Transport.send(message);
+                } catch (MessagingException e) {
+                    errorList.add(e.getMessage());
+                    return new CreateDemandResponse(false, errorList);
+                }
+
+                //create notification
+                notificationDAO.createNotification(new Notification(supplier, "PendingApprovals", "<b>" + user.getOrganizationName() + "</b> has requested for <b>" + supplyIDValues.length + " item(s)</b>. Click here to go to <b>Pending Approvals</b>."));
 
                 return new CreateDemandResponse(true, null);
             } catch (Exception e) {
@@ -244,6 +314,10 @@ public class DemandService {
 
                 //finally delete the demand itself
                 demandDAO.deleteDemand(id);
+
+                //create notification
+                notificationDAO.createNotification(new Notification(demand.getSupplier(), "PendingApprovals", "<b>" + demand.getUser().getOrganizationName() + "</b> has <b>cancelled</b> the request for <b>" + demandItemList.size() + " item(s)</b>. Click here to go to <b>Pending Approvals</b>."));
+
                 return new DeleteDemandResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());
@@ -311,8 +385,8 @@ public class DemandService {
                 errorList.add("Invalid Preferred Delivery Date");
             }
         } else {
-            if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 5) {
-                errorList.add("A minimum of 5 timeslots must be selected.");
+            if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 3) {
+                errorList.add("A minimum of 3 timeslots must be selected.");
             }
         }
 
@@ -348,7 +422,7 @@ public class DemandService {
             //get the current list of demanditems
             List<DemandItem> currentDemandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
             ArrayList<Integer> currentDemandItemIDs = new ArrayList<Integer>();
-            
+
             for (DemandItem demandItem : currentDemandItemList) {
                 currentDemandItemIDs.add(demandItem.getId());
             }
@@ -359,9 +433,9 @@ public class DemandService {
                 if (currentDemandItemIDs.contains(demandItem.getId())) {
                     demandDAO.updateDemandItem(demandItem);
                     currentDemandItemIDs.remove(new Integer(demandItem.getId()));
-                } 
+                }
             }
-            
+
             for (int id : currentDemandItemIDs) {
                 demandDAO.deleteDemandItem(id);
             }
@@ -397,6 +471,8 @@ public class DemandService {
 
             demand.setStatus("Approved");
 
+            String requestContent = "";
+
             try {
                 List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(id);
 
@@ -413,6 +489,7 @@ public class DemandService {
 
                     try {
                         supplyDAO.updateSupply(supply);
+                        requestContent += "<tr><td style='text-align:center;'>" + supply.getItemName() + "</td><td style='text-align:center;'>" + quantityDemanded + "</td></tr>";
                     } catch (Exception e) {
                         errorList.add(e.getMessage());
                         return new ApproveDemandResponse(false, errorList);
@@ -420,6 +497,56 @@ public class DemandService {
                 }
 
                 demandDAO.updateDemand(demand);
+
+                //get properties
+                ConfigUtility config = new ConfigUtility();
+                final String emailUsername = config.getProperty("email_username");
+                final String emailPassword = config.getProperty("email_password");
+
+                //send email
+                Properties props = new Properties();
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.socketFactory.port", "465");
+                props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.port", "465");
+
+                Session session = Session.getDefaultInstance(props,
+                        new javax.mail.Authenticator() {
+                            protected PasswordAuthentication getPasswordAuthentication() {
+                                return new PasswordAuthentication(emailUsername, emailPassword);
+                            }
+                        });
+
+                try {
+                    String recipient = demand.getUser().getEmail();
+
+                    String body = "<div>\n"
+                            + "            <p>Dear " + demand.getUser().getOrganizationName() + ",</p><br/>\n"
+                            + "            <p>Your request has been approved by <b>" + demand.getSupplier().getOrganizationName() + "</b>. Here are the approved request details:</p>\n"
+                            + "            <table border='1'>"
+                            + "                <tr>"
+                            + "                    <th>Item Name</th>"
+                            + "                    <th>Quantity Approved</th>"
+                            + "                </tr>"
+                            + requestContent
+                            + "            </table>"
+                            + "            <p>Please login <a href='http://apps.greentransformationlab.com/Wheels4Food/Login'>here</a> to view this approved request!</p><br/>\n"
+                            + "            <p>Regards,</p>\n"
+                            + "            <p>Wheels4Food Team</p>\n"
+                            + "        </div>";
+                    MimeMessage message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress(emailUsername));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+                    message.setSubject("Wheels4Food - Request Approved");
+                    message.setText(body, "UTF-8", "html");
+
+                    Transport.send(message);
+                } catch (MessagingException e) {
+                    errorList.add(e.getMessage());
+                    return new ApproveDemandResponse(false, errorList);
+                }
+
                 return new ApproveDemandResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());
@@ -462,6 +589,10 @@ public class DemandService {
 
             try {
                 demandDAO.updateDemand(demand);
+
+                //create notification
+                notificationDAO.createNotification(new Notification(demand.getUser(), "Inventory.Demand", "Your requested item(s) have been <b>rejected</b> by <b>" + demand.getSupplier().getOrganizationName() + ".</b> Click here to go to <b>My Inventory - Demand</b>."));
+
                 return new RejectDemandResponse(true, null);
             } catch (Exception e) {
                 errorList.add(e.getMessage());
@@ -488,19 +619,23 @@ public class DemandService {
     public List<Demand> getCompletedDemandListBySupplierIdRequest(int supplierID) throws Exception {
         return demandDAO.getCompletedDemandListBySupplierId(supplierID);
     }
-    
+
+    public List<Demand> getApprovedDemandListBySupplierIdRequest(int supplierID) throws Exception {
+        return demandDAO.getApprovedDemandListBySupplierId(supplierID);
+    }
+
     public List<DemandItem> getDemandItemListRequest() throws Exception {
         return demandDAO.getDemandItemList();
     }
-    
+
     public List<DemandItem> getDemandItemListByDemandIdRequest(int demandID) throws Exception {
         return demandDAO.getDemandItemListByDemandId(demandID);
     }
-    
+
     public List<DemandItem> getDemandItemListByRequesterIdRequest(int requesterID) throws Exception {
         return demandDAO.getDemandItemListByRequesterId(requesterID);
     }
-    
+
     public List<DemandItem> getDemandItemListBySupplierIdRequest(int supplierID) throws Exception {
         return demandDAO.getDemandItemListBySupplierId(supplierID);
     }

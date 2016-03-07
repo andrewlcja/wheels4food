@@ -7,6 +7,9 @@
                     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
                         $scope.currentState = toState.name;
                     });
+                    
+                    var authData = localStorageService.get('authorizationData');
+                    $scope.role = authData.role;
                 }
             ]);
 })();

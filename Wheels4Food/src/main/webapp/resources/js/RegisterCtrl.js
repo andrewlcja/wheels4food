@@ -30,7 +30,6 @@
                     $scope.showVWOForm = function () {
                         $scope.selectionPanel = true;
                         $scope.VWOForm = true;
-                        $scope.registration.role = 'VWO';
                         $scope.request = 'CreatePendingRegistrationRequest';
                     };
 

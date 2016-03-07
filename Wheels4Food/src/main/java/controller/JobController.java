@@ -10,7 +10,6 @@ import model.AcceptJobRequest;
 import model.AcceptJobResponse;
 import model.CancelJobByDemandIdResponse;
 import model.CompleteJobByDemandIdResponse;
-import model.ConfirmJobResponse;
 import model.CreateJobRequest;
 import model.CreateJobResponse;
 import model.Demand;
@@ -39,12 +38,6 @@ public class JobController {
     public @ResponseBody
     CreateJobResponse createJobRequest(@RequestBody CreateJobRequest request) {
         return jobService.createJobRequest(request);
-    }
-
-    @RequestMapping(value = "/ConfirmJobRequest", method = RequestMethod.PUT)
-    public @ResponseBody
-    ConfirmJobResponse confirmJobRequest(@RequestBody Job job) {
-        return jobService.confirmJobRequest(job);
     }
 
     @RequestMapping(value = "/AcceptJobRequest", method = RequestMethod.PUT)
@@ -87,6 +80,20 @@ public class JobController {
         return jobList;
     }
     
+    @RequestMapping(value = "/GetJobListByOrganizationNameRequest/{organizationName}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Job> getJobListByOrganizationNameRequest(@PathVariable("organizationName") String organizationName) {
+        List<Job> jobList = null;
+
+        try {
+            jobList = jobService.getJobListByOrganizationNameRequest(organizationName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jobList;
+    }
+    
     @RequestMapping(value = "/GetJobBreakdownBySupplierIdRequest/{supplierID}", method = RequestMethod.GET)
     public @ResponseBody
     GetJobBreakdownBySupplierIdResponse getJobBreakdownBySupplierIdRequest(@PathVariable("supplierID") int supplierID) {
@@ -100,6 +107,7 @@ public class JobController {
         
         return response;
     }
+    
 
     @RequestMapping(value = "/GetJobByDemandIdRequest/{demandID}", method = RequestMethod.GET)
     public @ResponseBody

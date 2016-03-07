@@ -40,10 +40,6 @@
                         return obj;
                     };
 
-                    $scope.request = function (id) {
-                        $state.go('Marketplace.RequestSupply', {Id: id});
-                    };
-
                     $scope.sort = function (sortType) {
                         $scope.sortType = sortType;
                         $scope.sortReverse = !$scope.sortReverse;
@@ -267,7 +263,7 @@
                                 preferredSchedule = combinedSchedule;
                             }
 
-                            $http({
+                            indexPromise = $http({
                                 url: api.endpoint + 'CreateDemandRequest',
                                 method: 'POST',
                                 data: {
@@ -281,25 +277,31 @@
                                 headers: {
                                     'Content-Type': 'application/json',
                                 }
-                            }).then(function (response) {
-                                if (response.data.isCreated) {
-                                    ngDialog.openConfirm({
-                                        template: '/Wheels4Food/resources/ngTemplates/requestSupplySuccess.html',
-                                        className: 'ngdialog-theme-default dialog-generic',
-                                        scope: $scope
-                                    }).then(function (response) {
-                                        $state.go('Inventory.Demand');
-                                    });
-                                } else {
-                                    $scope.errorList = response.data.errorList;
-
-                                    ngDialog.openConfirm({
-                                        template: '/Wheels4Food/resources/ngTemplates/requestSupplyError.html',
-                                        className: 'ngdialog-theme-default dialog-generic',
-                                        scope: $scope
-                                    });
-                                }
                             });
+
+                            $scope.promise = [indexPromise];
+
+                            $timeout(function () {
+                                indexPromise.then(function (response) {
+                                    if (response.data.isCreated) {
+                                        ngDialog.openConfirm({
+                                            template: '/Wheels4Food/resources/ngTemplates/requestSupplySuccess.html',
+                                            className: 'ngdialog-theme-default dialog-generic',
+                                            scope: $scope
+                                        }).then(function (response) {
+                                            $state.go('Inventory.Demand');
+                                        });
+                                    } else {
+                                        $scope.errorList = response.data.errorList;
+
+                                        ngDialog.openConfirm({
+                                            template: '/Wheels4Food/resources/ngTemplates/requestSupplyError.html',
+                                            className: 'ngdialog-theme-default dialog-generic',
+                                            scope: $scope
+                                        });
+                                    }
+                                });
+                            }, 1000);
                         });
                     };
 

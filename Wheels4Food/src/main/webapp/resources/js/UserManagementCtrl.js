@@ -106,9 +106,9 @@
                     };
                     
                     var request = 'GetUserListRequest';
-                    if (authData.username === 'ffth') {
-                        request = 'GetUserListByRoleRequest/VWO';
-                    } else if (role === 'VWO') {
+                    if (role === 'Supplier') {
+                        request = 'GetUserListByRoleRequest/Requester';
+                    } else if (role === 'Requester') {
                         request = 'GetVolunteerListByOrganizationRequest/' + authData.organizationName;
                     }
                     

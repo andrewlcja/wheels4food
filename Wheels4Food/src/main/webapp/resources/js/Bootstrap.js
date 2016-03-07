@@ -12,6 +12,9 @@
                 'angularUtils.directives.dirPagination',
                 'cgBusy',
                 'chart.js',
+                'angular-perfect-scrollbar',
+                'angular-notification-icons',
+                'ngSanitize',
                 
                 //modules
                 'Wheels4Food.Principal',
@@ -22,7 +25,8 @@
                 'Wheels4Food.Inventory',
                 'Wheels4Food.Marketplace',
                 'Wheels4Food.PendingApprovals',
-                'Wheels4Food.Jobs'
+                'Wheels4Food.Jobs',
+                'Wheels4Food.ApprovedRequests'
             ])
 
             .config(['$stateProvider', '$urlRouterProvider', '$locationProvider',

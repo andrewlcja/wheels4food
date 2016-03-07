@@ -6,6 +6,7 @@
 package service;
 
 import dao.DemandDAO;
+import dao.NotificationDAO;
 import dao.SelfCollectionDAO;
 import dao.SupplyDAO;
 import dao.UserDAO;
@@ -14,6 +15,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import model.ApproveDemandResponse;
 import model.CancelSelfCollectionByDemandIdResponse;
 import model.CompleteSelfCollectionByDemandIdResponse;
 import model.CreateSelfCollectionRequest;
@@ -22,10 +32,12 @@ import model.Demand;
 import model.DemandItem;
 import model.GetSelfCollectionBreakdownBySupplierIdResponse;
 import model.Job;
+import model.Notification;
 import model.SelfCollection;
 import model.Supply;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import utility.ConfigUtility;
 
 /**
  *
@@ -44,6 +56,9 @@ public class SelfCollectionService {
 
     @Autowired
     UserDAO userDAO;
+
+    @Autowired
+    NotificationDAO notificationDAO;
 
     public CreateSelfCollectionResponse createSelfCollectionRequest(CreateSelfCollectionRequest request) {
         int demandID = request.getDemandID();
@@ -85,6 +100,7 @@ public class SelfCollectionService {
         try {
             List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
 
+            String requestContent = "";
             for (DemandItem demandItem : demandItemList) {
                 Supply supply = demandItem.getSupply();
                 int quantitySupplied = supply.getQuantitySupplied();
@@ -97,12 +113,66 @@ public class SelfCollectionService {
                 }
 
                 supplyDAO.updateSupply(supply);
+                requestContent += "<tr><td style='text-align:center;'>" + supply.getItemName() + "</td><td style='text-align:center;'>" + quantityDemanded + "</td></tr>";
             }
 
             demand.setStatus("Self Collection Created");
             demandDAO.updateDemand(demand);
 
             selfCollectionDAO.createSelfCollection(new SelfCollection(demand, deliveryDateStr, timeslot, "Active"));
+
+            //get properties
+            ConfigUtility config = new ConfigUtility();
+            final String emailUsername = config.getProperty("email_username");
+            final String emailPassword = config.getProperty("email_password");
+
+            //send email
+            Properties props = new Properties();
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.socketFactory.port", "465");
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.port", "465");
+
+            Session session = Session.getDefaultInstance(props,
+                    new javax.mail.Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(emailUsername, emailPassword);
+                        }
+                    });
+
+            try {
+                String recipient = demand.getUser().getEmail();
+
+                String body = "<div>\n"
+                        + "            <p>Dear " + demand.getUser().getOrganizationName() + ",</p><br/>\n"
+                        + "            <p>Your request has been approved by <b>" + demand.getSupplier().getOrganizationName() + "</b>. Here are the approved request details:</p>\n"
+                        + "            <table border='1'>"
+                        + "                <tr>"
+                        + "                    <th>Item Name</th>"
+                        + "                    <th>Quantity Approved</th>"
+                        + "                </tr>"
+                        + requestContent
+                        + "            </table>"
+                        + "            <p>Please login <a href='http://apps.greentransformationlab.com/Wheels4Food/Login'>here</a> to view this approved request!</p><br/>\n"
+                        + "            <p>Regards,</p>\n"
+                        + "            <p>Wheels4Food Team</p>\n"
+                        + "        </div>";
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(emailUsername));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+                message.setSubject("Wheels4Food - Request Approved");
+                message.setText(body, "UTF-8", "html");
+
+                Transport.send(message);
+            } catch (MessagingException e) {
+                errorList.add(e.getMessage());
+                return new CreateSelfCollectionResponse(false, errorList);
+            }
+
+            //create notification
+            notificationDAO.createNotification(new Notification(demand.getUser(), "Inventory.Demand", "Your requested item(s) have been <b>approved</b> by <b>" + demand.getSupplier().getOrganizationName() + ".</b> Click here to go to <b>My Inventory - Demand</b>."));
+
             return new CreateSelfCollectionResponse(true, errorList);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -139,7 +209,7 @@ public class SelfCollectionService {
 
         try {
             List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demandID);
-            
+
             for (DemandItem demandItem : demandItemList) {
                 Supply supply = demandItem.getSupply();
 
@@ -165,8 +235,16 @@ public class SelfCollectionService {
 
             if (comments.contains("Requesting")) {
                 deductUser = demand.getUser();
+
+                //create notification
+                notificationDAO.createNotification(new Notification(demand.getSupplier(), "ApprovedRequests", "A self collection has been <b>cancelled</b> due to Requesting Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>Approved Requests</b>."));
+                notificationDAO.createNotification(new Notification(demand.getUser(), "Inventory.Demand", "A self collection has been <b>cancelled</b> due to Requesting Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>My Inventory - Demand</b>."));
             } else if (comments.contains("Supplying")) {
-                deductUser = demandItemList.get(0).getSupply().getUser();
+                deductUser = demand.getSupplier();
+
+                //create notification
+                notificationDAO.createNotification(new Notification(demand.getSupplier(), "ApprovedRequests", "A self collection has been <b>cancelled</b> due to Supplying Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>Approved Requests</b>."));
+                notificationDAO.createNotification(new Notification(demand.getUser(), "Inventory.Demand", "A self collection has been <b>cancelled</b> due to Supplying Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>My Inventory - Demand</b>."));
             }
 
             if (deductUser != null) {
@@ -200,6 +278,10 @@ public class SelfCollectionService {
         try {
             selfCollectionDAO.updateSelfCollection(selfCollection);
             demandDAO.updateDemand(demand);
+
+            //create notification
+            notificationDAO.createNotification(new Notification(demand.getSupplier(), "ApprovedRequests", "<b>" + demand.getUser().getOrganizationName() + "</b> has <b>completed</b> a self collection. Click here to go to <b>Approved Requests</b>."));
+
             return new CompleteSelfCollectionByDemandIdResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());

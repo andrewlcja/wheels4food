@@ -3,7 +3,7 @@
     <div>
         <input type="radio" ng-model="currentJob.demand.comments" value="Volunteer is unable to collect the items at the specified timing"/> I am unable to collect the items at the specified timing <br/>
         <input type="radio" ng-model="currentJob.demand.comments" value="Volunteer is unable to deliver the items at the specified timing"/> I am unable to deliver the items at the specified timing <br/>        
-        <input type="radio" ng-model="currentJob.demand.comments" value="Supplying VWO, {{currentJob.demand.supply.user.organizationName}}, did not show up at the specified timing"/> {{currentJob.demand.supply.user.organizationName}} did not show up at the specified timing <br/> 
+        <input type="radio" ng-model="currentJob.demand.comments" value="Supplying VWO, {{currentJob.demand.supplier.organizationName}}, did not show up at the specified timing"/> {{currentJob.demand.supplier.organizationName}} did not show up at the specified timing <br/> 
         <input type="radio" ng-model="currentJob.demand.comments" value="Requesting VWO, {{currentJob.demand.user.organizationName}}, did not show up at the specified timing"/> {{currentJob.demand.user.organizationName}} did not show up at the specified timing <br/>
     </div>
     <div class="error-message" ng-show="currentJob.demand.comments === ''">Please select at 1 option.</div>

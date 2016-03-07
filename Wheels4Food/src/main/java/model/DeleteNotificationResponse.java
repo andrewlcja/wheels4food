@@ -11,17 +11,17 @@ import java.util.ArrayList;
  *
  * @author andrew.lim.2013
  */
-public class ConfirmJobResponse {
-    private boolean isUpdated;
+public class DeleteNotificationResponse {
+    private boolean isDeleted;
     private ArrayList<String> errorList;
 
-    public ConfirmJobResponse(boolean isUpdated, ArrayList<String> errorList) {
-        this.isUpdated = isUpdated;
+    public DeleteNotificationResponse(boolean isDeleted, ArrayList<String> errorList) {
+        this.isDeleted = isDeleted;
         this.errorList = errorList;
     }
 
-    public boolean isIsUpdated() {
-        return isUpdated;
+    public boolean isIsDeleted() {
+        return isDeleted;
     }
 
     public ArrayList<String> getErrorList() {
