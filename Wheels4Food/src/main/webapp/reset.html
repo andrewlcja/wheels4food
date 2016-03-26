@@ -1,0 +1,22 @@
+<div class="container" ng-if="showPage">
+    <div class="login-form" ng-show="isVerified">
+        <form method="post" class="login-panel" name="resetPasswordForm">
+            <div style="font-size:35px; font-weight: bolder;">Reset Password</div>
+
+            <input type="text" ng-model="request.username" placeholder="Username" class="form-control input-lg" required/>
+            <input type="password" ng-model="request.newPassword" placeholder="New Password" class="form-control input-lg" required/>
+            <input type="password" ng-model="request.confirmNewPassword" placeholder="Confirm New Password" class="form-control input-lg" required/>
+
+            <button ng-click="reset()" class="btn btn-lg btn-block btn-primary" ng-disabled="resetPasswordForm.$invalid">Reset</button>
+        </form>
+    </div>
+    <div class="login-form" ng-show="!isVerified">
+        <div class="login-panel" style="background-color: #dc4168;">
+
+            <div style="font-size:35px; font-weight: bolder;"><i class="fa fa-exclamation-triangle"></i> {{status}}</div>
+            <p style="font-size:20px;">Please submit a new request to reset your password. Thank you!</p>
+            <p style="font-size:20px;">Please contact the system administrators if there are any issues.</p>
+            <p style="font-size:20px;">-Wheels4Food Team</p>
+        </div>        
+    </div>
+</div>

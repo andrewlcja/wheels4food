@@ -8,9 +8,9 @@
                         var authData = localStorageService.get('authorizationData');
                         $scope.role = authData.role;
                         $scope.userID = authData.userID;
-
+                        
                         if (authData === null) {
-                            if (!$state.is('Register')) {
+                            if (!$state.is('Register') || !$state.is('ResetPassword') || !$state.is('Reset')) {
                                 $scope.$parent.isLoggedIn = false;
                                 $location.path('/Login');
                             }
@@ -64,7 +64,7 @@
                     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
                         $scope.currentState = toState.name;
 
-                        if (!$state.is('Register') && !$state.is('Login')) {
+                        if (!$state.is('Register') && !$state.is('ResetPassword') && !$state.is('Reset') && !$state.is('Login')) {
                             authenticate();
 
                             $http({

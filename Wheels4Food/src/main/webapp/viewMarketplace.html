@@ -81,9 +81,9 @@
                     <th class="text-center" width="12%">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody ng-if="showRequestPage">
                 <tr ng-repeat="requestSupply in requestSupplyList">
-                    <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.itemName}}</div></td>
+                    <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.itemName}} <span ng-click="populatePrevious(requestSupply)" ng-show="checkRequestHistory(requestSupply.itemName)" class="action-item fa fa-lg fa-info-circle" style="color: #3b5998;" tooltip-placement="top" tooltip="You have requested this item before! Click here to populate the previously requested quantity."></span></div></td>
                     <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.minimum}}</div></td>
                     <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.maximum}}</div></td>
                     <td style="text-align:center">

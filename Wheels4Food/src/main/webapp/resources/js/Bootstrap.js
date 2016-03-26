@@ -15,6 +15,7 @@
                 'angular-perfect-scrollbar',
                 'angular-notification-icons',
                 'ngSanitize',
+                'ngCsv',
                 
                 //modules
                 'Wheels4Food.Principal',
@@ -49,16 +50,19 @@
             .provider('api', [
                 function () {
                     var apiEndpoint = '';
+                    var baseUrl = '';
                     return {
                         setAPIEndpoints: function (baseEndPoint) {
                             apiEndpoint = baseEndPoint + '/rest/';
+                            baseUrl = baseEndPoint;
                         },
                         getAPIEndpoint: function () {
                             return apiEndpoint;
                         },
                         $get: function () {
                             return {
-                                endpoint: apiEndpoint
+                                endpoint: apiEndpoint,
+                                baseUrl: baseUrl
                             };
                         }
                     };

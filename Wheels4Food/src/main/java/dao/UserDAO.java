@@ -6,6 +6,7 @@
 package dao;
 
 import java.util.List;
+import model.PendingResetPassword;
 import model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -44,6 +45,7 @@ public class UserDAO {
         if (role.equals("VWO")) {
             userList = session.createCriteria(User.class)
                     .addOrder(Order.asc("organizationName"))
+                    .add(Restrictions.ne("username", "ffth"))
                     .add(Restrictions.disjunction()
                             .add(Restrictions.eq("role", "Supplier"))
                             .add(Restrictions.eq("role", "Requester"))).list();
@@ -147,6 +149,51 @@ public class UserDAO {
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         session.save(user);
+        tx.commit();
+        session.close();
+    }
+    
+    public void createPendingResetPassword(PendingResetPassword pendingResetPassword) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        session.save(pendingResetPassword);
+        tx.commit();
+        session.close();
+    }
+    
+    public List<PendingResetPassword> getPendingResetPasswordList() throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        List<PendingResetPassword> pendingResetPasswordList = session.createCriteria(PendingResetPassword.class).list();
+        tx.commit();
+        session.close();
+        return pendingResetPasswordList;
+    }
+    
+    public PendingResetPassword getPendingResetPassword(String username) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        PendingResetPassword pendingResetPassword = (PendingResetPassword) session.createCriteria(PendingResetPassword.class)
+                .add(Restrictions.eq("username", username))
+                .uniqueResult();
+        tx.commit();
+        session.close();
+        return pendingResetPassword;
+    }
+    
+    public void updatePendingResetPassword(PendingResetPassword pendingResetPassword) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        session.update(pendingResetPassword);
+        tx.commit();
+        session.close();
+    }
+    
+    public void deletePendingResetPassword(int id) throws Exception {
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        PendingResetPassword pendingResetPassword = (PendingResetPassword) session.load(PendingResetPassword.class, id);
+        session.delete(pendingResetPassword);
         tx.commit();
         session.close();
     }

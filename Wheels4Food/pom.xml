@@ -145,6 +145,11 @@
             <version>1.0.1</version>
         </dependency>
         <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>ng-csv</artifactId>
+            <version>0.3.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
             <version>1.4</version>

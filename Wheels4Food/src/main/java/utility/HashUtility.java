@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Random;
 
 /**
  *
@@ -22,6 +23,9 @@ public class HashUtility {
 
     // Algorithm is either MD5, SHA-1, SHA-256 (MD5 is discouraged)
     private static final String algorithm = "SHA-256";
+    
+    private static String base = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static Random random = new Random();
 
     public static String[] getHashAndSalt(String password) {
         // Create a random salt, returning 64-bit (8 bytes) of binary data
@@ -80,5 +84,15 @@ public class HashUtility {
         }
 
         return false;
+    }
+    
+    public static String generateRandomString(int length) {
+        StringBuilder b = new StringBuilder();
+        
+        for (int i = 0; i < length; i++) {
+            b.append(base.charAt(random.nextInt(base.length())));
+        }
+        
+        return b.toString();
     }
 }

@@ -113,6 +113,7 @@
 
                     $scope.$watch('deliveryDate', function (newValue, oldValue) {
                         if (newValue && newValue !== '') {
+                            $scope.demand.preferredDeliveryDate = $filter('date')($scope.deliveryDate, 'dd/MM/yyyy');
                             $scope.deliveryDateFinal = $filter('date')($scope.deliveryDate, 'dd/MM/yyyy');
 
                             $http({

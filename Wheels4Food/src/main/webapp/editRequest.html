@@ -61,19 +61,18 @@
                         <div ng-message="max">Please enter numbers between Minimum and Maximum Request Quantity.</div>
                     </div>
                 </div>
-                <div class="row" ng-if="demand.preferredSchedule === 'NA'">
+                <div class="row" ng-show="demand.preferredSchedule === 'NA'">
                     <div class="col-sm-4">
                         <div class="col-sm-9" style="padding-top: 15px;" ng-class="{'error-input': editForm.deliveryDate.$touched && editForm.deliveryDate.$invalid}"> 
                             <h4><b>Delivery Date (dd/mm/yyyy)</b></h4>
                             <p class="input-group">
-                                <input type="text" class="form-control" ng-click="open($event)" datepicker-popup="{{format}}" name="deliveryDate" ng-model="deliveryDate" min-date="minDate" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" ng-required="true" custom-date custom-date-2/>
+                                <input type="text" class="form-control" ng-click="open($event)" readonly style="background-color: white; cursor: default;" datepicker-popup="{{format}}" ng-model="deliveryDate" name="deliveryDate" min-date="minDate" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" custom-date/>
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
                                 </span>
                             </p>
                             <div class="error-message" ng-messages="editForm.deliveryDate.$error" ng-show="editForm.deliveryDate.$touched">
                                 <div style="margin-top: 5px;" ng-message="customDate">This field is required.</div>
-                                <div style="margin-top: 5px;" ng-message="date">Please enter a valid date in 'dd/mm/yyyy' format.</div>
 
                             </div>
                         </div>
@@ -88,7 +87,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" ng-if="demand.preferredSchedule !== 'NA'">
+                <div class="row" ng-show="demand.preferredSchedule !== 'NA'">
                     <div class="col-sm-4">
                         <div class="col-sm-9" style="padding-top: 15px;"> 
                             <h4><b>Schedule</b></h4>

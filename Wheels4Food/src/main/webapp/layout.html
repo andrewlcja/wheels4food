@@ -17,7 +17,7 @@
                 <li ng-if="role !== 'Volunteer'" ng-class="{active: currentState.indexOf('Marketplace') !== -1}"><a ui-sref="Marketplace.All">Marketplace</a></li>
                 <li ng-if="role !== 'Admin' && role !== 'Volunteer'" ng-class="{active: currentState.indexOf('Inventory') !== -1}" style="cursor:pointer;" ng-click="goToInventory()"><a>My Inventory</a></li>
                 <li ng-if="role !== 'Admin' && role !== 'Volunteer'" ng-class="{active: currentState.indexOf('PendingApprovals') !== -1}"><a ui-sref="PendingApprovals">Pending Approvals</a></li>
-                <li ng-if="role !== 'Admin' && role !== 'Volunteer'" ui-sref-active="active"><a ui-sref="ApprovedRequests">Approved Requests</a></li>
+                <li ng-if="role === 'Supplier'" ui-sref-active="active"><a ui-sref="ApprovedRequests">Approved Requests</a></li>
                 <li ng-if="role === 'Volunteer'" ui-sref-active="active"><a ui-sref="Jobs.View">View Jobs</a></li>
                 <li ng-if="role === 'Volunteer'" ui-sref-active="active"><a ui-sref="MyJobs">My Jobs</a></li>
                 <li ng-if="role !== 'Volunteer'" ui-sref-active="active"><a ui-sref="PendingRegistrations">Pending Registrations</a></li>

@@ -226,6 +226,33 @@
                         }
                     };
 
+                    $scope.export = function (demand) {
+                        var arr = [];
+                        arr.push({
+                            a: "Item Name",
+                            b: "Category",
+                            c: "Quantity Demanded"
+                        });
+
+                        for (var i = 0; i < $scope.demandItemList.length; i++) {
+                            var item = $scope.demandItemList[i];
+
+                            if (item.demand.id === demand.id) {
+                                arr.push({
+                                    a: item.supply.itemName,
+                                    b: item.supply.category,
+                                    c: item.quantityDemanded
+                                });
+                            }
+                        }
+
+                        return arr;
+                    };
+
+                    $scope.getHeader = function (demand) {
+                        return [demand.user.organizationName];
+                    };
+
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};

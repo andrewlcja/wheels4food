@@ -49,6 +49,7 @@
                         <div>
                             <span ng-hide="demand.status === 'Job Completed' || demand.status === 'Job Cancelled' || demand.status === 'Self Collection Completed' || demand.status === 'Self Collection Cancelled'" class="action-item fa fa-eye fa-lg" ng-click="view(demand)" tooltip-placement="top" tooltip="View"></span>
                             <span ng-show="demand.status === 'Self Collection Created' || demand.status === 'Job Created' || demand.status === 'Job Accepted'" class="action-item fa fa-times fa-lg" ng-click="cancel(demand)" tooltip-placement="top" tooltip="Cancel"></span>
+                            <span class="action-item fa fa-cloud-download fa-lg" ng-csv="export(demand)" csv-header="getHeader(demand)" filename="{{demand.user.organizationName}}.csv" tooltip-placement="top" tooltip="Export"></span>
                         </div>
                     </td>
                 </tr>
