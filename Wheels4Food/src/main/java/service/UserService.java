@@ -7,6 +7,8 @@ package service;
 
 import dao.SupplyDAO;
 import dao.UserDAO;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -72,6 +74,29 @@ public class UserService {
     }
 
     public UserLoginResponse userLoginRequest(UserLoginRequest request) {
+//        String csvFile = "C:\\Users\\andrew.lim.2013\\Desktop\\supplies.csv";
+//        BufferedReader br = null;
+//        String line = "";
+//        String cvsSplitBy = ",";
+//
+//        try {
+//
+//            br = new BufferedReader(new FileReader(csvFile));
+//            br.readLine();
+//            while ((line = br.readLine()) != null) {
+//
+//                // use comma as separator
+//                String[] values = line.split(cvsSplitBy);
+//
+//                System.out.println(values[1] + ", " + values[2] + ", " + values[3] + ", " + values[4] + ", " + values[5] + ", " + values[6] + ", " + values[7]);
+//                User ffth = userDAO.getUser("ffth");
+//                supplyDAO.createSupply(new Supply(ffth, "", values[1], values[2], values[3], Integer.parseInt(values[4]), 1, Integer.parseInt(values[4]), Integer.parseInt(values[4]), "NA", Float.parseFloat(values[7]), "4/4/2016"));
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
 //        try {
 //            User ffth = userDAO.getUser("ffth");
 //            for (int i = 1001; i <= 2000; i++) {
@@ -80,7 +105,6 @@ public class UserService {
 //        } catch (Exception e) {
 //            
 //        } 
-
 //        try {            
 //            for (int i = 1; i <= 5; i++) {
 //                User u = userDAO.getUser("svwo" + i);
@@ -98,7 +122,6 @@ public class UserService {
 //        } catch (Exception e) {
 //
 //        }
-
         User user = null;
 
         //retrieve fields

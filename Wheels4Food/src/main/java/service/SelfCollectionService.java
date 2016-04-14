@@ -13,9 +13,11 @@ import dao.UserDAO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -31,6 +33,7 @@ import model.CreateSelfCollectionResponse;
 import model.Demand;
 import model.DemandItem;
 import model.GetSelfCollectionBreakdownBySupplierIdResponse;
+import model.GetSelfCollectionBreakdownBySupplierIdAndDateRequest;
 import model.Job;
 import model.Notification;
 import model.SelfCollection;
@@ -309,6 +312,44 @@ public class SelfCollectionService {
                 case "Self Collection Completed":
                     completed++;
                     break;
+            }
+        }
+
+        return new GetSelfCollectionBreakdownBySupplierIdResponse(pending, cancelled, completed);
+    }
+
+    public GetSelfCollectionBreakdownBySupplierIdResponse getSelfCollectionBreakdownBySupplierIdAndDateRequest(GetSelfCollectionBreakdownBySupplierIdAndDateRequest request) throws Exception {
+        List<SelfCollection> selfCollectionList = selfCollectionDAO.getSelfCollectionListBySupplierId(request.getId());
+
+        int pending = 0;
+        int cancelled = 0;
+        int completed = 0;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+
+        for (SelfCollection selfCollection : selfCollectionList) {
+            String status = selfCollection.getDemand().getStatus();
+
+            Date dateRequested = sdf.parse(selfCollection.getDemand().getDateRequested());
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dateRequested);
+            int currentMonth = cal.get(Calendar.MONTH) + 1;
+            int currentYear = cal.get(Calendar.YEAR);
+
+            if (currentMonth >= request.getStartMonth() && currentMonth <= request.getEndMonth() && currentYear == request.getYear()) {
+                switch (status) {
+                    case "Self Collection Created":
+                        pending++;
+                        break;
+                    case "Self Collection Cancelled":
+                        cancelled++;
+                        break;
+                    case "Self Collection Completed":
+                        completed++;
+                        break;
+                }
             }
         }
 

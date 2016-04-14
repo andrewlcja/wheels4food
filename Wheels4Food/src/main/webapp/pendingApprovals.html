@@ -14,6 +14,9 @@
         <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <thead>
                 <tr class="header-row">
+                    <th class="text-center" width="8%">
+                        Id
+                    </th>
                     <th class="text-center" width="18%" style="cursor: pointer" ng-click="sort('organizationName')">
                         Requesting Organization
                         <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
@@ -36,6 +39,9 @@
             </thead>
             <tbody>
                 <tr dir-paginate="pendingApproval in pendingApprovalList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
+                    <td style="text-align:center; vertical-align: middle;">
+                        <div style="margin-top: 0.33em;">RN-{{pendingApproval.id}}</div>
+                    </td>
                     <td ng-repeat="column in tableColumns" style="text-align:center; vertical-align: middle;">
                         <div>{{getObj(pendingApproval, column)}}</div>
                     </td>
@@ -62,7 +68,7 @@
                     </td>
                 </tr>
                 <tr ng-if="!(pendingApprovalList | filter:proccessedSearchFilter).length">
-                    <td colspan="{{tableColumns.length + 5}}" class="text-center">
+                    <td colspan="{{tableColumns.length + 6}}" class="text-center">
                         <h5>No results found</h5>
                     </td>
                 </tr>

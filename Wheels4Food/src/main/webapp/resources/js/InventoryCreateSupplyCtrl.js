@@ -2,8 +2,9 @@
     'use strict';
     angular
             .module('Wheels4Food.Inventory')
-            .controller('InventoryCreateSupplyCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter) {
+            .controller('InventoryCreateSupplyCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', 'config',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, config) {
+                    $scope.config = config;
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
 

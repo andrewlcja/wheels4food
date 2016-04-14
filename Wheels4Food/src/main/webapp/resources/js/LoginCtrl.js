@@ -2,12 +2,12 @@
     'use strict';
     angular
             .module('Wheels4Food.Principal')
-            .controller('LoginCtrl', ['$scope', '$state', '$http', 'api', 'localStorageService', '$timeout', 'ngDialog',
-                function ($scope, $state, $http, api, localStorageService, $timeout, ngDialog) {
+            .controller('LoginCtrl', ['$scope', '$state', '$http', 'api', 'localStorageService', '$timeout', 'ngDialog', 'config',
+                function ($scope, $state, $http, api, localStorageService, $timeout, ngDialog, config) {
                     $scope.$parent.isLoggedIn = false;
                     $scope.signInText = 'Sign In';
                     $scope.isLogging = false;
-
+                    $scope.config = config;
                     $scope.username = '';
                     $scope.password = '';
 

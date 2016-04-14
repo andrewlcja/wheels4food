@@ -18,6 +18,7 @@
                 'ngCsv',
                 
                 //modules
+                'Wheels4Food.Config',
                 'Wheels4Food.Principal',
                 'Wheels4Food.Home',
                 'Wheels4Food.PendingRegistrations',
@@ -27,7 +28,8 @@
                 'Wheels4Food.Marketplace',
                 'Wheels4Food.PendingApprovals',
                 'Wheels4Food.Jobs',
-                'Wheels4Food.ApprovedRequests'
+                'Wheels4Food.ApprovedRequests',                
+                'Wheels4Food.Help'
             ])
 
             .config(['$stateProvider', '$urlRouterProvider', '$locationProvider',

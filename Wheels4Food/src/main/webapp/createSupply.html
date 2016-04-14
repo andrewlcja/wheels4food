@@ -99,7 +99,7 @@
     </div>
     <div class="row" style="padding-top: 30px; padding-bottom: 20px;">
         <div class="col-sm-offset-10 col-sm-2">
-            <button ng-click="create()" class="btn btn-primary" ng-disabled="supplyForm.$invalid">Create</button>
+            <button ng-click="create()" class="btn btn-primary" ng-disabled="supplyForm.$invalid" ng-class="{'cursor-disabled': supplyForm.$invalid}">Create</button>
             <button ui-sref="Inventory.Supply" class="btn btn-default">Back</button>
         </div>
     </div>

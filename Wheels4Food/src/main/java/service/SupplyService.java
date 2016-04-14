@@ -101,7 +101,7 @@ public class SupplyService {
                 errorList.add("Quantity Supplied must be more than 0");
             }
         } catch (NumberFormatException e) {
-            errorList.add("Quantity Supplied must be an integer");
+            errorList.add("Quantity Supplied must be an number");
         }
 
         int minimum = 0;
@@ -112,7 +112,7 @@ public class SupplyService {
                 errorList.add("Minimum Request Quantity must be more than 0");
             }
         } catch (NumberFormatException e) {
-            errorList.add("Minimum Request Quantity must be an integer");
+            errorList.add("Minimum Request Quantity must be an number");
         }
 
         int maximum = 0;
@@ -123,7 +123,7 @@ public class SupplyService {
                 errorList.add("Maximum Request Quantity must be more than 0");
             }
         } catch (NumberFormatException e) {
-            errorList.add("Maximum Request Quantity must be an integer");
+            errorList.add("Maximum Request Quantity must be an number");
         }
         
         float monetaryValue = 0;
@@ -323,7 +323,7 @@ public class SupplyService {
                 return new DeleteSupplyResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new DeleteSupplyResponse(false, errorList);
         }
     }

@@ -35,6 +35,7 @@ import model.CreateSelfCollectionResponse;
 import model.Demand;
 import model.DemandItem;
 import model.GetJobBreakdownBySupplierIdResponse;
+import model.GetJobBreakdownBySupplierIdAndDateRequest;
 import model.Job;
 import model.Notification;
 import model.Supply;
@@ -412,6 +413,48 @@ public class JobService {
                 case "Job Completed":
                     completed++;
                     break;
+            }
+        }
+
+        return new GetJobBreakdownBySupplierIdResponse(pending, accepted, cancelled, completed);
+    }
+    
+    public GetJobBreakdownBySupplierIdResponse getJobBreakdownBySupplierIdAndDateRequest(GetJobBreakdownBySupplierIdAndDateRequest request) throws Exception {
+        List<Job> jobList = jobDAO.getJobListBySupplierId(request.getId());
+
+        int pending = 0;
+        int accepted = 0;
+        int cancelled = 0;
+        int completed = 0;
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+
+        for (Job job : jobList) {
+            String status = job.getDemand().getStatus();
+            
+            Date dateRequested = sdf.parse(job.getDemand().getDateRequested());
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dateRequested);
+            int currentMonth = cal.get(Calendar.MONTH) + 1;
+            int currentYear = cal.get(Calendar.YEAR);
+
+            if (currentMonth >= request.getStartMonth() && currentMonth <= request.getEndMonth() && currentYear == request.getYear()) {
+                switch (status) {
+                    case "Job Created":
+                        pending++;
+                        break;
+                    case "Job Accepted":
+                        accepted++;
+                        break;
+                    case "Job Cancelled":
+                        cancelled++;
+                        break;
+                    case "Job Completed":
+                        completed++;
+                        break;
+                }
             }
         }
 

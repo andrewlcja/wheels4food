@@ -11,6 +11,7 @@ import model.CreateSelfCollectionRequest;
 import model.CreateSelfCollectionResponse;
 import model.Demand;
 import model.GetSelfCollectionBreakdownBySupplierIdResponse;
+import model.GetSelfCollectionBreakdownBySupplierIdAndDateRequest;
 import model.SelfCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,20 @@ public class SelfCollectionController {
         
         try {
             response = selfCollectionService.getSelfCollectionBreakdownBySupplierIdRequest(supplierID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return response;
+    }
+    
+    @RequestMapping(value = "/GetSelfCollectionBreakdownBySupplierIdAndDateRequest", method = RequestMethod.POST)
+    public @ResponseBody
+    GetSelfCollectionBreakdownBySupplierIdResponse getSelfCollectionBreakdownBySupplierIdAndDateRequest(@RequestBody GetSelfCollectionBreakdownBySupplierIdAndDateRequest request) {
+        GetSelfCollectionBreakdownBySupplierIdResponse response = null;
+        
+        try {
+            response = selfCollectionService.getSelfCollectionBreakdownBySupplierIdAndDateRequest(request);
         } catch (Exception e) {
             e.printStackTrace();
         }

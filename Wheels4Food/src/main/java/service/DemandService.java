@@ -32,6 +32,7 @@ import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
 import model.DemandItem;
+import model.GetDemandBreakdownByDateRequest;
 import model.GetDemandBreakdownResponse;
 import model.GetUnavailableTimeslotsByDeliveryDateRequest;
 import model.Notification;
@@ -126,12 +127,12 @@ public class DemandService {
                     int quantityDemanded = Integer.parseInt(quantityDemandedValues[i]);
 
                     if (quantityDemanded <= 0) {
-                        errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
+                        errorList.add("All Quantity Requested fields must be an number that is more than 0.");
                         return new CreateDemandResponse(false, errorList);
                     }
                     quantityDemandedIntValues[i] = quantityDemanded;
                 } catch (NumberFormatException ex) {
-                    errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
+                    errorList.add("All Quantity Requested fields must be an number that is more than 0.");
                     return new CreateDemandResponse(false, errorList);
                 }
             }
@@ -286,7 +287,7 @@ public class DemandService {
             }
 
         } catch (NumberFormatException e) {
-            errorList.add("Quantity must be an integer");
+            errorList.add("Quantity must be an number");
             return new CreateDemandResponse(false, errorList);
         }
     }
@@ -324,7 +325,7 @@ public class DemandService {
                 return new DeleteDemandResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new DeleteDemandResponse(false, errorList);
         }
     }
@@ -342,7 +343,7 @@ public class DemandService {
             int quantityDemanded = demandItem.getQuantityDemanded();
 
             if (quantityDemanded <= 0) {
-                errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
+                errorList.add("All Quantity Requested fields must be an number that is more than 0.");
                 break;
             }
         }
@@ -553,7 +554,7 @@ public class DemandService {
                 return new ApproveDemandResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new ApproveDemandResponse(false, errorList);
         }
     }
@@ -599,7 +600,7 @@ public class DemandService {
                 return new RejectDemandResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new RejectDemandResponse(false, errorList);
         }
     }
@@ -676,6 +677,43 @@ public class DemandService {
                 default:
                     approved++;
                     break;
+            }
+        }
+
+        return new GetDemandBreakdownResponse(pending, approved, rejected);
+    }
+
+    public GetDemandBreakdownResponse getDemandBreakdownByDateRequest(GetDemandBreakdownByDateRequest request) throws Exception {
+        List<Demand> demandList = demandDAO.getDemandListBySupplierOrRequesterId(request.getId());
+
+        int pending = 0;
+        int approved = 0;
+        int rejected = 0;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+
+        for (Demand demand : demandList) {
+            String status = demand.getStatus();
+            Date dateRequested = sdf.parse(demand.getDateRequested());
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dateRequested);
+            int currentMonth = cal.get(Calendar.MONTH) + 1;
+            int currentYear = cal.get(Calendar.YEAR);
+
+            if (currentMonth >= request.getStartMonth() && currentMonth <= request.getEndMonth() && currentYear == request.getYear()) {
+                switch (status) {
+                    case "Pending":
+                        pending++;
+                        break;
+                    case "Rejected":
+                        rejected++;
+                        break;
+                    default:
+                        approved++;
+                        break;
+                }
             }
         }
 
