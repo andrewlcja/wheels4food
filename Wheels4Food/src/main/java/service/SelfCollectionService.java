@@ -64,43 +64,44 @@ public class SelfCollectionService {
     NotificationDAO notificationDAO;
 
     public CreateSelfCollectionResponse createSelfCollectionRequest(CreateSelfCollectionRequest request) {
+        ConfigUtility config = new ConfigUtility();
         int demandID = request.getDemandID();
         String deliveryDateStr = request.getDeliveryDate();
         String timeslot = request.getTimeslot();
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        if (demandID <= 0) {
-            errorList.add("Invalid demand id.");
-            return new CreateSelfCollectionResponse(false, errorList);
-        }
-
-        Demand demand = demandDAO.getDemandById(demandID);
-        String status = demand.getStatus();
-
-        if (deliveryDateStr.equals("")) {
-            errorList.add("Delivery Date cannot be blank.");
-        }
-
-        if (timeslot.equals("")) {
-            errorList.add("Timeslot cannot be blank.");
-        }
-
-        if (!status.equals("Pending")) {
-            errorList.add("Status of request must be pending.");
-            return new CreateSelfCollectionResponse(false, errorList);
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
         try {
-            Date deliveryDate = sdf.parse(deliveryDateStr);
-        } catch (ParseException e) {
-            errorList.add("Invalid Delivery Date");
-            return new CreateSelfCollectionResponse(false, errorList);
-        }
+            if (demandID <= 0) {
+                errorList.add(config.getProperty("demand_id_invalid"));
+                return new CreateSelfCollectionResponse(false, errorList);
+            }
 
-        try {
+            Demand demand = demandDAO.getDemandById(demandID);
+            String status = demand.getStatus();
+
+            if (deliveryDateStr.equals("")) {
+                errorList.add(config.getProperty("delivery_date_blank"));
+            }
+
+            if (timeslot.equals("")) {
+                errorList.add(config.getProperty("timeslot_blank"));
+            }
+
+            if (!status.equals("Pending")) {
+                errorList.add(config.getProperty("status_pending"));
+                return new CreateSelfCollectionResponse(false, errorList);
+            }
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+            try {
+                Date deliveryDate = sdf.parse(deliveryDateStr);
+            } catch (ParseException e) {
+                errorList.add(config.getProperty("delivery_date_invalid"));
+                return new CreateSelfCollectionResponse(false, errorList);
+            }
+
             List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
 
             String requestContent = "";
@@ -125,7 +126,6 @@ public class SelfCollectionService {
             selfCollectionDAO.createSelfCollection(new SelfCollection(demand, deliveryDateStr, timeslot, "Active"));
 
             //get properties
-            ConfigUtility config = new ConfigUtility();
             final String emailUsername = config.getProperty("email_username");
             final String emailPassword = config.getProperty("email_password");
 
@@ -188,29 +188,30 @@ public class SelfCollectionService {
     }
 
     public CancelSelfCollectionByDemandIdResponse cancelSelfCollectionByDemandIdRequest(Demand demand) {
+        ConfigUtility config = new ConfigUtility();
         int demandID = demand.getId();
         String comments = demand.getComments();
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        if (demandID <= 0) {
-            errorList.add("Invalid job id.");
-        }
-
-        if (comments.equals("")) {
-            errorList.add("Reason cannot be blank.");
-        }
-
-        if (!errorList.isEmpty()) {
-            return new CancelSelfCollectionByDemandIdResponse(false, errorList);
-        }
-
-        SelfCollection selfCollection = selfCollectionDAO.getSelfCollectionByDemandId(demandID);
-        selfCollection.setStatus("Cancelled");
-
-        demand.setStatus("Self Collection Cancelled");
-
         try {
+            if (demandID <= 0) {
+                errorList.add(config.getProperty("job_id_invalid"));
+            }
+
+            if (comments.equals("")) {
+                errorList.add(config.getProperty("reason_blank"));
+            }
+
+            if (!errorList.isEmpty()) {
+                return new CancelSelfCollectionByDemandIdResponse(false, errorList);
+            }
+
+            SelfCollection selfCollection = selfCollectionDAO.getSelfCollectionByDemandId(demandID);
+            selfCollection.setStatus("Cancelled");
+
+            demand.setStatus("Self Collection Cancelled");
+
             List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demandID);
 
             for (DemandItem demandItem : demandItemList) {
@@ -265,20 +266,21 @@ public class SelfCollectionService {
     }
 
     public CompleteSelfCollectionByDemandIdResponse completeSelfCollectionByDemandIdRequest(int demandID) {
+        ConfigUtility config = new ConfigUtility();
         ArrayList<String> errorList = new ArrayList<String>();
 
-        if (demandID <= 0) {
-            errorList.add("Invalid demand id");
-            return new CompleteSelfCollectionByDemandIdResponse(false, errorList);
-        }
-
-        SelfCollection selfCollection = selfCollectionDAO.getSelfCollectionByDemandId(demandID);
-        selfCollection.setStatus("Completed");
-
-        Demand demand = demandDAO.getDemandById(demandID);
-        demand.setStatus("Self Collection Completed");
-
         try {
+            if (demandID <= 0) {
+                errorList.add(config.getProperty("demand_id_invalid"));
+                return new CompleteSelfCollectionByDemandIdResponse(false, errorList);
+            }
+
+            SelfCollection selfCollection = selfCollectionDAO.getSelfCollectionByDemandId(demandID);
+            selfCollection.setStatus("Completed");
+
+            Demand demand = demandDAO.getDemandById(demandID);
+            demand.setStatus("Self Collection Completed");
+
             selfCollectionDAO.updateSelfCollection(selfCollection);
             demandDAO.updateDemand(demand);
 

@@ -5,6 +5,7 @@
             .controller('InventoryCreateSupplyCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', 'config',
                 function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, config) {
                     $scope.config = config;
+                    
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
 

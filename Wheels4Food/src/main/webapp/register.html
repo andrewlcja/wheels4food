@@ -24,38 +24,38 @@
                         <label>Username</label>
                         <input ng-model="registration.username" type="text" class="form-control register-form-input-height" placeholder="Username" name="username" required/>                    
                         <div class="error-message-2" ng-messages="vwoForm.username.$error" ng-show="vwoForm.username.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': vwoForm.password.$touched && vwoForm.password.$invalid}">
                         <label>Password</label>
                         <input ng-model="registration.password" type="password" class="form-control register-form-input-height" placeholder="Password" name="password" required custom-password/>
                         <div class="error-message-2" ng-messages="vwoForm.password.$error" ng-show="vwoForm.password.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="customPassword">Password and confirmation password do not match.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="customPassword">{{config.errors.passwordMatch}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': vwoForm.confirmPassword.$touched && vwoForm.confirmPassword.$invalid}">
                         <label>Confirm Password</label>
                         <input ng-model="registration.confirmPassword" type="password" class="form-control register-form-input-height" placeholder="Confirm Password" name="confirmPassword" required custom-password-2/>
                         <div class="error-message-2" ng-messages="vwoForm.confirmPassword.$error" ng-show="vwoForm.confirmPassword.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="customPassword2">Password and confirmation password do not match.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="customPassword2">{{config.errors.passwordMatch}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': vwoForm.organizationName.$touched && vwoForm.organizationName.$invalid}">
                         <label>Organization Name</label>
                         <input ng-model="registration.organizationName" type="text" class="form-control register-form-input-height" placeholder="Organization Name" name="organizationName" required/>
                         <div class="error-message-2" ng-messages="vwoForm.organizationName.$error" ng-show="vwoForm.organizationName.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': vwoForm.email.$touched && vwoForm.email.$invalid}">
                         <label>Email</label>
                         <input ng-model="registration.email" type="email" class="form-control register-form-input-height" placeholder="Email" name="email" required/>
                         <div class="error-message-2" ng-messages="vwoForm.email.$error" ng-show="vwoForm.email.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="email">Please enter a valid email.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="email">{{config.errors.email}}</div>
                         </div>
                     </div>
                 </div>
@@ -64,38 +64,38 @@
                         <label>Address</label>
                         <input ng-model="registration.address" type="text" class="form-control register-form-input-height" placeholder="Address" name="address" required/>
                         <div class="error-message-2" ng-messages="vwoForm.address.$error" ng-show="vwoForm.address.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': vwoForm.postalCode.$touched && vwoForm.postalCode.$invalid}">
                         <label>Postal Code</label>
                         <input ng-model="registration.postalCode" type="text" class="form-control register-form-input-height" placeholder="Postal Code" name="postalCode" required custom-postal/>
                         <div class="error-message-2" ng-messages="vwoForm.postalCode.$error" ng-show="vwoForm.postalCode.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>                            
-                            <div style="margin-top: 5px;" ng-message="customPostal">Please enter a 6-digit number.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>                            
+                            <div style="margin-top: 5px;" ng-message="customPostal">{{config.errors.postalCode}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': vwoForm.pocName.$touched && vwoForm.pocName.$invalid}">
                         <label>Point Of Contact Name</label>
                         <input ng-model="registration.pocName" type="text" class="form-control register-form-input-height" placeholder="Point Of Contact Name" name="pocName" required/>
                         <div class="error-message-2" ng-messages="vwoForm.pocName.$error" ng-show="vwoForm.pocName.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': vwoForm.pocNumber.$touched && vwoForm.pocNumber.$invalid}">
                         <label>Point Of Contact Number</label>
                         <input ng-model="registration.pocNumber" type="text" class="form-control register-form-input-height" placeholder="Point Of Contact Number" name="pocNumber" required custom-contact/>
                         <div class="error-message-2" ng-messages="vwoForm.pocNumber.$error" ng-show="vwoForm.pocNumber.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="customContact">Please enter a 8-digit number.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="customContact">{{config.errors.contact}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': vwoForm.licenseNumber.$touched && vwoForm.licenseNumber.$invalid}">
                         <label>License Number</label>
                         <input ng-model="registration.licenseNumber" type="text" class="form-control register-form-input-height" placeholder="License Number" name="licenseNumber" required custom-number/>
                         <div class="error-message-2" ng-messages="vwoForm.licenseNumber.$error" ng-show="vwoForm.licenseNumber.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="customNumber">Please enter a whole number.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="customNumber">{{config.errors.license}}</div>
                         </div>
                     </div>                
                 </div>
@@ -109,7 +109,7 @@
                         <label>Organization Description</label>
                         <textarea class="form-control" style="height: 100px; resize: none;" ng-model="registration.description" placeholder="Organization Description" name="description" required></textarea>
                         <div class="error-message-2" ng-messages="vwoForm.description.$error" ng-show="vwoForm.description.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                         </div>
                     </div>
                     <div class="col-sm-offset-11" style="padding-top: 20px;">
@@ -126,23 +126,23 @@
                         <label>Username</label>
                         <input ng-model="registration.username" type="text" class="form-control register-form-input-height" placeholder="Username" name="username" required/>
                         <div class="error-message-2" ng-messages="volunteerRegForm.username.$error" ng-show="volunteerRegForm.username.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': volunteerRegForm.password.$touched && volunteerRegForm.password.$invalid}">
                         <label>Password</label>
                         <input ng-model="registration.password" type="password" class="form-control register-form-input-height" placeholder="Password" name="password" required custom-password/>
                         <div class="error-message-2" ng-messages="volunteerRegForm.password.$error" ng-show="volunteerRegForm.password.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="customPassword">Password and confirmation password do not match.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="customPassword">{{config.errors.passwordMatch}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': volunteerRegForm.confirmPassword.$touched && volunteerRegForm.confirmPassword.$invalid}">
                         <label>Confirm Password</label>
                         <input ng-model="registration.confirmPassword" type="password" class="form-control register-form-input-height" placeholder="Confirm Password" name="confirmPassword" required custom-password-2/>
                         <div class="error-message-2" ng-messages="volunteerRegForm.confirmPassword.$error" ng-show="volunteerRegForm.confirmPassword.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="customPassword2">Password and confirmation password do not match.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="customPassword2">{{config.errors.passwordMatch}}</div>
                         </div>
                     </div>
                 </div>
@@ -153,7 +153,7 @@
                             <option ng-repeat="VWO in VWOList">{{VWO.organizationName}}</option>
                         </select>
                         <div class="error-message-2" ng-messages="volunteerRegForm.organizationName.$error" ng-show="volunteerRegForm.organizationName.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                         </div>
                     </div>
                 </div>
@@ -162,23 +162,23 @@
                         <label>Email</label>
                         <input ng-model="registration.email" type="email" class="form-control register-form-input-height" placeholder="Email" name="email" required/>
                         <div class="error-message-2" ng-messages="volunteerRegForm.email.$error" ng-show="volunteerRegForm.email.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="email">Please enter a valid email.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="email">{{config.errors.email}}</div>
                         </div>
                     </div>     
                     <div class="register-form-input" ng-class="{'error-input': volunteerRegForm.fullName.$touched && volunteerRegForm.fullName.$invalid}">
                         <label>Full Name</label>
                         <input ng-model="registration.pocName" type="text" class="form-control register-form-input-height" placeholder="Full Name" name="fullName" required/>
                         <div class="error-message-2" ng-messages="volunteerRegForm.fullName.$error" ng-show="volunteerRegForm.fullName.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                         </div>
                     </div>
                     <div class="register-form-input" ng-class="{'error-input': volunteerRegForm.mobile.$touched && volunteerRegForm.mobile.$invalid}">
                         <label>Mobile Number</label>
                         <input ng-model="registration.pocNumber" type="text" class="form-control register-form-input-height" placeholder="Mobile Number" name="mobile" required custom-contact>
                         <div class="error-message-2" ng-messages="volunteerRegForm.mobile.$error" ng-show="volunteerRegForm.mobile.$touched">
-                            <div style="margin-top: 5px;" ng-message="required">This field is required.</div>
-                            <div style="margin-top: 5px;" ng-message="customContact">Please enter a 8-digit number.</div>
+                            <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                            <div style="margin-top: 5px;" ng-message="customContact">{{config.errors.contact}}</div>
                         </div>
                     </div>
                     <div class="col-sm-offset-9 col-sm-2" style="padding-top: 20px;">

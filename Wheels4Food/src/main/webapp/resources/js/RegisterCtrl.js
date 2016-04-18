@@ -2,8 +2,10 @@
     'use strict';
     angular
             .module('Wheels4Food.Principal')
-            .controller('RegisterCtrl', ['$scope', '$state', '$http', 'api', 'ngDialog',
-                function ($scope, $state, $http, api, ngDialog) {
+            .controller('RegisterCtrl', ['$scope', '$state', '$http', 'api', 'ngDialog', 'config',
+                function ($scope, $state, $http, api, ngDialog, config) {
+                    $scope.config = config;
+                    
                     $scope.registration = {
                         'username': '',
                         'password': '',

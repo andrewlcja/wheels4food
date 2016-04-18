@@ -111,4 +111,8 @@ public class Demand implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void setPreferredDeliveryDate(String preferredDeliveryDate) {
+        this.preferredDeliveryDate = preferredDeliveryDate;
+    }    
 }

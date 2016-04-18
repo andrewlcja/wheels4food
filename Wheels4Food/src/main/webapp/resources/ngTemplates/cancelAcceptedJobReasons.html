@@ -1,8 +1,7 @@
 <div class="ngdialog-message">
     <h3><b>Please select a reason for cancellation</b></h3>
-    <div>
-        <input type="radio" ng-model="currentDemand.comments" value="Requesting VWO, {{currentDemand.user.organizationName}}, is unable to receive the items at the specified timing"/> I am unable to receive the items at the specified timing <br/>
-        <input type="radio" ng-model="currentDemand.comments" value="Volunteer did not delivered the items at the specified timing"/> Volunteer did not deliver the items at the specified timing
+    <div ng-repeat="reason in config.cancelAcceptedJobReasons.requester">
+        <input type="radio" ng-model="currentDemand.comments" value="{{reason.value}}"/> {{reason.text}}
     </div>
     <div class="error-message" ng-show="currentDemand.comments === ''">Please select at 1 option.</div>
     <div class="col-sm-offset-6" style="padding-top: 20px; padding-left: 50px;">

@@ -2,8 +2,8 @@
     'use strict';
     angular
             .module('Wheels4Food.Marketplace')
-            .controller('ViewMarketplaceCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', '$stateParams',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, $stateParams) {
+            .controller('ViewMarketplaceCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', '$stateParams', 'config',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, $stateParams, config) {
                     var authData = localStorageService.get('authorizationData');
                     $scope.userID = authData.userID;
 

@@ -1,7 +1,9 @@
 <div class="ngdialog-message">
     <h3><b>Please select a reason for cancellation</b></h3>
     <div>
-        <input type="radio" ng-model="currentDemand.comments" value="Supplying VWO, {{currentDemand.supplier.organizationName}}, is unable to provide the items at the specified timing"/> I am unable to provide the items at the specified timing <br/>
+        <div ng-repeat="reason in config.cancelCreatedJobReasons.requester">
+            <input type="radio" ng-model="currentDemand.comments" value="{{reason.value}}"/> {{reason.text}}
+        </div>
         <input type="radio" ng-model="currentDemand.comments" value="other"/> Other reason
         <textarea class="form-control" style="height: 100px; resize: none;" name="reason" ng-model="reason" ng-disabled="currentDemand.comments !== 'other'"></textarea>
         <div class="error-message" ng-show="currentDemand.comments === 'other'">

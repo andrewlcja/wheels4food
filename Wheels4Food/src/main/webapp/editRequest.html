@@ -52,13 +52,13 @@
                         </tbody>
                     </table>
                     <div class="error-message" ng-messages="outerForm.$error">
-                        <div ng-message="required">The fields above are required.</div>
+                        <div ng-message="required">{{config.errors.requiredFields}}</div>
                     </div>
                     <div class="error-message" ng-messages="outerForm.$error">
-                        <div ng-message="number">Please enter whole numbers only.</div>
-                        <div ng-message="customNumber">Please enter whole numbers only.</div>
-                        <div ng-message="min">Please enter numbers between Minimum and Maximum Request Quantity.</div>
-                        <div ng-message="max">Please enter numbers between Minimum and Maximum Request Quantity.</div>
+                        <div ng-message="number">{{config.errors.wholeNumbers}}</div>
+                        <div ng-message="customNumber">{{config.errors.wholeNumbers}}</div>
+                        <div ng-message="min">{{config.errors.requestQuantity}}</div>
+                        <div ng-message="max">{{config.errors.requestQuantity}}</div>
                     </div>
                 </div>
                 <div class="row" ng-show="demand.preferredSchedule === 'NA'">
@@ -72,7 +72,7 @@
                                 </span>
                             </p>
                             <div class="error-message" ng-messages="editForm.deliveryDate.$error" ng-show="editForm.deliveryDate.$touched">
-                                <div style="margin-top: 5px;" ng-message="customDate">This field is required.</div>
+                                <div style="margin-top: 5px;" ng-message="customDate">{{config.errors.required}}</div>
 
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                             </td>
                         </tr>
                     </table>
-                    <div class="error-message" ng-show="scheduleCount < 3">Please select at least 3 timeslots.</div>
+                    <div class="error-message" ng-show="scheduleCount < 3">{{config.errors.volunteerTimeslots}}</div>
                 </div>
             </form>
             <div class="row" style="padding-top: 30px; padding-bottom: 30px;">

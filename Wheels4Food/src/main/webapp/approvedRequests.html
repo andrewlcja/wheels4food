@@ -14,25 +14,30 @@
         <table class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <thead>
                 <tr class="header-row">                    
-                    <th class="text-center" width="9%">
-                        Id
+                    <th class="text-center" width="8%" style="cursor: pointer" ng-click="sort('id')">
+                        ID
+                        <span ng-show="sortType == 'id' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                     </th>
-                    <th class="text-center" width="20%" style="cursor: pointer" ng-click="sort('organizationName')">
+                    <th class="text-center" width="18%" style="cursor: pointer" ng-click="sort('organizationName')">
                         Requesting Organization
                         <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                         <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                     </th>
-                    <th class="text-center" style="cursor: pointer" ng-click="sort('category')">
+                    <th class="text-center" width="12%" style="cursor: pointer" ng-click="sort('date')">
+                        Collection Date
+                        <span ng-show="sortType == 'date' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'date' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center">
                         Requested Item(s)
-                        <span ng-show="sortType == 'category' && sortReverse" class="fa fa-lg fa-caret-down"></span>
-                        <span ng-show="sortType == 'category' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                     </th>              
                     <th class="text-center" width="18%">Status</th>
                     <th class="text-center" width="15%">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortByDate:true" current-page="currentPage">
+                <tr dir-paginate="demand in demandList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage">
                     <td style="text-align:center; vertical-align: middle;">
                         <div style="margin-top: 0.33em;">RN-{{demand.id}}</div>
                     </td>                    

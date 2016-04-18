@@ -2,8 +2,10 @@
     'use strict';
     angular
             .module('Wheels4Food.User')
-            .controller('ChangePasswordCtrl', ['$scope', '$state', 'localStorageService', '$http', 'api', '$timeout', 'ngDialog', '$location',
-                function ($scope, $state, localStorageService, $http, api, $timeout, ngDialog, $location) {
+            .controller('ChangePasswordCtrl', ['$scope', '$state', 'localStorageService', '$http', 'api', '$timeout', 'ngDialog', '$location', 'config',
+                function ($scope, $state, localStorageService, $http, api, $timeout, ngDialog, $location, config) {
+                    $scope.config = config;
+                    
                     var authData = localStorageService.get('authorizationData');
                     var username = authData.username;
 
