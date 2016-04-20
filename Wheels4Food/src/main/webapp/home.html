@@ -10,11 +10,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Requests Status Breakdown</div>
                 <div class="panel-body" ng-show="hideDemandChart" style="height:186px;">
-                    <h2 style="text-align: center; vertical-align: middle; padding-top:30px;">No requests yet</h2>
+                    <h2 style="text-align: center; vertical-align: middle; padding-top:30px;">No requests</h2>
                 </div>
                 <div class="panel-body" ng-if="!hideDemandChart" style="height:186px;">
-                    <canvas id="pie" class="chart chart-pie" chart-data="demandData" chart-labels="demandLabels" chart-colours="demandColours">
-                    </canvas>                 
+                    <canvas id="bar" class="chart chart-bar" chart-data="demandData" chart-colours="demandColours" chart-labels="demandLabels">
+                    </canvas>
                 </div>            
             </div>
         </div>
@@ -22,10 +22,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Jobs Status Breakdown</div>
                 <div class="panel-body" ng-show="hideJobChart" style="height:186px;">
-                    <h2 style="text-align: center; vertical-align: middle; padding-top:30px;">No jobs yet</h2>
+                    <h2 style="text-align: center; vertical-align: middle; padding-top:30px;">No jobs</h2>
                 </div>
                 <div class="panel-body" ng-if="!hideJobChart" style="height:186px;">
-                    <canvas id="pie" class="chart chart-pie" chart-data="jobData" chart-labels="jobLabels" chart-colours="jobColours">
+                    <canvas id="bar" class="chart chart-bar" chart-data="jobData" chart-labels="jobLabels" chart-colours="jobColours">
                     </canvas>                 
                 </div>            
             </div>
@@ -34,39 +34,60 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Self Collection Status Breakdown</div>
                 <div class="panel-body" ng-show="hideselfCollectionChart" style="height:186px;">
-                    <h2 style="text-align: center; vertical-align: middle; padding-top:30px;">No self collections yet</h2>
+                    <h2 style="text-align: center; vertical-align: middle; padding-top:30px;">No self collections</h2>
                 </div>
                 <div class="panel-body" ng-if="!hideselfCollectionChart" style="height:186px;">
-                    <canvas id="pie" class="chart chart-pie" chart-data="selfCollectionData" chart-labels="selfCollectionLabels" chart-colours="selfCollectionColours">
+                    <canvas id="bar" class="chart chart-bar" chart-data="selfCollectionData" chart-labels="selfCollectionLabels" chart-colours="selfCollectionColours">
                     </canvas>                 
                 </div>            
             </div>
         </div>
     </div>
     <div class="row" ng-show="role === 'Supplier' || role === 'Requester'">
-        <div class="col-sm-4" cg-busy="{promise:promiseSupply,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="col-sm-4" ng-show="role === 'Supplier'" cg-busy="{promise:promiseSupply,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <div class="panel panel-default">
-                <div class="panel-heading">Number of supplies created</div>
+                <div class="panel-heading">Total no. of supplies created</div>
                 <div class="panel-body" style="height:186px;">
                     <h1 style="text-align: center; vertical-align: middle; padding-top:7px; font-size: 80px;">{{supplyCount}}</h1>
                 </div>
             </div>
         </div>
-        <div class="col-sm-4" cg-busy="{promise:promiseSupply,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="col-sm-4" ng-show="role === 'Supplier'" cg-busy="{promise:promiseSupply,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <div class="panel panel-default">
                 <div class="panel-heading">Total monetary value of supplies</div>
                 <div class="panel-body" style="height:186px;">
-                    <h1 ng-show="showSupply" style="text-align: center; vertical-align: middle; padding-top:20px; font-size: 60px;">${{supplyMonetaryValue}}</h1>
+                    <h1 ng-show="showSupply" style="text-align: center; vertical-align: middle; padding-top:20px; font-size: 60px;">${{supplyMonetaryValue| number: 2}}</h1>
                 </div>
             </div>
         </div>
-<!--        <div class="col-sm-4" cg-busy="{promise:promiseMonetaryValue,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="col-sm-4">
             <div class="panel panel-default">
-                <div class="panel-heading">Total monetary value given</div>
+                <div class="panel-heading" style="background-color: #415c77; color: white;">Chart Filter Settings</div>
                 <div class="panel-body" style="height:186px;">
-                    <h1 ng-show="showMonetaryValue" style="text-align: center; vertical-align: middle; padding-top:20px; font-size: 60px;">${{totalMonetaryValueGiven}}</h1>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h4><b>Start Month</b></h4>
+                            <select class="form-control" ng-options="month.name for month in months" ng-change="updateStart()" ng-model='selectedStartMonth' ng-init="selectedStartMonth = months[currentMonth-1]">
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <h4><b>End Month</b></h4>                            
+                            <select class="form-control" ng-options="month.name for month in months" ng-change="updateEnd()" ng-model='selectedEndMonth' ng-init="selectedEndMonth = months[currentMonth-1]">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h4><b>Year</b></h4>
+                            <select class="form-control" ng-options="year for year in years" ng-model='selectedYear' ng-init="selectedYear = currentYear">
+                            </select>
+                        </div>
+                        <div class="col-sm-offset-9">
+                            <button class="btn btn-success" ng-click="apply()" style="margin-top: 38px; margin-left: 14px;">Apply</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>-->
-    </div>
+        </div>
+    </div>    
 </div>

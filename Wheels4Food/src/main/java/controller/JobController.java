@@ -14,6 +14,7 @@ import model.CreateJobRequest;
 import model.CreateJobResponse;
 import model.Demand;
 import model.GetJobBreakdownBySupplierIdResponse;
+import model.GetJobBreakdownBySupplierIdAndDateRequest;
 import model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -108,6 +109,19 @@ public class JobController {
         return response;
     }
     
+    @RequestMapping(value = "/GetJobBreakdownBySupplierIdAndDateRequest", method = RequestMethod.POST)
+    public @ResponseBody
+    GetJobBreakdownBySupplierIdResponse getJobBreakdownBySupplierIdAndDateRequest(@RequestBody GetJobBreakdownBySupplierIdAndDateRequest request) {
+        GetJobBreakdownBySupplierIdResponse response = null;
+        
+        try {
+            response = jobService.getJobBreakdownBySupplierIdAndDateRequest(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return response;
+    }    
 
     @RequestMapping(value = "/GetJobByDemandIdRequest/{demandID}", method = RequestMethod.GET)
     public @ResponseBody

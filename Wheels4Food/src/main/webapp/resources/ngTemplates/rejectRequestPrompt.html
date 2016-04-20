@@ -1,11 +1,12 @@
 <div class="ngdialog-message">
     <h3><b>Are you sure you want to reject this request?</b></h3>
-    <div>If yes, please enter a reason for rejection below:</div>
+    <div>If yes, please enter a reason for rejection below (no more than 150 characters):</div>
     <form name="rejectForm" novalidate>
         <div ng-class="{'error-input': rejectForm.reason.$touched && rejectForm.reason.$invalid}">
-            <textarea class="form-control" style="height: 100px; resize: none;" name="reason" ng-model="reason" required></textarea>
+            <textarea ng-maxlength="150" class="form-control" style="height: 100px; resize: none;" name="reason" ng-model="reason" required></textarea>
             <div class="error-message" ng-messages="rejectForm.reason.$error" ng-show="rejectForm.reason.$touched">
                 <p ng-message="required">Reason is required.</p>
+                <p ng-message="maxlength">Please limit the reason to within 150 characters.</p>
             </div>
         </div>
         <div class="col-sm-offset-9" style="padding-top: 20px;">

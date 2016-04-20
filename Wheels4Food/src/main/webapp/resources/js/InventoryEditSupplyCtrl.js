@@ -2,8 +2,10 @@
     'use strict';
     angular
             .module('Wheels4Food.Inventory')
-            .controller('InventoryEditSupplyCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', '$stateParams',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, $stateParams) {
+            .controller('InventoryEditSupplyCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', '$stateParams', 'config',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, $stateParams, config) {
+                    $scope.config = config;
+                    
                     var indexPromise = $http({
                         url: api.endpoint + 'GetSupplyByIdRequest/' + $stateParams.Id,
                         method: 'GET',

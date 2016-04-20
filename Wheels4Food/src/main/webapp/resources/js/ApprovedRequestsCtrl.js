@@ -2,8 +2,9 @@
     'use strict';
     angular
             .module('Wheels4Food.ApprovedRequests')
-            .controller('ApprovedRequestsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams', '$filter',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams, $filter) {
+            .controller('ApprovedRequestsCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams', '$filter', 'config',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams, $filter, config) {
+                    $scope.config = config;
                     var authData = localStorageService.get('authorizationData');
                     var userID = authData.userID;
 
@@ -32,51 +33,6 @@
                                 }
                             }).then(function (response) {
                                 $scope.currentJob = response.data;
-
-                                $scope.scheduleAMList = [];
-                                $scope.schedulePMList = [];
-                                $scope.disabledAMList = [];
-                                $scope.disabledPMList = [];
-                                $scope.scheduleCount = 0;
-
-                                for (var i = 0; i < $scope.currentJob.schedule.length; i++) {
-                                    var value = $scope.currentJob.schedule.charAt(i);
-
-                                    if (i % 2 === 0) {
-                                        if (value === '0') {
-                                            $scope.scheduleAMList.push({'value': false});
-                                            $scope.disabledAMList.push(i / 2);
-                                        } else {
-                                            $scope.scheduleAMList.push({'value': true});
-                                            $scope.scheduleCount++;
-                                        }
-                                    } else {
-                                        if (value === '0') {
-                                            $scope.schedulePMList.push({'value': false});
-                                            $scope.disabledPMList.push(Math.floor(i / 2));
-                                        } else {
-                                            $scope.schedulePMList.push({'value': true});
-                                            $scope.scheduleCount++;
-                                        }
-                                    }
-                                }
-
-                                var parts = $scope.currentJob.expiryDate.split("/");
-                                var expiryDate = new Date(parseInt(parts[2], 10),
-                                        parseInt(parts[1], 10) - 1,
-                                        parseInt(parts[0], 10));
-
-                                $scope.dates = [];
-
-                                for (var i = 0; i < 10; i++) {
-                                    if (expiryDate.getDay() !== 0 && expiryDate.getDay() !== 6) {
-                                        $scope.dates.unshift({'value': new Date(expiryDate)});
-                                    } else {
-                                        i--;
-                                    }
-
-                                    expiryDate.setDate(expiryDate.getDate() - 1);
-                                }
 
                                 ngDialog.openConfirm({
                                     template: '/Wheels4Food/resources/ngTemplates/viewJobDetails.html',
@@ -226,6 +182,33 @@
                         }
                     };
 
+                    $scope.export = function (demand) {
+                        var arr = [];
+                        arr.push({
+                            a: "Item Name",
+                            b: "Category",
+                            c: "Quantity Demanded"
+                        });
+
+                        for (var i = 0; i < $scope.demandItemList.length; i++) {
+                            var item = $scope.demandItemList[i];
+
+                            if (item.demand.id === demand.id) {
+                                arr.push({
+                                    a: item.supply.itemName,
+                                    b: item.supply.category,
+                                    c: item.quantityDemanded
+                                });
+                            }
+                        }
+
+                        return arr;
+                    };
+
+                    $scope.getHeader = function (demand) {
+                        return [demand.user.organizationName];
+                    };
+
                     //setup searchFilter options
                     var parseSplitArray = function (input, sequenceArray) {
                         var proccessed = {};
@@ -243,10 +226,23 @@
                         return proccessed;
                     };
 
-                    $scope.sortByDate = function (demand) {
-                        var parts = demand.dateRequested.split('/');
-                        var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
-                        return date;
+                    $scope.sort = function (sortType) {
+                        $scope.sortType = sortType;
+                        $scope.sortReverse = !$scope.sortReverse;
+                    };
+
+                    //default
+                    $scope.sortType = 'date';
+
+                    $scope.sortBy = function (demand) {
+                        if ($scope.sortType === 'organizationName') {
+                            return demand['user']['organizationName'];
+                        } else if ($scope.sortType === 'date') {
+                            var parts = demand.preferredDeliveryDate.split('/');
+                            var date = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
+                            return date;
+                        }
+                        return demand[$scope.sortType];
                     };
 
                     //retrieve details
@@ -264,7 +260,7 @@
                     };
 
                     //set up user table columns
-                    $scope.tableColumns = ['user.organizationName'];
+                    $scope.tableColumns = ['user.organizationName', 'preferredDeliveryDate'];
 
 
                     var indexPromise = $http({

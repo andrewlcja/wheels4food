@@ -2,8 +2,8 @@
     'use strict';
     angular
             .module('Wheels4Food.Marketplace')
-            .controller('ViewMarketplaceCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', '$stateParams',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, $stateParams) {
+            .controller('ViewMarketplaceCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$filter', '$stateParams', 'config',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $filter, $stateParams, config) {
                     var authData = localStorageService.get('authorizationData');
                     $scope.userID = authData.userID;
 
@@ -86,7 +86,35 @@
                     };
 
                     $scope.goToRequestPage = function () {
-                        $scope.showRequestPage = true;
+                        $http({
+                            url: api.endpoint + 'GetDemandItemListByRequesterIdRequest/' + $scope.userID,
+                            method: 'GET'
+                        }).then(function (response) {
+                            $scope.demandItemList = response.data;
+                            $scope.showRequestPage = true;
+                        });
+                    };
+
+                    $scope.checkRequestHistory = function (itemName) {
+                        for (var i = 0; i < $scope.demandItemList.length; i++) {
+                            var item = $scope.demandItemList[i];
+
+                            if (item.supply.itemName === itemName) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    };
+
+                    $scope.populatePrevious = function (requestSupply) {
+                        for (var i = 0; i < $scope.demandItemList.length; i++) {
+                            var item = $scope.demandItemList[i];
+
+                            if (item.supply.itemName === requestSupply.itemName) {
+                                requestSupply.quantityDemanded = item.quantityDemanded;
+                            }
+                        }
                     };
 
                     $scope.removeSupply = function (supply) {

@@ -48,6 +48,8 @@ public class PendingRegistrationService {
     NotificationDAO notificationDAO;
 
     public CreatePendingRegistrationResponse createPendingRegistrationRequest(CreatePendingRegistrationRequest request) {
+        ConfigUtility config = new ConfigUtility();
+
         String username = request.getUsername().trim();
         String password = request.getPassword().trim();
         String confirmPassword = request.getConfirmPassword().trim();
@@ -63,78 +65,78 @@ public class PendingRegistrationService {
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        //validations
-        if (username.equals("")) {
-            errorList.add("Username cannot be blank");
-        }
-
-        if (password.equals("")) {
-            errorList.add("Password cannot be blank");
-        }
-
-        if (confirmPassword.equals("")) {
-            errorList.add("Confirmation Password cannot be blank");
-        }
-
-        if (organizationName.equals("")) {
-            errorList.add("Organization Name cannot be blank");
-        }
-
-        if (email.equals("")) {
-            errorList.add("Email cannot be blank");
-        }
-
-        if (address.equals("")) {
-            errorList.add("Address cannot be blank");
-        }
-
-        if (postalCodeStr.equals("")) {
-            errorList.add("Postal Code cannot be blank");
-        }
-
-        if (pocName.equals("")) {
-            errorList.add("Point of Contact Name cannot be blank");
-        }
-
-        if (pocNumber.equals("")) {
-            errorList.add("Point of Contact Number cannot be blank");
-        }
-
-        if (licenseNumber.equals("")) {
-            errorList.add("License Number cannot be blank");
-        }
-
-        if (description.equals("")) {
-            errorList.add("Organization Description cannot be blank");
-        }
-
-        if (role.equals("")) {
-            errorList.add("Role cannot be blank");
-        }
-
-        if (!errorList.isEmpty()) {
-            return new CreatePendingRegistrationResponse(false, errorList);
-        }
-
         try {
+            //validations
+            if (username.equals("")) {
+                errorList.add(config.getProperty("username_blank"));
+            }
+
+            if (password.equals("")) {
+                errorList.add(config.getProperty("password_blank"));
+            }
+
+            if (confirmPassword.equals("")) {
+                errorList.add(config.getProperty("confirmation_password_blank"));
+            }
+
+            if (organizationName.equals("")) {
+                errorList.add(config.getProperty("organization_name_blank"));
+            }
+
+            if (email.equals("")) {
+                errorList.add(config.getProperty("email_blank"));
+            }
+
+            if (address.equals("")) {
+                errorList.add(config.getProperty("address_blank"));
+            }
+
+            if (postalCodeStr.equals("")) {
+                errorList.add(config.getProperty("postal_blank"));
+            }
+
+            if (pocName.equals("")) {
+                errorList.add(config.getProperty("poc_blank"));
+            }
+
+            if (pocNumber.equals("")) {
+                errorList.add(config.getProperty("poc_number_blank"));
+            }
+
+            if (licenseNumber.equals("")) {
+                errorList.add(config.getProperty("license_blank"));
+            }
+
+            if (description.equals("")) {
+                errorList.add(config.getProperty("organization_description_blank"));
+            }
+
+            if (role.equals("")) {
+                errorList.add(config.getProperty("role_blank"));
+            }
+
+            if (!errorList.isEmpty()) {
+                return new CreatePendingRegistrationResponse(false, errorList);
+            }
+
             if (username.contains(" ")) {
-                errorList.add("Username cannot contain empty spaces");
+                errorList.add(config.getProperty("username_empty_spaces"));
             } else if (userDAO.getUser(username) != null || pendingRegistrationDAO.getPendingRegistrationByUsername(username) != null) {
-                errorList.add("Username already exists");
+                errorList.add(config.getProperty("username_exists"));
             }
 
             if (userDAO.getUserByOrganization(organizationName) != null || pendingRegistrationDAO.getPendingRegistrationByOrganization(organizationName) != null) {
-                errorList.add("Organization Name already exists");
+                errorList.add(config.getProperty("organization_name_exists"));
             }
 
             if (!password.equals(confirmPassword)) {
-                errorList.add("Password and Confirmation Password must be the same");
+                errorList.add(config.getProperty("password_match"));
             }
 
             if (!email.contains("@") || email.length() == 1) {
-                errorList.add("Invalid email");
+                errorList.add(config.getProperty("email_invalid"));
             } else if (userDAO.getUserByEmail(email) != null) {
-                errorList.add("Email already exists");
+                errorList.add(config.getProperty("email_exists"));
             }
 
             int pocNum;
@@ -142,12 +144,12 @@ public class PendingRegistrationService {
                 pocNum = Integer.parseInt(pocNumber);
 
                 if (pocNumber.length() != 8) {
-                    errorList.add("POC Number must be a 8-digit integer");
+                    errorList.add(config.getProperty("poc_number_digit"));
                 } else if (userDAO.getUserByMobileNumber(pocNumber) != null) {
-                    errorList.add("POC Number already exists");
+                    errorList.add(config.getProperty("email_exists"));
                 }
             } catch (NumberFormatException e) {
-                errorList.add("POC Number must be a 8-digit integer");
+                errorList.add(config.getProperty("poc_number_digit"));
             }
 
             int postalCode;
@@ -155,10 +157,10 @@ public class PendingRegistrationService {
                 postalCode = Integer.parseInt(postalCodeStr);
 
                 if (postalCodeStr.length() != 6) {
-                    errorList.add("Postal Code must be a 6-digit integer");
+                    errorList.add(config.getProperty("postal_digit"));
                 }
             } catch (NumberFormatException e) {
-                errorList.add("Postal Code must be a 6-digit integer");
+                errorList.add(config.getProperty("postal_digit"));
             }
 
             if (!errorList.isEmpty()) {
@@ -189,6 +191,8 @@ public class PendingRegistrationService {
     }
 
     public CreatePendingRegistrationResponse createVolunteerPendingRegistrationRequest(CreatePendingRegistrationRequest request) {
+        ConfigUtility config = new ConfigUtility();
+
         String username = request.getUsername().trim();
         String password = request.getPassword().trim();
         String confirmPassword = request.getConfirmPassword().trim();
@@ -204,58 +208,58 @@ public class PendingRegistrationService {
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        //validations
-        if (username.equals("")) {
-            errorList.add("Username cannot be blank");
-        }
-
-        if (password.equals("")) {
-            errorList.add("Password cannot be blank");
-        }
-
-        if (confirmPassword.equals("")) {
-            errorList.add("Confirmation Password cannot be blank");
-        }
-
-        if (organizationName.equals("")) {
-            errorList.add("Organization Name cannot be blank");
-        }
-
-        if (email.equals("")) {
-            errorList.add("Email cannot be blank");
-        }
-
-        if (pocName.equals("")) {
-            errorList.add("Full Name cannot be blank");
-        }
-
-        if (pocNumber.equals("")) {
-            errorList.add("Mobile Number cannot be blank");
-        }
-
-        if (role.equals("")) {
-            errorList.add("Role cannot be blank");
-        }
-
-        if (!errorList.isEmpty()) {
-            return new CreatePendingRegistrationResponse(false, errorList);
-        }
-
         try {
+            //validations
+            if (username.equals("")) {
+                errorList.add(config.getProperty("username_blank"));
+            }
+
+            if (password.equals("")) {
+                errorList.add(config.getProperty("password_blank"));
+            }
+
+            if (confirmPassword.equals("")) {
+                errorList.add(config.getProperty("confirmation_password_blank"));
+            }
+
+            if (organizationName.equals("")) {
+                errorList.add(config.getProperty("organization_name_blank"));
+            }
+
+            if (email.equals("")) {
+                errorList.add(config.getProperty("email_blank"));
+            }
+
+            if (pocName.equals("")) {
+                errorList.add(config.getProperty("full_name_blank"));
+            }
+
+            if (pocNumber.equals("")) {
+                errorList.add(config.getProperty("mobile_blank"));
+            }
+
+            if (role.equals("")) {
+                errorList.add(config.getProperty("role_blank"));
+            }
+
+            if (!errorList.isEmpty()) {
+                return new CreatePendingRegistrationResponse(false, errorList);
+            }
+
             if (username.contains(" ")) {
-                errorList.add("Username cannot contain empty spaces");
+                errorList.add(config.getProperty("username_empty_spaces"));
             } else if (userDAO.getUser(username) != null || pendingRegistrationDAO.getPendingRegistrationByUsername(username) != null) {
-                errorList.add("Username already exists");
+                errorList.add(config.getProperty("username_exists"));
             }
 
             if (!password.equals(confirmPassword)) {
-                errorList.add("Password and Confirmation Password must be the same");
+                errorList.add(config.getProperty("password_match"));
             }
 
             if (!email.contains("@") || email.length() == 1) {
-                errorList.add("Invalid email");
+                errorList.add(config.getProperty("email_invalid"));
             } else if (userDAO.getUserByEmail(email) != null) {
-                errorList.add("Email already exists");
+                errorList.add(config.getProperty("email_exists"));
             }
 
             int pocNum;
@@ -263,12 +267,12 @@ public class PendingRegistrationService {
                 pocNum = Integer.parseInt(pocNumber);
 
                 if (pocNumber.length() != 8) {
-                    errorList.add("Mobile Number must be a 8-digit integer");
+                    errorList.add(config.getProperty("mobile_digit"));
                 } else if (userDAO.getUserByMobileNumber(pocNumber) != null) {
-                    errorList.add("Mobile Number already exists");
+                    errorList.add(config.getProperty("mobile_exists"));
                 }
             } catch (NumberFormatException e) {
-                errorList.add("Mobile Number must be a 8-digit integer");
+                errorList.add(config.getProperty("mobile_digit"));
             }
 
             if (!errorList.isEmpty()) {
@@ -332,7 +336,7 @@ public class PendingRegistrationService {
                 return new DeletePendingRegistrationResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new DeletePendingRegistrationResponse(false, errorList);
         }
     }
@@ -429,7 +433,7 @@ public class PendingRegistrationService {
                 return new ApprovePendingRegistrationResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new ApprovePendingRegistrationResponse(false, errorList);
         }
     }

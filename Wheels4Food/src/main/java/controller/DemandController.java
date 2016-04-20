@@ -19,6 +19,7 @@ import model.RejectDemandRequest;
 import model.RejectDemandResponse;
 import model.UpdateDemandRequest;
 import model.UpdateDemandResponse;
+import model.GetDemandBreakdownByDateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -226,6 +227,20 @@ public class DemandController {
         
         try {
             response = demandService.getDemandBreakdownRequest(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return response;
+    }
+    
+    @RequestMapping(value = "/GetDemandBreakdownRequestByDate", method = RequestMethod.POST)
+    public @ResponseBody
+    GetDemandBreakdownResponse getDemandBreakdownByDateRequest(@RequestBody GetDemandBreakdownByDateRequest request) {
+        GetDemandBreakdownResponse response = null;
+        
+        try {
+            response = demandService.getDemandBreakdownByDateRequest(request);
         } catch (Exception e) {
             e.printStackTrace();
         }

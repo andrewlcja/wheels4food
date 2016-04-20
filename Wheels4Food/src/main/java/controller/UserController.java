@@ -15,6 +15,11 @@ import model.UpdateUserResponse;
 import model.User;
 import model.UserLoginRequest;
 import model.UserLoginResponse;
+import model.CreatePendingResetPasswordRequest;
+import model.CreatePendingResetPasswordResponse;
+import model.VerifyResetPasswordTokenResponse;
+import model.ResetPasswordRequest;
+import model.ResetPasswordResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -118,5 +123,20 @@ public class UserController {
     @RequestMapping(value = "/ChangePasswordRequest", method = RequestMethod.PUT)
     public @ResponseBody ChangePasswordResponse changePasswordRequest(@RequestBody ChangePasswordRequest request ) {
         return userService.changePasswordRequest(request);
+    }
+    
+    @RequestMapping(value = "/CreatePendingResetPasswordRequest", method = RequestMethod.POST)
+    public @ResponseBody CreatePendingResetPasswordResponse createPendingResetPasswordRequest(@RequestBody CreatePendingResetPasswordRequest request) {
+        return userService.createPendingResetPasswordRequest(request);
+    }
+    
+    @RequestMapping(value = "/VerifyResetPasswordTokenRequest/{token}", method = RequestMethod.GET)
+    public @ResponseBody VerifyResetPasswordTokenResponse verifyResetPasswordTokenRequest(@PathVariable("token") String token) {
+        return userService.verifyResetPasswordTokenRequest(token);
+    }
+    
+    @RequestMapping(value = "/ResetPasswordRequest", method = RequestMethod.PUT)
+    public @ResponseBody ResetPasswordResponse resetPasswordRequest(@RequestBody ResetPasswordRequest request ) {
+        return userService.resetPasswordRequest(request);
     }
 }

@@ -246,7 +246,7 @@ body {
 
 .ngdialog.dialog-registration-prompt .ngdialog-content{
     width : 480px;
-    height: 130px;
+    height: auto;
     padding-top: 5px;
     padding-left: 30px;
     padding-right: 20px;
@@ -254,7 +254,7 @@ body {
 
 .ngdialog.dialog-registration-success .ngdialog-content{
     width : 480px;
-    height: 170px;
+    height: auto;
     padding-top: 5px;
     padding-left: 30px;
     padding-right: 20px;
@@ -270,7 +270,7 @@ body {
 
 .ngdialog.dialog-logout-prompt .ngdialog-content{
     width : 480px;
-    height: 130px;
+    height: auto;
     padding-top: 5px;
     padding-left: 30px;
     padding-right: 20px;
@@ -374,6 +374,11 @@ body {
 }
 .error-message.ng-hide {
     opacity: 0;
+}
+
+.error-message-2 {
+    color: #dca4a3;
+    //transition: all linear 0.3s;
 }
 
 .error-input .form-control {
@@ -482,11 +487,24 @@ body {
 }
 
 .angular-notification-icons-icon {
-  left: -10px;
-  background: yellow;
-  color: black;
-  width: 30px;
-  height: 30px;
-  font-weight: bolder;
-  font-size: 1.2em;
+    left: -10px;
+    background: yellow;
+    color: black;
+    width: 30px;
+    height: 30px;
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+.highlight-valid {
+    background-color: #e1f8e1;
+}
+
+.highlight-invalid {
+    background-color: #ffdada;
+}
+
+.accordion-toggle:focus {
+    outline: none;
+    text-decoration: none;
 }

@@ -2,8 +2,10 @@
     'use strict';
     angular
             .module('Wheels4Food.PendingApprovals')
-            .controller('PendingApprovalsEditCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams', '$filter',
-                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams, $filter) {
+            .controller('PendingApprovalsEditCtrl', ['$scope', '$state', '$http', 'api', '$timeout', 'ngDialog', 'localStorageService', '$stateParams', '$filter', 'config',
+                function ($scope, $state, $http, api, $timeout, ngDialog, localStorageService, $stateParams, $filter, config) {
+                    $scope.config = config;
+                    
                     $scope.scheduleCount = 0;
 
                     $scope.selectSlot = function (value) {
@@ -113,6 +115,7 @@
 
                     $scope.$watch('deliveryDate', function (newValue, oldValue) {
                         if (newValue && newValue !== '') {
+                            $scope.demand.preferredDeliveryDate = $filter('date')($scope.deliveryDate, 'dd/MM/yyyy');
                             $scope.deliveryDateFinal = $filter('date')($scope.deliveryDate, 'dd/MM/yyyy');
 
                             $http({
@@ -129,7 +132,7 @@
                             });
                         }
                     });
-                    
+
                     $scope.removeDemandItem = function (demandItem) {
                         $scope.demandItemList.splice($scope.demandItemList.indexOf(demandItem), 1);
                     };
@@ -160,7 +163,7 @@
                             className: 'ngdialog-theme-default dialog-generic',
                             scope: $scope
                         }).then(function () {
-                            $http({
+                            indexPromise = $http({
                                 url: api.endpoint + 'UpdateDemandRequest',
                                 method: 'PUT',
                                 data: {
@@ -170,7 +173,11 @@
                                 headers: {
                                     'Content-Type': 'application/json',
                                 }
-                            }).then(function (response) {
+                            });
+
+                            $scope.promise = [indexPromise];
+
+                            indexPromise.then(function (response) {
                                 if (response.data.isUpdated) {
                                     $state.go('PendingApprovals');
                                 } else {

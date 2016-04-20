@@ -19,6 +19,18 @@
         <to>index.html</to>
     </rule>
     <rule match-type="wildcard">
+        <from>/ResetPassword</from>
+        <to>index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/Reset</from>
+        <to>index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/Reset/*</from>
+        <to>/index.html</to>
+    </rule>
+    <rule match-type="wildcard">
         <from>/Register</from>
         <to>index.html</to>
     </rule>
@@ -104,6 +116,10 @@
     </rule>
     <rule match-type="wildcard">
         <from>/ApprovedRequests</from>
+        <to>index.html</to>
+    </rule>
+    <rule match-type="wildcard">
+        <from>/Help</from>
         <to>index.html</to>
     </rule>
 

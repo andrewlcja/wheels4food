@@ -40,15 +40,15 @@
                         <span ng-show="sortType == 'expiryDate' && sortReverse" class="fa fa-lg fa-caret-down"></span>
                         <span ng-show="sortType == 'expiryDate' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
                     </th>
-                    <th class="text-center">Tick to request</th>
+                    <th class="text-center">Tick to Request</th>
                 </tr>
             </thead>
             <tbody>
                 <tr dir-paginate="supply in supplyList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage" ng-hide="supply.quantityRemaining === 0">
-                    <td ng-repeat="column in tableColumns" style="text-align:center">
-                        <div style="margin-top: 0.45em;">{{getObj(supply, column)}}</div>
+                    <td ng-repeat="column in tableColumns" style="text-align:center; vertical-align: middle;">
+                        <div>{{getObj(supply, column)}}</div>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center" style="vertical-align: middle;">
                         <div>
                             <input ng-model="supply.checked" ng-click="toggleSupply(supply)" ng-disabled="supply.user.id === userID || (supplierName !== '' && supply.user.organizationName !== supplierName)" type="checkbox" style="height: 20px; width: 20px;"/>
                         </div>
@@ -77,13 +77,13 @@
                     <th class="text-center" width="35%">Item Name</th>
                     <th class="text-center">Minimum Request Quantity</th>
                     <th class="text-center">Maximum Request Quantity</th>                
-                    <th class="text-center" width="12%">Request Amount</th>
+                    <th class="text-center" width="12%">Request Quantity</th>
                     <th class="text-center" width="12%">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody ng-if="showRequestPage">
                 <tr ng-repeat="requestSupply in requestSupplyList">
-                    <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.itemName}}</div></td>
+                    <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.itemName}} <span ng-click="populatePrevious(requestSupply)" ng-show="checkRequestHistory(requestSupply.itemName)" class="action-item fa fa-lg fa-info-circle" style="color: #3b5998;" tooltip-placement="top" tooltip="You have requested this item before! Click here to populate the previously requested quantity."></span></div></td>
                     <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.minimum}}</div></td>
                     <td style="text-align:center"><div style="margin-top: 0.65em;">{{requestSupply.maximum}}</div></td>
                     <td style="text-align:center">
@@ -98,13 +98,13 @@
             </tbody>
         </table>
         <div class="error-message" ng-messages="outerForm.$error">
-            <div ng-message="required">The fields above are required.</div>
+            <div ng-message="required">{{config.errors.requiredFields}}</div>
         </div>
         <div class="error-message" ng-messages="outerForm.$error">
-            <div ng-message="number">Please enter whole numbers only.</div>
-            <div ng-message="customNumber">Please enter whole numbers only.</div>
-            <div ng-message="min">Please enter numbers between Minimum and Maximum Request Quantity.</div>
-            <div ng-message="max">Please enter numbers between Minimum and Maximum Request Quantity.</div>
+            <div ng-message="number">{{config.errors.wholeNumbers}}</div>
+            <div ng-message="customNumber">{{config.errors.wholeNumbers}}</div>
+            <div ng-message="min">{{config.errors.requestQuantity}}</div>
+            <div ng-message="max">{{config.errors.requestQuantity}}</div>
         </div>
     </div>
     <div class="row">
@@ -128,7 +128,7 @@
                         </span>
                     </p>
                     <div class="error-message" ng-messages="selfCollectForm.deliveryDate.$error" ng-show="selfCollectForm.deliveryDate.$touched">
-                        <div style="margin-top: 5px;" ng-message="customDate">This field is required.</div>
+                        <div style="margin-top: 5px;" ng-message="customDate">{{config.errors.required}}</div>
                     </div>
                 </div>
                 <div class="col-sm-9" style="padding-top: 20px;" ng-show="showTimeslots"> 
@@ -140,7 +140,7 @@
                     <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('2PM-3PM') !== -1"><input type="radio" ng-model="timeslot" value="2PM-3PM"/> 2PM-3PM<br/></div>
                     <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('3PM-4PM') !== -1"><input type="radio" ng-model="timeslot" value="3PM-4PM"/> 3PM-4PM<br/></div>
                     <div ng-hide="unavailableTimeslots.length > 0 && unavailableTimeslots.indexOf('4PM-5PM') !== -1"><input type="radio" ng-model="timeslot" value="4PM-5PM"/> 4PM-5PM</div>
-                    <div class="error-message" style="padding-top: 10px;" ng-show="!timeslot">Please select 1 timeslot.</div>
+                    <div class="error-message" style="padding-top: 10px;" ng-show="!timeslot">{{config.errors.timeslot}}</div>
                 </div>
             </div>
         </div>
@@ -169,7 +169,7 @@
                 </td>
             </tr>
         </table>
-        <div class="error-message" ng-show="scheduleCount < 3">Please select at least 3 timeslots.</div>
+        <div class="error-message" ng-show="scheduleCount < 3">{{config.errors.volunteerTimeslots}}</div>
     </div>
     <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
         <div class="col-sm-offset-10 col-sm-2" style="padding-left: 40px;">

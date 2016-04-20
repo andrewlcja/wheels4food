@@ -15,8 +15,10 @@
                 'angular-perfect-scrollbar',
                 'angular-notification-icons',
                 'ngSanitize',
+                'ngCsv',
                 
                 //modules
+                'Wheels4Food.Config',
                 'Wheels4Food.Principal',
                 'Wheels4Food.Home',
                 'Wheels4Food.PendingRegistrations',
@@ -26,7 +28,8 @@
                 'Wheels4Food.Marketplace',
                 'Wheels4Food.PendingApprovals',
                 'Wheels4Food.Jobs',
-                'Wheels4Food.ApprovedRequests'
+                'Wheels4Food.ApprovedRequests',                
+                'Wheels4Food.Help'
             ])
 
             .config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
@@ -49,16 +52,19 @@
             .provider('api', [
                 function () {
                     var apiEndpoint = '';
+                    var baseUrl = '';
                     return {
                         setAPIEndpoints: function (baseEndPoint) {
                             apiEndpoint = baseEndPoint + '/rest/';
+                            baseUrl = baseEndPoint;
                         },
                         getAPIEndpoint: function () {
                             return apiEndpoint;
                         },
                         $get: function () {
                             return {
-                                endpoint: apiEndpoint
+                                endpoint: apiEndpoint,
+                                baseUrl: baseUrl
                             };
                         }
                     };

@@ -35,6 +35,7 @@ import model.CreateSelfCollectionResponse;
 import model.Demand;
 import model.DemandItem;
 import model.GetJobBreakdownBySupplierIdResponse;
+import model.GetJobBreakdownBySupplierIdAndDateRequest;
 import model.Job;
 import model.Notification;
 import model.Supply;
@@ -65,6 +66,7 @@ public class JobService {
     NotificationDAO notificationDAO;
 
     public CreateJobResponse createJobRequest(CreateJobRequest request) {
+        ConfigUtility config = new ConfigUtility();
         int demandID = request.getDemandID();
         int userID = request.getUserID();
         String deliveryDateStr = request.getDeliveryDate().trim();
@@ -76,37 +78,39 @@ public class JobService {
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        if (!status.equals("Pending")) {
-            errorList.add("Status of request must be pending.");
-            return new CreateJobResponse(false, errorList);
-        }
-
-        if (deliveryDateStr.equals("")) {
-            errorList.add("Delivery Date cannot be blank.");
-        }
-
-        if (timeslot.equals("")) {
-            errorList.add("Timeslot cannot be blank.");
-        }
-
-        if (!errorList.isEmpty()) {
-            return new CreateJobResponse(false, errorList);
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));;
-
         try {
-            Date deliveryDate = sdf.parse(deliveryDateStr);
-        } catch (ParseException e) {
-            errorList.add("Invalid Delivery Date");
-            return new CreateJobResponse(false, errorList);
-        }
+            if (!status.equals("Pending")) {
+                errorList.add(config.getProperty("status_pending"));
+                return new CreateJobResponse(false, errorList);
+            }
 
-        demand.setStatus("Job Created");
+            if (deliveryDateStr.equals("")) {
+                errorList.add(config.getProperty("delivery_date_blank"));
+            }
 
-        String requestContent = "";
-        try {
+            if (timeslot.equals("")) {
+                errorList.add(config.getProperty("timeslot_blank"));
+            }
+
+            if (!errorList.isEmpty()) {
+                return new CreateJobResponse(false, errorList);
+            }
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));;
+
+            try {
+                Date deliveryDate = sdf.parse(deliveryDateStr);
+            } catch (ParseException e) {
+                errorList.add(config.getProperty("delivery_date_invalid"));
+                return new CreateJobResponse(false, errorList);
+            }
+
+            demand.setStatus("Job Created");
+            demand.setPreferredDeliveryDate(deliveryDateStr);
+
+            String requestContent = "";
+
             List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
 
             for (DemandItem demandItem : demandItemList) {
@@ -116,7 +120,7 @@ public class JobService {
 
                 supply.setQuantitySupplied(quantitySupplied - quantityDemanded);
 
-                if (supply.getMaximum() < supply.getQuantitySupplied()) {
+                if (supply.getMaximum() > supply.getQuantitySupplied()) {
                     supply.setMaximum(supply.getQuantitySupplied());
                 }
 
@@ -144,7 +148,6 @@ public class JobService {
             jobDAO.createJob(new Job(demand, user, deliveryDateStr, timeslot, expiryDateStr, "Active", "", ""));
 
             //get properties
-            ConfigUtility config = new ConfigUtility();
             final String emailUsername = config.getProperty("email_username");
             final String emailPassword = config.getProperty("email_password");
 
@@ -203,6 +206,7 @@ public class JobService {
     }
 
     public AcceptJobResponse acceptJobRequest(AcceptJobRequest request) {
+        ConfigUtility config = new ConfigUtility();
         int jobID = request.getJobID();
         int userID = request.getUserID();
         String collectionTime = request.getCollectionTime();
@@ -210,37 +214,37 @@ public class JobService {
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        if (jobID <= 0) {
-            errorList.add("Invalid job id");
-        }
-
-        if (userID <= 0) {
-            errorList.add("Invalid user id");
-        }
-
-        if (collectionTime.equals("")) {
-            errorList.add("Collection Time cannot be blank.");
-        }
-
-        if (deliveryTime.equals("")) {
-            errorList.add("Delivery Time cannot be blank.");
-        }
-
-        if (!errorList.isEmpty()) {
-            return new AcceptJobResponse(false, errorList);
-        }
-
-        if (!errorList.isEmpty()) {
-            return new AcceptJobResponse(false, errorList);
-        }
-
-        Job job = jobDAO.getJobById(jobID);
-
         try {
+            if (jobID <= 0) {
+                errorList.add(config.getProperty("job_id_invalid"));
+            }
+
+            if (userID <= 0) {
+                errorList.add(config.getProperty("user_id_invalid"));
+            }
+
+            if (collectionTime.equals("")) {
+                errorList.add(config.getProperty("collection_time_blank"));
+            }
+
+            if (deliveryTime.equals("")) {
+                errorList.add(config.getProperty("delivery_time_blank"));
+            }
+
+            if (!errorList.isEmpty()) {
+                return new AcceptJobResponse(false, errorList);
+            }
+
+            if (!errorList.isEmpty()) {
+                return new AcceptJobResponse(false, errorList);
+            }
+
+            Job job = jobDAO.getJobById(jobID);
+
             User user = userDAO.getUserById(userID);
 
             if (user == null) {
-                errorList.add("Invalid user id.");
+                errorList.add(config.getProperty("user_id_invalid"));
                 return new AcceptJobResponse(false, errorList);
             }
 
@@ -268,29 +272,30 @@ public class JobService {
     }
 
     public CancelJobByDemandIdResponse cancelJobByDemandIdRequest(Demand demand) {
+        ConfigUtility config = new ConfigUtility();
         int demandID = demand.getId();
         String comments = demand.getComments();
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        if (demandID <= 0) {
-            errorList.add("Invalid job id.");
-        }
-
-        if (comments.equals("")) {
-            errorList.add("Reason cannot be blank.");
-        }
-
-        if (!errorList.isEmpty()) {
-            return new CancelJobByDemandIdResponse(false, errorList);
-        }
-
-        Job job = jobDAO.getJobByDemandId(demandID);
-        job.setStatus("Cancelled");
-
-        demand.setStatus("Job Cancelled");
-
         try {
+            if (demandID <= 0) {
+                errorList.add(config.getProperty("demand_id_invalid"));
+            }
+
+            if (comments.equals("")) {
+                errorList.add(config.getProperty("reason_blank"));
+            }
+
+            if (!errorList.isEmpty()) {
+                return new CancelJobByDemandIdResponse(false, errorList);
+            }
+
+            Job job = jobDAO.getJobByDemandId(demandID);
+            job.setStatus("Cancelled");
+
+            demand.setStatus("Job Cancelled");
+
             List<DemandItem> demandItemList = demandDAO.getDemandItemListByDemandId(demandID);
 
             for (DemandItem demandItem : demandItemList) {
@@ -360,20 +365,21 @@ public class JobService {
     }
 
     public CompleteJobByDemandIdResponse completeJobByDemandIdRequest(int demandID) {
+        ConfigUtility config = new ConfigUtility();
         ArrayList<String> errorList = new ArrayList<String>();
 
-        if (demandID <= 0) {
-            errorList.add("Invalid demand id");
-            return new CompleteJobByDemandIdResponse(false, errorList);
-        }
-
-        Job job = jobDAO.getJobByDemandId(demandID);
-        job.setStatus("Completed");
-
-        Demand demand = demandDAO.getDemandById(demandID);
-        demand.setStatus("Job Completed");
-
         try {
+            if (demandID <= 0) {
+                errorList.add(config.getProperty("demand_id_invalid"));
+                return new CompleteJobByDemandIdResponse(false, errorList);
+            }
+
+            Job job = jobDAO.getJobByDemandId(demandID);
+            job.setStatus("Completed");
+
+            Demand demand = demandDAO.getDemandById(demandID);
+            demand.setStatus("Job Completed");
+
             jobDAO.updateJob(job);
             demandDAO.updateDemand(demand);
 
@@ -412,6 +418,48 @@ public class JobService {
                 case "Job Completed":
                     completed++;
                     break;
+            }
+        }
+
+        return new GetJobBreakdownBySupplierIdResponse(pending, accepted, cancelled, completed);
+    }
+
+    public GetJobBreakdownBySupplierIdResponse getJobBreakdownBySupplierIdAndDateRequest(GetJobBreakdownBySupplierIdAndDateRequest request) throws Exception {
+        List<Job> jobList = jobDAO.getJobListBySupplierId(request.getId());
+
+        int pending = 0;
+        int accepted = 0;
+        int cancelled = 0;
+        int completed = 0;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+
+        for (Job job : jobList) {
+            String status = job.getDemand().getStatus();
+
+            Date dateRequested = sdf.parse(job.getDemand().getDateRequested());
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dateRequested);
+            int currentMonth = cal.get(Calendar.MONTH) + 1;
+            int currentYear = cal.get(Calendar.YEAR);
+
+            if (currentMonth >= request.getStartMonth() && currentMonth <= request.getEndMonth() && currentYear == request.getYear()) {
+                switch (status) {
+                    case "Job Created":
+                        pending++;
+                        break;
+                    case "Job Accepted":
+                        accepted++;
+                        break;
+                    case "Job Cancelled":
+                        cancelled++;
+                        break;
+                    case "Job Completed":
+                        completed++;
+                        break;
+                }
             }
         }
 

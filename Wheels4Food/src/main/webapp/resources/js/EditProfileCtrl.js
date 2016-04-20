@@ -7,7 +7,7 @@
                     var authData = localStorageService.get('authorizationData');
                     var username = authData.username;
                     
-                    if (authData.role === 'VWO' || authData.role === 'Admin') {
+                    if (authData.role === 'Supplier' || authData.role === 'Requester' || authData.role === 'Admin') {
                         $scope.isVWO = true;
                     } else {
                         $scope.isVWO = false;

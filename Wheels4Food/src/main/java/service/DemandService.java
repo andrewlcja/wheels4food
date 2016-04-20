@@ -32,6 +32,7 @@ import model.CreateDemandResponse;
 import model.DeleteDemandResponse;
 import model.Demand;
 import model.DemandItem;
+import model.GetDemandBreakdownByDateRequest;
 import model.GetDemandBreakdownResponse;
 import model.GetUnavailableTimeslotsByDeliveryDateRequest;
 import model.Notification;
@@ -64,6 +65,7 @@ public class DemandService {
     NotificationDAO notificationDAO;
 
     public CreateDemandResponse createDemandRequest(CreateDemandRequest request) {
+        ConfigUtility config = new ConfigUtility();
         int userID = request.getUserID();
 
         String[] supplyIDValues = new String[1];
@@ -88,36 +90,36 @@ public class DemandService {
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        //validations
-        if (userID <= 0) {
-            errorList.add("Invalid user id");
-        }
-
-        for (String quantityDemandedValue : quantityDemandedValues) {
-            if (quantityDemandedValue.equals("")) {
-                errorList.add("All Quantity Requested fields cannot be blank.");
-                break;
-            }
-        }
-
-        if (preferredDeliveryDateStr.equals("")) {
-            errorList.add("Preferred Delivery Date cannot be blank.");
-        }
-
-        if (preferredTimeslot.equals("")) {
-            errorList.add("Preferred Timeslot requested cannot be blank.");
-        }
-
-        if (preferredSchedule.equals("")) {
-            errorList.add("Preferred Schedule cannot be blank.");
-        }
-
-        //check if the errorlist is empty
-        if (!errorList.isEmpty()) {
-            return new CreateDemandResponse(false, errorList);
-        }
-
         try {
+            //validations
+            if (userID <= 0) {
+                errorList.add(config.getProperty("user_id_invalid"));
+            }
+
+            for (String quantityDemandedValue : quantityDemandedValues) {
+                if (quantityDemandedValue.equals("")) {
+                    errorList.add(config.getProperty("all_quantity_requested"));
+                    break;
+                }
+            }
+
+            if (preferredDeliveryDateStr.equals("")) {
+                errorList.add(config.getProperty("preferred_delivery_date_blank"));
+            }
+
+            if (preferredTimeslot.equals("")) {
+                errorList.add(config.getProperty("preferred_timeslot_blank"));
+            }
+
+            if (preferredSchedule.equals("")) {
+                errorList.add(config.getProperty("preferred_schedule_blank"));
+            }
+
+            //check if the errorlist is empty
+            if (!errorList.isEmpty()) {
+                return new CreateDemandResponse(false, errorList);
+            }
+
             int[] quantityDemandedIntValues = new int[quantityDemandedValues.length];
 
             //check for valid quantity demanded values
@@ -126,12 +128,12 @@ public class DemandService {
                     int quantityDemanded = Integer.parseInt(quantityDemandedValues[i]);
 
                     if (quantityDemanded <= 0) {
-                        errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
+                        errorList.add(config.getProperty("all_quantity_requested_number"));
                         return new CreateDemandResponse(false, errorList);
                     }
                     quantityDemandedIntValues[i] = quantityDemanded;
                 } catch (NumberFormatException ex) {
-                    errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
+                    errorList.add(config.getProperty("all_quantity_requested_number"));
                     return new CreateDemandResponse(false, errorList);
                 }
             }
@@ -149,16 +151,16 @@ public class DemandService {
                 try {
                     Date preferredDeliveryDate = sdf.parse(preferredDeliveryDateStr);
 
-                    if (today.compareTo(preferredDeliveryDate) >= 0 || (preferredDeliveryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24) <= 3) {
-                        errorList.add("Preferred Delivery Date must be a date at least 3 days after today");
+                    if (today.compareTo(preferredDeliveryDate) >= 0 || (preferredDeliveryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24) < 3) {
+                        errorList.add(config.getProperty("preferred_delivery_date_today"));
                         return new CreateDemandResponse(false, errorList);
                     }
                 } catch (ParseException e) {
-                    errorList.add("Invalid Preferred Delivery Date");
+                    errorList.add(config.getProperty("preferred_delivery_date_invalid"));
                 }
             } else {
                 if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 3) {
-                    errorList.add("A minimum of 3 timeslots must be selected.");
+                    errorList.add(config.getProperty("preferred_timeslot_minimum"));
                 }
             }
 
@@ -228,7 +230,6 @@ public class DemandService {
                 }
 
                 //get properties
-                ConfigUtility config = new ConfigUtility();
                 final String emailUsername = config.getProperty("email_username");
                 final String emailPassword = config.getProperty("email_password");
 
@@ -285,8 +286,8 @@ public class DemandService {
                 return new CreateDemandResponse(false, errorList);
             }
 
-        } catch (NumberFormatException e) {
-            errorList.add("Quantity must be an integer");
+        } catch (Exception e) {
+            errorList.add(e.getMessage());
             return new CreateDemandResponse(false, errorList);
         }
     }
@@ -324,12 +325,13 @@ public class DemandService {
                 return new DeleteDemandResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new DeleteDemandResponse(false, errorList);
         }
     }
 
     public UpdateDemandResponse updateDemandRequest(UpdateDemandRequest request) {
+        ConfigUtility config = new ConfigUtility();
         Demand demand = request.getDemand();
         List<DemandItem> demandItemList = request.getDemandItemList();
         String preferredDeliveryDateStr = demand.getPreferredDeliveryDate();
@@ -338,59 +340,59 @@ public class DemandService {
 
         ArrayList<String> errorList = new ArrayList<String>();
 
-        for (DemandItem demandItem : demandItemList) {
-            int quantityDemanded = demandItem.getQuantityDemanded();
-
-            if (quantityDemanded <= 0) {
-                errorList.add("All Quantity Requested fields must be an integer that is more than 0.");
-                break;
-            }
-        }
-
-        if (preferredDeliveryDateStr.equals("")) {
-            errorList.add("Preferred Delivery Date cannot be blank.");
-        }
-
-        if (preferredTimeslot.equals("")) {
-            errorList.add("Preferred Timeslot requested cannot be blank.");
-        }
-
-        if (preferredSchedule.equals("")) {
-            errorList.add("Preferred Schedule cannot be blank.");
-        }
-
-        //check if the errorlist is empty
-        if (!errorList.isEmpty()) {
-            return new UpdateDemandResponse(false, errorList);
-        }
-
-        if (preferredSchedule.equals("NA")) {
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            Date today = cal.getTime();
-
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-            try {
-                Date preferredDeliveryDate = sdf.parse(preferredDeliveryDateStr);
-
-                if (today.compareTo(preferredDeliveryDate) >= 0 || (preferredDeliveryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24) <= 3) {
-                    errorList.add("Preferred Delivery Date must be a date at least 3 days after today");
-                    return new UpdateDemandResponse(false, errorList);
-                }
-            } catch (ParseException e) {
-                errorList.add("Invalid Preferred Delivery Date");
-            }
-        } else {
-            if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 3) {
-                errorList.add("A minimum of 3 timeslots must be selected.");
-            }
-        }
-
         try {
+            for (DemandItem demandItem : demandItemList) {
+                int quantityDemanded = demandItem.getQuantityDemanded();
+
+                if (quantityDemanded <= 0) {
+                    errorList.add(config.getProperty("all_quantity_requested_number"));
+                    break;
+                }
+            }
+
+            if (preferredDeliveryDateStr.equals("")) {
+                errorList.add(config.getProperty("preferred_delivery_date_blank"));
+            }
+
+            if (preferredTimeslot.equals("")) {
+                errorList.add(config.getProperty("preferred_timeslot_blank"));
+            }
+
+            if (preferredSchedule.equals("")) {
+                errorList.add(config.getProperty("preferred_schedule_blank"));
+            }
+
+            //check if the errorlist is empty
+            if (!errorList.isEmpty()) {
+                return new UpdateDemandResponse(false, errorList);
+            }
+
+            if (preferredSchedule.equals("NA")) {
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                Date today = cal.getTime();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+                try {
+                    Date preferredDeliveryDate = sdf.parse(preferredDeliveryDateStr);
+
+                    if (today.compareTo(preferredDeliveryDate) >= 0 || (preferredDeliveryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24) <= 3) {
+                        errorList.add(config.getProperty("preferred_delivery_date_today"));
+                        return new UpdateDemandResponse(false, errorList);
+                    }
+                } catch (ParseException e) {
+                    errorList.add(config.getProperty("preferred_delivery_date_invalid"));
+                }
+            } else {
+                if (StringUtils.countOccurrencesOf(preferredSchedule, "1") < 3) {
+                    errorList.add(config.getProperty("preferred_timeslot_minimum"));
+                }
+            }
+
             for (DemandItem demandItem : demandItemList) {
                 Supply supply = demandItem.getSupply();
 
@@ -426,7 +428,7 @@ public class DemandService {
             for (DemandItem demandItem : currentDemandItemList) {
                 currentDemandItemIDs.add(demandItem.getId());
             }
-            System.out.println(currentDemandItemIDs.size());
+
             //update the demanditems first
             for (DemandItem demandItem : demandItemList) {
                 //check whether demanditem has been removed
@@ -441,6 +443,76 @@ public class DemandService {
             }
 
             demandDAO.updateDemand(demand);
+
+            String requestContent = "";
+            List<DemandItem> newDemandItemList = demandDAO.getDemandItemListByDemandId(demand.getId());
+
+            //create demanditems
+            for (DemandItem d : newDemandItemList) {
+                Supply supply = d.getSupply();
+                int quantityDemanded = d.getQuantityDemanded();
+                requestContent += "<tr><td style='text-align:center;'>" + supply.getItemName() + "</td><td style='text-align:center;'>" + quantityDemanded + "</td></tr>";
+            }
+
+            String timingContent = "";
+
+            if (demand.getPreferredSchedule().equals("NA")) {
+                timingContent = "<p><b>Self Collection Date: </b> " + demand.getPreferredDeliveryDate() + "</p>"
+                        + "<p><b>Timeslot: </b> " + demand.getPreferredTimeslot() + "</p><br/>";
+            }
+
+            //get properties
+            final String emailUsername = config.getProperty("email_username");
+            final String emailPassword = config.getProperty("email_password");
+
+            //send email
+            Properties props = new Properties();
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.socketFactory.port", "465");
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.port", "465");
+
+            Session session = Session.getDefaultInstance(props,
+                    new javax.mail.Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(emailUsername, emailPassword);
+                        }
+                    });
+
+            try {
+                String recipient = demand.getUser().getEmail();
+
+                String body = "<div>\n"
+                        + "            <p>Dear " + demand.getUser().getOrganizationName() + ",</p><br/>\n"
+                        + "            <p>There has been a change, made by " + demand.getSupplier().getOrganizationName() + ", to Request RN" + demand.getId() + ".</p>\n"
+                        + "            <p>Here are the updated details of your request:</p><br/>\n"
+                        + "            <table border='1'>"
+                        + "                <tr>"
+                        + "                    <th>Item Name</th>"
+                        + "                    <th>Quantity Requested</th>"
+                        + "                </tr>"
+                        + requestContent
+                        + "            </table>"
+                        + timingContent
+                        + "            <p>Regards,</p>\n"
+                        + "            <p>Wheels4Food Team</p>\n"
+                        + "        </div>";
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(emailUsername));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+                message.setSubject("Wheels4Food - Request Updated");
+                message.setText(body, "UTF-8", "html");
+
+                Transport.send(message);
+            } catch (MessagingException e) {
+                errorList.add(e.getMessage());
+                return new UpdateDemandResponse(false, errorList);
+            }
+
+            //create notification
+            notificationDAO.createNotification(new Notification(demand.getUser(), "Inventory.Demand", "Your requested item(s) have been <b>updated</b> by <b>" + demand.getSupplier().getOrganizationName() + ".</b> Click here to go to <b>My Inventory - Demand</b>."));
+
             return new UpdateDemandResponse(true, null);
         } catch (Exception e) {
             errorList.add(e.getMessage());
@@ -553,7 +625,7 @@ public class DemandService {
                 return new ApproveDemandResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new ApproveDemandResponse(false, errorList);
         }
     }
@@ -599,7 +671,7 @@ public class DemandService {
                 return new RejectDemandResponse(false, errorList);
             }
         } catch (NumberFormatException e) {
-            errorList.add("Id must be an integer");
+            errorList.add("Id must be an number");
             return new RejectDemandResponse(false, errorList);
         }
     }
@@ -676,6 +748,43 @@ public class DemandService {
                 default:
                     approved++;
                     break;
+            }
+        }
+
+        return new GetDemandBreakdownResponse(pending, approved, rejected);
+    }
+
+    public GetDemandBreakdownResponse getDemandBreakdownByDateRequest(GetDemandBreakdownByDateRequest request) throws Exception {
+        List<Demand> demandList = demandDAO.getDemandListBySupplierOrRequesterId(request.getId());
+
+        int pending = 0;
+        int approved = 0;
+        int rejected = 0;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+
+        for (Demand demand : demandList) {
+            String status = demand.getStatus();
+            Date dateRequested = sdf.parse(demand.getDateRequested());
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dateRequested);
+            int currentMonth = cal.get(Calendar.MONTH) + 1;
+            int currentYear = cal.get(Calendar.YEAR);
+
+            if (currentMonth >= request.getStartMonth() && currentMonth <= request.getEndMonth() && currentYear == request.getYear()) {
+                switch (status) {
+                    case "Pending":
+                        pending++;
+                        break;
+                    case "Rejected":
+                        rejected++;
+                        break;
+                    default:
+                        approved++;
+                        break;
+                }
             }
         }
 

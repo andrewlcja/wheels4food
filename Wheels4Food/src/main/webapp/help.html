@@ -1,0 +1,96 @@
+<div class="container">
+    <div class="page-header">
+        <h1 style="color: #003366;">Help Page</h1>
+    </div>
+    <accordion>
+        <accordion-group is-open="open.first" ng-click="open.first = !open.first" style="cursor: pointer;">
+            <accordion-heading>
+                How do I make a request? <i class="pull-right glyphicon" ng-class="{'fa fa-chevron-down': open.first, 'fa fa-chevron-right': !open.first}"></i>
+            </accordion-heading>
+            You can make a request by following the steps below:<br/><br/>
+            1. Click on <a ui-sref="Marketplace.All" style="text-decoration: none;">Marketplace</a> at the top of the page<br/>
+            2. Click on the checkbox of the items that you wish to request<br/>
+            3. Click Request for item(s) at the top of the page<br/>
+            4. Key in your desired quantity for each item in the Request Quantity column<br/>
+            5. Select Delivery Type<br/>
+            6. Select Delivery Date*<br/>
+            7. Click on Request<br/><br/>
+            * Please note that delivery can only be made <b>3 days</b> after today.
+        </accordion-group>
+        <accordion-group ng-show="role === 'Requester'" is-open="open.seventh" ng-click="open.seventh = !open.seventh" style="cursor: pointer;">
+            <accordion-heading>
+                How do I view the status of my request? <i class="pull-right glyphicon" ng-class="{'fa fa-chevron-down': open.seventh, 'fa fa-chevron-right': !open.seventh}"></i>
+            </accordion-heading>
+            You view the status of your request by following the steps below:<br/><br/>
+            1. Click on <a ui-sref="Inventory.Demand" style="text-decoration: none;">My Inventory</a> at the top of the page<br/>
+            2. You should see the status of each request under the Status column<br/><br/>
+            <b style='color: blue;'>Pending</b> - Request has been submitted and is awaiting the Supplier's approval<br/>
+            <b style='color: red;'>Rejected</b> - Request has been rejected, mouse over to see reason<br/>
+            <b style='color: purple;'>Collection Created</b> - Self Collection Request has been approved<br/>
+            <b style='color: green;'>Self Collection Completed</b> - Self Collection has been completed<br/>
+            <b style='color: red;'>Self Collection Cancelled</b> - Self Collection has been cancelled<br/>
+            <b style='color: purple;'>Job Created</b> - Job Request has been approved, awaiting volunteers to accept<br/>
+            <b style='color: orange;'>Job Accepted</b> - Job has been accepted by a volunteer<br/>
+            <b style='color: green;'>Job Completed</b> - Job has been completed by a volunteer<br/>
+            <b style='color: red;'>Job Cancelled</b> - Job has been cancelled<br/>
+        </accordion-group>
+        <accordion-group ng-show="role === 'Supplier'" is-open="open.eight" ng-click="open.eight = !open.eight" style="cursor: pointer;">
+            <accordion-heading>
+                How do I view the status of approved requests? <i class="pull-right glyphicon" ng-class="{'fa fa-chevron-down': open.eight, 'fa fa-chevron-right': !open.eight}"></i>
+            </accordion-heading>
+            You can view the status of your request by following the steps below:<br/><br/>
+            1. Click on <a ui-sref="ApprovedRequests" style="text-decoration: none;">Approved Requests</a> at the top of the page<br/>
+            2. You should see the status of each request under the Status column<br/><br/>
+            <b style='color: blue;'>Pending</b> - Request has been submitted and is awaiting the Supplier's approval<br/>
+            <b style='color: red;'>Rejected</b> - Request has been rejected, mouse over to see reason<br/>
+            <b style='color: purple;'>Collection Created</b> - Self Collection Request has been approved<br/>
+            <b style='color: green;'>Self Collection Completed</b> - Self Collection has been completed<br/>
+            <b style='color: red;'>Self Collection Cancelled</b> - Self Collection has been cancelled<br/>
+            <b style='color: purple;'>Job Created</b> - Job Request has been approved, awaiting volunteers to accept<br/>
+            <b style='color: orange;'>Job Accepted</b> - Job has been accepted by a volunteer<br/>
+            <b style='color: green;'>Job Completed</b> - Job has been completed by a volunteer<br/>
+            <b style='color: red;'>Job Cancelled</b> - Job has been cancelled<br/>
+        </accordion-group>
+        <accordion-group is-open="open.second" ng-click="open.second = !open.second" style="cursor: pointer;">
+            <accordion-heading>
+                I have left out a few items from my request, how can I edit my request? <i class="pull-right glyphicon" ng-class="{'fa fa-chevron-down': open.second, 'fa fa-chevron-right': !open.second}"></i>
+            </accordion-heading>
+            No. Currently, the Wheels4Food application does not allow users to edit their request once it has been send. To request for your items, please make a new request. 
+        </accordion-group>
+        <accordion-group is-open="open.third" ng-click="open.third = !open.third" style="cursor: pointer;">
+            <accordion-heading>
+                How do I edit my profile? <i class="pull-right glyphicon" ng-class="{'fa fa-chevron-down': open.third, 'fa fa-chevron-right': !open.third}"></i>
+            </accordion-heading>
+            You can edit your profile by following the steps below:<br/><br/>
+            1. Click on your username at the top right corner of the page<br/>
+            2. Click on <a ui-sref="Profile.View" style="text-decoration: none;">My Profile</a><br/>
+            3. Click on Edit Profile
+        </accordion-group>
+        <accordion-group is-open="open.fourth" ng-click="open.fourth = !open.fourth" style="cursor: pointer;">
+            <accordion-heading>
+                How do I change my password? <i class="pull-right glyphicon" ng-class="{'fa fa-chevron-down': open.fourth, 'fa fa-chevron-right': !open.fourth}"></i>
+            </accordion-heading>
+            You can change your password by following the steps below:<br/><br/>
+            1. Click on your username at the top right corner of the page<br/>
+            2. Click on <a ui-sref="ChangePassword" style="text-decoration: none;">Change Password</a>
+        </accordion-group>
+        <accordion-group ng-show="role === 'Supplier'" is-open="open.fifth" ng-click="open.fifth = !open.fifth" style="cursor: pointer;">
+            <accordion-heading>
+                How do I create a supply? <i class="pull-right glyphicon" ng-class="{'fa fa-chevron-down': open.fifth, 'fa fa-chevron-right': !open.fifth}"></i>
+            </accordion-heading>
+            You can create a supply by following the steps below:<br/><br/>
+            1. Click on <a ui-sref="Inventory.Supply" style="text-decoration: none;">My Inventory</a> at the top of the page<br/>
+            2. Click on Create New Supply
+            3. Fill in the necessary fields
+        </accordion-group>        
+        <accordion-group ng-show="role === 'Supplier'" is-open="open.sixth" ng-click="open.sixth = !open.sixth" style="cursor: pointer;">
+            <accordion-heading>
+                How do I generate the packing list for the requesting organization? <i class="pull-right glyphicon" ng-class="{'fa fa-chevron-down': open.sixth, 'fa fa-chevron-right': !open.sixth}"></i>
+            </accordion-heading>
+            You can generate the packing list by following the steps below:<br/><br/>
+            1. Click on <a ui-sref="ApprovedRequests" style="text-decoration: none;">Approved Requests</a> at the top of the page<br/>
+            2. Under Actions column, click on the Export icon<br/>
+            3. A CSV file should be downloaded in your computer
+        </accordion-group>
+    </accordion>
+</div>

@@ -2,8 +2,10 @@
     'use strict';
     angular
             .module('Wheels4Food.Principal')
-            .controller('RegisterCtrl', ['$scope', '$state', '$http', 'api', 'ngDialog',
-                function ($scope, $state, $http, api, ngDialog) {
+            .controller('RegisterCtrl', ['$scope', '$state', '$http', 'api', 'ngDialog', 'config',
+                function ($scope, $state, $http, api, ngDialog, config) {
+                    $scope.config = config;
+                    
                     $scope.registration = {
                         'username': '',
                         'password': '',
@@ -16,7 +18,7 @@
                         'pocNumber': '',
                         'licenseNumber': '',
                         'description': '',
-                        'role': ''
+                        'role': 'Requester'
                     };
 
                     $scope.toggleVWO = function () {
@@ -38,7 +40,7 @@
                         $scope.volunteerForm = true;
                         $scope.registration.role = 'Volunteer';
                         $scope.request = 'CreateVolunteerPendingRegistrationRequest';
-                        
+
                         $http({
                             url: api.endpoint + 'GetUserListByRoleRequest/VWO',
                             method: 'GET',
@@ -85,5 +87,85 @@
                         });
                     };
                 }
-            ]);
+            ])
+            .directive('customPassword', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customPassword = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if ($scope.registration.confirmPassword && modelValue !== $scope.registration.confirmPassword) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customPassword2', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customPassword2 = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if ($scope.registration.password && modelValue !== $scope.registration.password) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customPostal', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customPostal = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if (modelValue.length !== 6 || modelValue % 1 !== 0) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customNumber', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customNumber = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if (modelValue % 1 !== 0) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            })
+            .directive('customContact', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function ($scope, $element, $attrs, ngModel) {
+                        ngModel.$validators.customContact = function (modelValue) {
+                            //true or false based on custom dir validation
+                            if (modelValue.length !== 8 || modelValue % 1 !== 0) {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                };
+            });
 })();

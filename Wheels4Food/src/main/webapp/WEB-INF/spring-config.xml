@@ -31,6 +31,7 @@
                 <value>model.Job</value>
                 <value>model.SelfCollection</value>
                 <value>model.Notification</value>
+                <value>model.PendingResetPassword</value>
             </list>
         </property>
         <property name="hibernateProperties">
