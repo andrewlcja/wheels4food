@@ -77,7 +77,7 @@
 
         <base href="/">
     </head>
-    <body ng-controller="MainCtrl">
+    <body ng-controller="MainCtrl" ng-class="{'background-img': !isLoggedIn}">
         <div ng-include="'Wheels4Food/layout.html'" ng-controller="LayoutCtrl" ng-show="isLoggedIn"></div>
         
         <div ui-view></div>

@@ -289,7 +289,7 @@
 
                     //cgBusy configuration
                     $scope.delay = 1;
-                    $scope.minDuration = 900;
+                    $scope.minDuration = 1000;
                     $scope.message = 'Please Wait...';
                     $scope.backdrop = true;
                     $scope.promise = [indexPromise];

@@ -6,7 +6,7 @@
                 function ($scope, $state, $http, api, localStorageService, $location, ngDialog, $stateParams) {
                     var authenticate = function () {
                         var authData = localStorageService.get('authorizationData');
-                                                
+
                         if (authData === null) {
                             if (!$state.is('Register') || !$state.is('ResetPassword') || !$state.is('Reset')) {
                                 $scope.$parent.isLoggedIn = false;
@@ -29,13 +29,23 @@
                             className: 'ngdialog-theme-default dialog-logout-prompt',
                             scope: $scope
                         }).then(function (response) {
-                            $scope.notificationList = [];
-                            localStorageService.remove('authorizationData');
-                            $scope.$parent.isLoggedIn = false;
-                            $location.path('/Login');
+                            $http({
+                                url: api.endpoint + 'UserLogoutRequest',
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then(function (response) {
+                                if (response.data.isLoggedOut) {
+                                    $scope.notificationList = [];
+                                    localStorageService.remove('authorizationData');
+                                    $scope.$parent.isLoggedIn = false;
+                                    $location.path('/Login');
+                                }
+                            });
                         });
                     };
-                    
+
                     $scope.goToInventory = function () {
                         if ($scope.role === 'Supplier') {
                             $state.go('Inventory.Supply');

@@ -8,10 +8,10 @@
                             <h4><b>Stock Keeping Unit (SKU)</b></h4>
                             <input ng-model="supply.sku" class="form-control" name="sku" type="text"/>
                         </div>
-                        <div class="col-sm-9" style="padding-top: 25px;" ng-class="{'error-input': supplyForm.itemName.$touched && supplyForm.itemName.$invalid}"> 
+                        <div class="col-sm-9" style="padding-top: 25px;" ng-class="{'error-input': supplyForm.itemName.$invalid}"> 
                             <h4><b>Item Name</b></h4>
                             <input ng-model="supply.itemName" class="form-control" name="itemName" type="text" required/>
-                            <div class="error-message" ng-messages="supplyForm.itemName.$error" ng-show="supplyForm.itemName.$touched">
+                            <div class="error-message" ng-messages="supplyForm.itemName.$error">
                                 <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                             </div>
                         </div>
@@ -25,17 +25,17 @@
                                 <option value="Miscellaneous">Miscellaneous</option>
                             </select>
                         </div>
-                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.unit.$touched && supplyForm.unit.$invalid}"> 
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.unit.$invalid}"> 
                             <h4><b>Unit of Measurement</b></h4>
                             <input ng-model="supply.unit" class="form-control" name="unit" type="text" required/>
-                            <div class="error-message" ng-messages="supplyForm.unit.$error" ng-show="supplyForm.unit.$touched">
+                            <div class="error-message" ng-messages="supplyForm.unit.$error">
                                 <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                             </div>
                         </div>
-                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.quantitySupplied.$touched && supplyForm.quantitySupplied.$invalid}"> 
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.quantitySupplied.$invalid}"> 
                             <h4><b>Quantity Supplied</b></h4>
                             <input ng-model="supply.quantitySupplied" class="form-control" name="quantitySupplied" type="number" min="1" required ecustom-number ecustom-quantity-supplied-2 ecustom-quantity-supplied ecustom-quantity-supplied-3/>                    
-                            <div class="error-message" ng-messages="supplyForm.quantitySupplied.$error" ng-show="supplyForm.quantitySupplied.$touched">
+                            <div class="error-message" ng-messages="supplyForm.quantitySupplied.$error">
                                 <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                                 <div style="margin-top: 5px;" ng-message="number">{{config.errors.wholeNumber}}</div>
                                 <div style="margin-top: 5px;" ng-message="ecustomNumber">{{config.errors.wholeNumber}}</div>
@@ -47,10 +47,10 @@
                         </div>
                     </div>
                     <div class="col-sm-5">
-                        <div class="col-sm-9" style="padding-top: 25px;" ng-class="{'error-input': supplyForm.minimum.$touched && supplyForm.minimum.$invalid}"> 
+                        <div class="col-sm-9" style="padding-top: 25px;" ng-class="{'error-input': supplyForm.minimum.$invalid}"> 
                             <h4><b>Minimum Request Quantity</b></h4>
                             <input ng-model="supply.minimum" class="form-control" name="minimum" type="number" min="1" required ecustom-number ecustom-min ecustom-min-2/>                    
-                            <div class="error-message" ng-messages="supplyForm.minimum.$error" ng-show="supplyForm.minimum.$touched">
+                            <div class="error-message" ng-messages="supplyForm.minimum.$error">
                                 <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                                 <div style="margin-top: 5px;" ng-message="number">{{config.errors.wholeNumber}}</div>
                                 <div style="margin-top: 5px;" ng-message="ecustomNumber">{{config.errors.wholeNumber}}</div>
@@ -59,10 +59,10 @@
                                 <div style="margin-top: 5px;" ng-message="ecustomMin2">This quantity must be either equals to {{supply.quantitySupplied}} or less than equals to {{supply.quantitySupplied / 2| number:0}}.</div>
                             </div>
                         </div>
-                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.maximum.$touched && supplyForm.maximum.$invalid}"> 
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.maximum.$invalid}"> 
                             <h4><b>Maximum Request Quantity</b></h4>
                             <input ng-model="supply.maximum" class="form-control" name="maximum" type="number" min="1" ecustom-number ecustom-max ecustom-max-2/>                    
-                            <div class="error-message" ng-messages="supplyForm.maximum.$error" ng-show="supplyForm.maximum.$touched">
+                            <div class="error-message" ng-messages="supplyForm.maximum.$error">
                                 <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
                                 <div style="margin-top: 5px;" ng-message="number">{{config.errors.wholeNumber}}</div>
                                 <div style="margin-top: 5px;" ng-message="ecustomNumber">{{config.errors.wholeNumber}}</div>
@@ -71,15 +71,15 @@
                                 <div style="margin-top: 5px;" ng-message="ecustomMax2">This quantity must be either equals to {{supply.quantitySupplied}} or less than equals to {{supply.quantitySupplied - supply.minimum}}.</div>
                             </div>
                         </div>                      
-                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.monetaryValue.$touched && supplyForm.monetaryValue.$invalid}"> 
+                        <div class="col-sm-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.monetaryValue.$invalid}"> 
                             <h4><b>Monetary Value ($ per unit)</b></h4>
                             <input ng-model="supply.monetaryValue" class="form-control" name="monetaryValue" type="number" required/>
-                            <div class="error-message" ng-messages="supplyForm.monetaryValue.$error" ng-show="supplyForm.monetaryValue.$touched">
+                            <div class="error-message" ng-messages="supplyForm.monetaryValue.$error">
                                 <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>                        
                                 <div style="margin-top: 5px;" ng-message="number">{{config.errors.monetaryValue}}</div>
                             </div>
                         </div>
-                        <div class="col-md-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.expiryDate.$touched && supplyForm.expiryDate.$invalid}">
+                        <div class="col-md-9" style="padding-top: 20px;" ng-class="{'error-input': supplyForm.expiryDate.$invalid}">
                             <h4><b>Expiry Date (dd/mm/yyyy)</b></h4>
                             <p class="input-group">
                                 <input type="text" class="form-control" ng-click="open($event)" readonly style="background-color: white; cursor: default;" datepicker-popup="{{format}}" ng-model="expiryDate" name="expiryDate" ng-disabled="expiryDateNA" min-date="minDate" is-open="opened" datepicker-options="dateOptions" close-text="Close" ecustom-date ecustom-date-2/>
@@ -87,7 +87,7 @@
                                     <button type="button" class="btn btn-default" ng-click="open($event)" ng-disabled="expiryDateNA"><i class="fa fa-calendar"></i></button>
                                 </span>
                             </p>
-                            <div class="error-message" ng-messages="supplyForm.expiryDate.$error" ng-show="supplyForm.expiryDate.$touched">
+                            <div class="error-message" ng-messages="supplyForm.expiryDate.$error">
                                 <div style="margin-top: 5px;" ng-message="ecustomDate">{{config.errors.required}}</div>
                                 <div style="margin-top: 5px;" ng-message="edate">{{config.errors.dateFormat}}</div>
                                 <div style="margin-top: 5px;" ng-message="ecustomDate2">{{config.errors.dateToday}}</div>
@@ -101,7 +101,7 @@
             </div>
             <div class="row" style="padding-top: 30px; padding-bottom: 20px;">
                 <div class="col-sm-offset-10 col-sm-2">
-                    <button ng-click="update()" class="btn btn-primary" ng-disabled="supplyForm.$invalid">Update</button>
+                    <button ng-click="update()" class="btn btn-primary" ng-class="{'cursor-disabled': supplyForm.$invalid}" ng-disabled="supplyForm.$invalid">Update</button>
                     <button ui-sref="Inventory.Supply" class="btn btn-default">Back</button>
                 </div>
             </div>

@@ -3,64 +3,64 @@
         <h1 style="color: #003366;">Edit Request</h1>
     </div>    
     <div cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
-        <div ng-show="showDemand">
-            <form name="editForm" novalidate>
-                <div class="row">
-                    <div class="col-sm-4">  
-                        <div class="col-sm-9"> 
-                            <h4><b>Requesting Organization</b></h4>
-                            <p>{{demand.user.organizationName}}</p>               
-                        </div>   
-                        <div class="col-sm-9"> 
-                            <h4><b>Date Requested</b></h4>                             
-                            <p>{{demand.dateRequested}}</p>                              
-                        </div>                     
-                    </div> 
-                </div>
-                <div class="row" style="padding-top: 15px;">
+        <div ng-show="showDemand">            
+            <div class="row">
+                <div class="col-sm-4">  
+                    <div class="col-sm-9"> 
+                        <h4><b>Requesting Organization</b></h4>
+                        <p>{{demand.user.organizationName}}</p>               
+                    </div>   
+                    <div class="col-sm-9"> 
+                        <h4><b>Date Requested</b></h4>                             
+                        <p>{{demand.dateRequested}}</p>                              
+                    </div>                     
+                </div> 
+            </div>
+            <div class="row" style="padding-top: 15px;">
+                <div class="col-sm-12">
                     <div class="col-sm-12">
-                        <div class="col-sm-12">
-                            <h4><span class="fa fa-exclamation-circle"></span><i> It is recommended that a call is made to <b>{{demand.user.organizationName}}</b> at <b>{{demand.user.pocNumber}}</b>, before making any ammendments to the request.</i></h4>
-                        </div>
+                        <h4><span class="fa fa-exclamation-circle"></span><i> It is recommended that a call is made to <b>{{demand.user.organizationName}}</b> at <b>{{demand.user.pocNumber}}</b>, before making any ammendments to the request.</i></h4>
                     </div>
                 </div>
-                <div ng-form="outerForm">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr class="header-row">
-                                <th class="text-center" width="35%">Item Name</th>
-                                <th class="text-center">Minimum Request Quantity</th>
-                                <th class="text-center">Maximum Request Quantity</th>                
-                                <th class="text-center" width="12%">Request Amount</th>
-                                <th class="text-center" width="12%">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="demandItem in demandItemList">
-                                <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.itemName}}</div></td>
-                                <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.minimum}}</div></td>
-                                <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.maximum}}</div></td>
-                                <td style="text-align:center">
-                                    <div ng-form="requestForm">
-                                        <div ng-class="{'error-input': requestForm.quantityDemanded.$touched && requestForm.quantityDemanded.$invalid}">
-                                            <input class="form-control" name="quantityDemanded" type="number" ng-model="demandItem.quantityDemanded" min="{{demandItem.minimum}}" max="{{demandItem.maximum}}" style="text-align: center;" required custom-number/>                            
-                                        </div>
+            </div>
+            <div ng-form="outerForm">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr class="header-row">
+                            <th class="text-center" width="35%">Item Name</th>
+                            <th class="text-center">Minimum Request Quantity</th>
+                            <th class="text-center">Maximum Request Quantity</th>                
+                            <th class="text-center" width="12%">Request Amount</th>
+                            <th class="text-center" width="12%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="demandItem in demandItemList">
+                            <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.itemName}}</div></td>
+                            <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.minimum}}</div></td>
+                            <td style="text-align:center"><div style="margin-top: 0.65em;">{{demandItem.supply.maximum}}</div></td>
+                            <td style="text-align:center">
+                                <div ng-form="requestForm">
+                                    <div ng-class="{'error-input': outerForm.quantityDemanded.$touched && outerForm.quantityDemanded.$invalid}">
+                                        <input class="form-control" name="quantityDemanded" type="number" ng-model="demandItem.quantityDemanded" min="{{demandItem.supply.minimum}}" max="{{demandItem.supply.maximum}}" style="text-align: center;" required custom-number/>                            
                                     </div>
-                                </td>
-                                <td style="text-align:center"><button class="btn btn-danger" ng-disabled="demandItemList.length === 1;" ng-class="{'cursor-disabled': demandItemList.length === 1}" ng-click="removeDemandItem(demandItem)">Remove</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="error-message" ng-messages="outerForm.$error">
-                        <div ng-message="required">{{config.errors.requiredFields}}</div>
-                    </div>
-                    <div class="error-message" ng-messages="outerForm.$error">
-                        <div ng-message="number">{{config.errors.wholeNumbers}}</div>
-                        <div ng-message="customNumber">{{config.errors.wholeNumbers}}</div>
-                        <div ng-message="min">{{config.errors.requestQuantity}}</div>
-                        <div ng-message="max">{{config.errors.requestQuantity}}</div>
-                    </div>
+                                </div>
+                            </td>
+                            <td style="text-align:center"><button class="btn btn-danger" ng-disabled="demandItemList.length === 1;" ng-class="{'cursor-disabled': demandItemList.length === 1}" ng-click="removeDemandItem(demandItem)">Remove</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="error-message" ng-messages="outerForm.$error">
+                    <div ng-message="required">{{config.errors.requiredFields}}</div>
                 </div>
+                <div class="error-message" ng-messages="outerForm.$error">
+                    <div ng-message="number">{{config.errors.wholeNumbers}}</div>
+                    <div ng-message="customNumber">{{config.errors.wholeNumbers}}</div>
+                    <div ng-message="min">{{config.errors.requestQuantity}}</div>
+                    <div ng-message="max">{{config.errors.requestQuantity}}</div>
+                </div>
+            </div>
+            <form name="editForm" novalidate>
                 <div class="row" ng-show="demand.preferredSchedule === 'NA'">
                     <div class="col-sm-4">
                         <div class="col-sm-9" style="padding-top: 15px;" ng-class="{'error-input': editForm.deliveryDate.$touched && editForm.deliveryDate.$invalid}"> 
@@ -87,36 +87,36 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" ng-show="demand.preferredSchedule !== 'NA'">
-                    <div class="col-sm-4">
-                        <div class="col-sm-9" style="padding-top: 15px;"> 
-                            <h4><b>Schedule</b></h4>
-                        </div>
-                    </div>
-                    <table style="width: 100%; margin-top: 20px;">
-                        <tr>
-                            <th></th>
-                            <th class="schedule-header" ng-repeat="date in dates">{{date.value| date: 'EEE'}}<br>{{date.value| date:'dd/MM/yyyy'}}</th>
-                        </tr>
-                        <tr>
-                            <th class="schedule-header">9AM-12PM</th>
-                            <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
-                                <input type="checkbox" class="schedule-checkbox" ng-model="scheduleAM.value" ng-click="selectSlot(scheduleAM.value)"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="schedule-header">2PM-5PM</th>
-                            <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
-                                <input type="checkbox" class="schedule-checkbox" ng-model="schedulePM.value" ng-click="selectSlot(schedulePM.value)"/>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="error-message" ng-show="scheduleCount < 3">{{config.errors.volunteerTimeslots}}</div>
-                </div>
             </form>
+            <div class="row" ng-show="demand.preferredSchedule !== 'NA'">
+                <div class="col-sm-4">
+                    <div class="col-sm-9" style="padding-top: 15px;"> 
+                        <h4><b>Schedule</b></h4>
+                    </div>
+                </div>
+                <table style="width: 100%; margin-top: 20px;">
+                    <tr>
+                        <th></th>
+                        <th class="schedule-header" ng-repeat="date in dates">{{date.value| date: 'EEE'}}<br>{{date.value| date:'dd/MM/yyyy'}}</th>
+                    </tr>
+                    <tr>
+                        <th class="schedule-header">9AM-12PM</th>
+                        <td class="schedule-unchecked" ng-repeat="scheduleAM in scheduleAMList" ng-class="{'schedule-checked': scheduleAM.value}">
+                            <input type="checkbox" class="schedule-checkbox" ng-model="scheduleAM.value" ng-click="selectSlot(scheduleAM.value)"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="schedule-header">2PM-5PM</th>
+                        <td class="schedule-unchecked" ng-repeat="schedulePM in schedulePMList" ng-class="{'schedule-checked': schedulePM.value}">
+                            <input type="checkbox" class="schedule-checkbox" ng-model="schedulePM.value" ng-click="selectSlot(schedulePM.value)"/>
+                        </td>
+                    </tr>
+                </table>
+                <div class="error-message" ng-show="scheduleCount < 3">{{config.errors.volunteerTimeslots}}</div>
+            </div>
             <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
                 <div class="col-sm-offset-10 col-sm-2">
-                    <button ng-click="update()" class="btn btn-primary" ng-disabled="editForm.$invalid || (demand.preferredSchedule !== 'NA' && scheduleCount < 3)">Update</button>
+                    <button ng-click="update()" class="btn btn-primary" ng-disabled="outerForm.$invalid || (demand.preferredSchedule === 'NA' && editForm.$invalid) || (demand.preferredSchedule !== 'NA' && scheduleCount < 3)">Update</button>
                     <button ui-sref="PendingApprovals" class="btn btn-default">Back</button>
                 </div>
             </div>

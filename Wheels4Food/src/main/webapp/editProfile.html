@@ -5,82 +5,125 @@
     <div cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
         <div ng-show="showUser" >
             <div ng-show="isVWO">
-                <div class="row">
-                    <div class="col-sm-5">         
-                        <div class="col-sm-9">
-                            <h4><b>Username</b></h4>
-                            <input ng-model="user.username" class="form-control" type="text" disabled/>
+                <form name="vwoForm">
+                    <div class="row">
+                        <div class="col-sm-5">         
+                            <div class="col-sm-9">
+                                <h4><b>Username</b></h4>
+                                <input ng-model="user.username" class="form-control" type="text" disabled/>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': vwoForm.organizationName.$invalid}">
+                                <h4><b>Organization Name</b></h4>
+                                <input ng-model="user.organizationName" class="form-control" type="text" name="organizationName" required/>
+                                <div class="error-message" ng-messages="vwoForm.organizationName.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                </div>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': vwoForm.email.$invalid}">
+                                <h4><b>Email</b></h4>
+                                <input ng-model="user.email" class="form-control" type="email" name="email" required/>
+                                <div class="error-message" ng-messages="vwoForm.email.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                    <div style="margin-top: 5px;" ng-message="email">{{config.errors.email}}</div>
+                                </div>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': vwoForm.address.$invalid}">
+                                <h4><b>Address</b></h4>
+                                <input ng-model="user.address" class="form-control" type="text" name="address" required/>
+                                <div class="error-message" ng-messages="vwoForm.address.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Organization Name</b></h4>
-                            <input ng-model="user.organizationName" class="form-control" type="text"/>
+                        <div class="col-sm-5">
+                            <div class="col-sm-9" ng-class="{'error-input': vwoForm.postalCode.$invalid}">
+                                <h4><b>Postal Code</b></h4>
+                                <input ng-model="user.postalCode" class="form-control" type="text" name="postalCode" required custom-postal/>
+                                <div class="error-message" ng-messages="vwoForm.postalCode.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>                            
+                                    <div style="margin-top: 5px;" ng-message="customPostal">{{config.errors.postalCode}}</div>
+                                </div>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': vwoForm.pocName.$invalid}">
+                                <h4><b>Point of Contact Name</b></h4>
+                                <input ng-model="user.pocName" class="form-control" type="text" name="pocName" required/>
+                                <div class="error-message" ng-messages="vwoForm.pocName.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                </div>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': vwoForm.pocNumber.$invalid}">
+                                <h4><b>Point of Contact Number</b></h4>
+                                <input ng-model="user.pocNumber" class="form-control" type="text" name="pocNumber" required custom-contact/>
+                                <div class="error-message" ng-messages="vwoForm.pocNumber.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                    <div style="margin-top: 5px;" ng-message="customContact">{{config.errors.contact}}</div>
+                                </div>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': vwoForm.licenseNumber.$invalid}">
+                                <h4><b>License Number</b></h4>
+                                <input ng-model="user.licenseNumber" class="form-control" type="text" name="licenseNumber" required custom-number/>
+                                <div class="error-message" ng-messages="vwoForm.licenseNumber.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                    <div style="margin-top: 5px;" ng-message="customNumber">{{config.errors.license}}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Email</b></h4>
-                            <input ng-model="user.email" class="form-control" type="text"/>
-                        </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Address</b></h4>
-                            <input ng-model="user.address" class="form-control" type="text"/>
+                        <div class="col-sm-11">
+                            <div class="edit-profile-form-input col-sm-10" ng-class="{'error-input': vwoForm.description.$invalid}">
+                                <h4><b>Organization Description</b></h4>
+                                <textarea class="form-control" style="height: 100px; resize: none;" ng-model="user.description" placeholder="Organization Description" name="description" required></textarea>
+                                <div class="error-message" ng-messages="vwoForm.description.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-5">
-                        <div class="col-sm-9">
-                            <h4><b>Postal Code</b></h4>
-                            <input ng-model="user.postalCode" class="form-control" type="text"/>
-                        </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Point of Contact Name</b></h4>
-                            <input ng-model="user.pocName" class="form-control" type="text"/>
-                        </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Point of Contact Number</b></h4>
-                            <input ng-model="user.pocNumber" class="form-control" type="text"/>
-                        </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>License Number</b></h4>
-                            <input ng-model="user.licenseNumber" class="form-control" type="text"/>
-                        </div>
-                    </div>
-                    <div class="col-sm-11">
-                        <div class="edit-profile-form-input col-sm-10">
-                            <h4><b>Organization Description</b></h4>
-                            <textarea class="form-control" style="height: 100px; resize: none;" ng-model="user.description" placeholder="Organization Description"></textarea>
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
             <div ng-show="!isVWO">
-                <div class="row">
-                    <div class="col-sm-5">         
-                        <div class="col-sm-9">
-                            <h4><b>Username</b></h4>
-                            <input ng-model="user.username" class="form-control" type="text" disabled/>
+                <form name="volunteerForm">
+                    <div class="row">
+                        <div class="col-sm-5">         
+                            <div class="col-sm-9">
+                                <h4><b>Username</b></h4>
+                                <input ng-model="user.username" class="form-control" type="text" disabled/>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9">
+                                <h4><b>Organization Name</b></h4>
+                                <input ng-model="user.organizationName" class="form-control" type="text" disabled/>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': volunteerForm.email.$invalid}">
+                                <h4><b>Email</b></h4>
+                                <input ng-model="user.email" class="form-control" type="email" name="email" required/>
+                                <div class="error-message" ng-messages="volunteerForm.email.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                    <div style="margin-top: 5px;" ng-message="email">{{config.errors.email}}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Organization Name</b></h4>
-                            <input ng-model="user.organizationName" class="form-control" type="text"/>
-                        </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Email</b></h4>
-                            <input ng-model="user.email" class="form-control" type="text"/>
+                        <div class="col-sm-5">
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': volunteerForm.pocName.$invalid}">
+                                <h4><b>Full Name</b></h4>
+                                <input ng-model="user.pocName" class="form-control" type="text" name="pocName" required/>
+                                <div class="error-message" ng-messages="volunteerForm.pocName.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                </div>
+                            </div>
+                            <div class="edit-profile-form-input col-sm-9" ng-class="{'error-input': volunteerForm.pocNumber.$invalid}">
+                                <h4><b>Mobile Number</b></h4>
+                                <input ng-model="user.pocNumber" class="form-control" type="text" name="pocNumber" required custom-contact/>
+                                <div class="error-message" ng-messages="volunteerForm.pocNumber.$error">
+                                    <div style="margin-top: 5px;" ng-message="required">{{config.errors.required}}</div>
+                                    <div style="margin-top: 5px;" ng-message="customContact">{{config.errors.contact}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-5">
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Full Name</b></h4>
-                            <input ng-model="user.pocName" class="form-control" type="text"/>
-                        </div>
-                        <div class="edit-profile-form-input col-sm-9">
-                            <h4><b>Mobile Number</b></h4>
-                            <input ng-model="user.pocNumber" class="form-control" type="text"/>
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="row" style="padding-top: 30px; padding-bottom: 20px;">
                 <div class="col-sm-offset-10 col-sm-2">
-                    <button ng-click="update()" class="btn btn-primary">Update</button>
+                    <button ng-click="update()" class="btn btn-primary" ng-class="{'cursor-disabled': (isVWO && vwoForm.$invalid) || (!isVWO && volunteerForm.$invalid)}" ng-disabled="(isVWO && vwoForm.$invalid) || (!isVWO && volunteerForm.$invalid)">Update</button>
                     <button ui-sref="Profile.View" class="btn btn-default">Back</button>
                 </div>
             </div>

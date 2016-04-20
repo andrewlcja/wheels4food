@@ -105,6 +105,15 @@
                         });
                     };
                     
+                    $scope.sort = function (sortType) {
+                        $scope.sortType = sortType;
+                        $scope.sortReverse = !$scope.sortReverse;
+                    };
+
+                    $scope.sortBy = function (user) {
+                        return user[$scope.sortType];
+                    };
+                    
                     var request = 'GetUserListRequest';
                     if (role === 'Supplier') {
                         request = 'GetUserListByRoleRequest/Requester';

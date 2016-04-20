@@ -74,6 +74,11 @@
                                 $scope.supplierName = "";
                             }
                         }
+
+                        $scope.shake = true;
+                        $timeout(function () {
+                            $scope.shake = false;
+                        }, 500);
                     };
 
                     $scope.clearAll = function () {

@@ -14,20 +14,40 @@
         <table style="table-layout: fixed;" class="table table-bordered table-hover" cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
             <thead>
                 <tr class="header-row">
-                    <th class="text-center">Username</th>
-                    <th class="text-center">Organization Name</th>
-                    <th class="text-center" style="width: 13%">Role</th>
-                    <th class="text-center" style="width: 13%">Demerit Points</th>
-                    <th class="text-center" style="width: 10%">Status</th>
+                    <th class="text-center" style="cursor: pointer" ng-click="sort('username')">
+                        Username
+                        <span ng-show="sortType == 'username' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'username' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" style="cursor: pointer" ng-click="sort('organizationName')">
+                        Organization Name
+                        <span ng-show="sortType == 'organizationName' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'organizationName' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" style="width: 13%; cursor: pointer" ng-click="sort('role')">
+                        Role
+                        <span ng-show="sortType == 'role' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'role' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" style="width: 13%; cursor: pointer" ng-click="sort('demeritPoints')">
+                        Demerit Points
+                        <span ng-show="sortType == 'demeritPoints' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'demeritPoints' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
+                    <th class="text-center" style="width: 10%; cursor: pointer" ng-click="sort('status')">
+                        Status
+                        <span ng-show="sortType == 'status' && sortReverse" class="fa fa-lg fa-caret-down"></span>
+                        <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-lg fa-caret-up"></span>
+                    </th>
                     <th class="text-center" style="width: 15%">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr dir-paginate="user in userList | filter: proccessedSearchFilter | itemsPerPage:pageSize" current-page="currentPage">
-                    <td ng-repeat="column in tableColumns" style="text-align:center">
+                <tr dir-paginate="user in userList | filter: proccessedSearchFilter | itemsPerPage:pageSize | orderBy:sortBy:sortReverse" current-page="currentPage">
+                    <td ng-repeat="column in tableColumns" style="text-align:center; vertical-align: middle;">
                         <div style="margin-top: 0.33em;">{{getObj(user, column)}}</div>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center" style="vertical-align: middle;">
                         <div style="margin-top:0.33em;">
                             <span class="action-item fa fa-eye fa-lg" ng-click="view(user)" tooltip-placement="top" tooltip="View"></span>
                             <span ng-hide="user.username === loggedInUsername || user.status !== 'Inactive'" class="action-item fa fa-plus-circle fa-lg" ng-click="activate(user)" tooltip-placement="top" tooltip="Activate"></span>

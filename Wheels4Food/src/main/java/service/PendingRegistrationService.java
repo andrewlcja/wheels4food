@@ -146,7 +146,7 @@ public class PendingRegistrationService {
                 if (pocNumber.length() != 8) {
                     errorList.add(config.getProperty("poc_number_digit"));
                 } else if (userDAO.getUserByMobileNumber(pocNumber) != null) {
-                    errorList.add(config.getProperty("email_exists"));
+                    errorList.add(config.getProperty("poc_number_exists"));
                 }
             } catch (NumberFormatException e) {
                 errorList.add(config.getProperty("poc_number_digit"));

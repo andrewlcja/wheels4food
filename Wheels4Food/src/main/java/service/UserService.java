@@ -324,9 +324,13 @@ public class UserService {
                 if (userDAO.getUserByEmail(email) != null) {
                     errorList.add(config.getProperty("email_exists"));
                 }
-            } else if (role.equals("Volunteer") && !pocNumber.equals(oldUser.getPocNumber())) {
-                if (userDAO.getUserByMobileNumber(pocNumber) != null) {
-                    errorList.add(config.getProperty("mobile_exists "));
+            }
+            
+            if (role.equals("Volunteer") && !pocNumber.equals(oldUser.getPocNumber())) {
+                if (pocNumber.length() != 8) {
+                    errorList.add(config.getProperty("mobile_digit"));
+                } else if (userDAO.getUserByMobileNumber(pocNumber) != null) {
+                    errorList.add(config.getProperty("mobile_exists"));
                 }
             }
 

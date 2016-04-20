@@ -328,7 +328,7 @@ public class JobService {
                 notificationDAO.createNotification(new Notification(demand.getSupplier(), "ApprovedRequests", "A job has been <b>cancelled</b> due to Requesting Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>Approved Requests</b>."));
                 notificationDAO.createNotification(new Notification(demand.getUser(), "Inventory.Demand", "A job has been <b>cancelled</b> due to Requesting Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>My Inventory - Demand</b>."));
 
-                if (demand.getStatus().equals("Job Accepted")) {
+                if (demand.getStatus().equals("Job Accepted") || demand.getStatus().equals("Job Cancelled")) {
                     notificationDAO.createNotification(new Notification(job.getUser(), "MyJobs", "A job has been <b>cancelled</b> due to Requesting Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>My Jobs</b>."));
                 }
             } else if (comments.contains("Supplying")) {
@@ -337,8 +337,8 @@ public class JobService {
                 //create notification
                 notificationDAO.createNotification(new Notification(demand.getSupplier(), "ApprovedRequests", "A job has been <b>cancelled</b> due to Supplying Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>Approved Requests</b>."));
                 notificationDAO.createNotification(new Notification(demand.getUser(), "Inventory.Demand", "A job has been <b>cancelled</b> due to Supplying Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>My Inventory - Demand</b>."));
-
-                if (demand.getStatus().equals("Job Accepted")) {
+                System.out.println(demand.getStatus());
+                if (demand.getStatus().equals("Job Accepted") || demand.getStatus().equals("Job Cancelled")) {
                     notificationDAO.createNotification(new Notification(job.getUser(), "MyJobs", "A job has been <b>cancelled</b> due to Supplying Organization, <b>" + deductUser.getOrganizationName() + "</b>. Click here to go to <b>My Jobs</b>."));
                 }
             } else if (comments.contains("Volunteer")) {

@@ -6,6 +6,7 @@
 package controller;
 
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import model.ActivateUserResponse;
 import model.ChangePasswordRequest;
 import model.ChangePasswordResponse;
@@ -20,6 +21,7 @@ import model.CreatePendingResetPasswordResponse;
 import model.VerifyResetPasswordTokenResponse;
 import model.ResetPasswordRequest;
 import model.ResetPasswordResponse;
+import model.UserLogoutResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -96,8 +98,22 @@ public class UserController {
     }
 
     @RequestMapping(value = "/UserLoginRequest", method = RequestMethod.POST)
-    public @ResponseBody UserLoginResponse userLoginRequest(@RequestBody UserLoginRequest request) {
-        return userService.userLoginRequest(request);
+    public @ResponseBody UserLoginResponse userLoginRequest(@RequestBody UserLoginRequest request, HttpServletRequest req) {
+        UserLoginResponse response = userService.userLoginRequest(request);
+        
+        if (response.isIsAuthenicated()) {
+            req.getSession().setAttribute("LOGGEDIN_USER", response.getUser());
+        }
+        
+        return response;
+    }
+    
+    @RequestMapping(value = "/UserLogoutRequest", method = RequestMethod.POST)
+    public @ResponseBody UserLogoutResponse userLogoutRequest(HttpServletRequest req) {
+        
+        req.getSession().removeAttribute("LOGGEDIN_USER");
+        
+        return new UserLogoutResponse(true);
     }
     
     @RequestMapping(value = "/DeleteUserRequest/{id}", method = RequestMethod.DELETE)

@@ -77,7 +77,7 @@
                     'supplier': {
                         'reason1': {
                             'text': 'I am unable to provide the items at the specified timing',
-                            'value': 'Suppying VWO is unable to provide the items at the specified timing'
+                            'value': 'Supplying VWO is unable to provide the items at the specified timing'
                         },
                         'reason2': {
                             'text': 'Volunteer did not arrive at the specified timing',

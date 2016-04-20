@@ -17,6 +17,12 @@
         <property name="username" value="root" />
         <property name="password" value="" />
     </bean>
+    
+    <bean id="authenticationInterceptor" class="controller.AuthenticationInterceptor"/>
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/> 
+    <mvc:interceptors>
+        <bean class="controller.AuthenticationInterceptor" />
+    </mvc:interceptors>
 
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
